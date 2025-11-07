@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <titel>Advent Calendar</titel>
+
+    <!-- Bind CSS Style-->
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <!-- Titel -->
+    <header class="topbar">
+      <h1>Advent Calendar</h1>
+      <!-- Current day -->
+      <span id="todayLabel"></span>
+    </header>
+
+    <!-- Main grid-->
+    <main class="grid" id="calendar"></main>
+
+    <!-- Windows-->
+    <template id="door-tpl">
+      <button class="door" type="button">
+        <span class="num"></span>
+      </button>
+    </template>
+
+    <!-- Opened Window-content -->
+    <dialog id="modal">
+      <!-- Number/titel of window-->
+      <h2 id="modal-title"></h2>
+      <!-- Text/Content of window -->
+      <div id="modal-body"></div>
+      <form method="dialog"></form>
+      <button>Close</button>
+    </dialog>
+
+    <!-- Bind JS file-->
+    <script src="script.js" defer></script>
+  </body>
+</html>
