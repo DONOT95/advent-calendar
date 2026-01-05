@@ -3,41 +3,203 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <titel>Advent Calendar</titel>
 
     <!-- Bind CSS Style-->
     <link rel="stylesheet" href="styles.css" />
   </head>
 
   <body>
-    <!-- Titel -->
+    <!-- Header/ Menu -->
     <header class="topbar">
-      <h1>Advent Calendar</h1>
+      <div class="header-side left">
+        <div class="hamburger-container">
+          <button id="menuBtn" class="hamburger-btn">☰</button>
+          <div id="menuDropdown" class="menu-dropdown">
+            <button
+              class="menu-item"
+              data-page="calendar"
+              data-i18n="nav.calendar"
+            ></button>
+            <button
+              class="menu-item"
+              data-page="howto"
+              data-i18n="nav.howto"
+            ></button>
+            <button
+              class="menu-item"
+              data-page="create"
+              data-i18n="nav.create"
+            ></button>
+          </div>
+        </div>
+      </div>
+      <!-- Titel TO PERSON -->
+      <h1 id="name-to"></h1>
       <!-- Current day -->
-      <span id="todayLabel"></span>
+      <div class="header-side right">
+        <!-- Current date-time -->
+        <span id="currentDate"></span>
+        <span id="currentHour"></span>
+        <!-- Language selector -->
+        <select id="pageLanguage">
+          <!-- TODO create options in JS -->
+          <option value="en">EN</option>
+          <option value="de">DE</option>
+          <option value="hu">HU</option>
+        </select>
+      </div>
     </header>
 
-    <!-- Main grid-->
-    <main class="grid" id="calendar"></main>
+    <!-- PAGES -->
+    <main>
+      <!-- PAGE: CALENDAR -->
+      <section id="page-calendar" class="page">
+        <div class="grid" id="calendar"></div>
 
-    <!-- Windows-->
-    <template id="door-tpl">
-      <button class="door" type="button">
-        <span class="num"></span>
-      </button>
-    </template>
+        <!-- Windows-->
+        <template id="door-tpl">
+          <button class="door" type="button">
+            <span class="num"></span>
+          </button>
+        </template>
 
-    <!-- Opened Window-content -->
-    <dialog id="modal">
-      <!-- Number/titel of window-->
-      <h2 id="modal-title"></h2>
-      <!-- Text/Content of window -->
-      <div id="modal-body"></div>
-      <form method="dialog"></form>
-      <button>Close</button>
+        <!-- Opened Window-content -->
+        <dialog id="popup" class="dialog">
+          <!-- NUMBER/titel of window-->
+          <h2 id="popup-title" data-i18n="labels.popupdaytitle"></h2>
+          <!-- TEXT/Content of window -->
+          <p id="popup-text"></p>
+          <div class="actions">
+            <!-- Close BTN-->
+            <button
+              id="popup-close-btn"
+              type="button"
+              data-i18n="buttons.closecalendar"
+            ></button>
+          </div>
+        </dialog>
+      </section>
+
+      <!-- PAGE: HOW-TO -->
+      <section id="page-howto" class="page">
+        <!-- page titel -->
+        <h2 data-i18n="titles.howto"></h2>
+        <p id="howtotext">Text how to description</p>
+      </section>
+
+      <!-- PAGE: CREATE CUSTOM -->
+      <section id="page-create" class="page">
+        <!-- page titel -->
+        <h2 data-i18n="titles.create"></h2>
+
+        <!-- Step 1: Basic config -->
+        <div id="create-step1">
+          <h3 data-i18n="titles.createstep1"></h3>
+          <!-- From Field -->
+          <div class="field">
+            <label data-i18n="labels.from" for="fromInput"> </label>
+            <input
+              type="text"
+              id="fromInput"
+              data-i18n-placeholder="placeholders.from"
+            />
+          </div>
+          <!-- To Field -->
+          <div class="field">
+            <label data-i18n="labels.to" for="toInput"> </label>
+            <input
+              type="text"
+              id="toInput"
+              data-i18n-placeholder="placeholders.to"
+            />
+          </div>
+
+          <!-- Theme option -->
+          <div>
+            <!-- Lbl Theme -->
+            <label data-i18n="labels.theme"></label>
+
+            <!-- Options Theme -->
+            <select id="themeSelect">
+              <!-- OPTIONEN GENERATED IN UI.js -->
+              <!-- <option value="classic" data-i18n="selects.classic"></option>
+              <option value="family" data-i18n="selects.family"></option>
+              <option value="neon" data-i18n="selects.neon"></option>
+              <option value="horror" data-i18n="selects.horror"></option> -->
+            </select>
+          </div>
+
+          <!-- Generate URL default or create custom messages BTN-->
+          <div class="btn-row">
+            <button
+              id="btnCreateDefault"
+              data-i18n="buttons.generatedefaulturl"
+            ></button>
+            <button id="btnAddCustom" data-i18n="buttons.addmessages"></button>
+          </div>
+        </div>
+
+        <!-- Step 2: Edit messages-->
+        <div id="create-step2">
+          <h3 data-i18n="titles.createstep2"></h3>
+          <div id="dayHolder">
+            <p id="dailyLabel" data-i18n="labels.day"></p>
+            <p id="dailyNumber"></p>
+          </div>
+          <textarea id="messageEditor" rows="5" maxlength="250"></textarea>
+          <div class="btn-row">
+            <button id="btnPrevDay" data-i18n="buttons.prevmessage"></button>
+            <button id="btnNextDay" data-i18n="buttons.nextmessage"></button>
+          </div>
+        </div>
+
+        <!-- Step 3: Preview-->
+        <div id="create-step3">
+          <h3 data-i18n="titles.createstep3"></h3>
+          <!-- Preview of the sender name -->
+          <div>
+            <p data-i18n="labels.from"></p>
+            <span id="previewFrom"></span>
+          </div>
+          <!-- Preview of the reciever name -->
+          <div>
+            <p data-i18n="labels.to"></p>
+            <span id="previewTo"></span>
+          </div>
+          <!-- Preview of the 24 message in a list -->
+          <ol id="previewMessages"></ol>
+
+          <div class="btn-row">
+            <button id="btnBackToEdit" data-i18n="buttons.backtoedit"></button>
+            <button
+              id="btnGenerateUrl"
+              data-i18n="buttons.generatecustomurl"
+            ></button>
+            <button id="btnShowGenerated" data-i18n="buttons.showurl"></button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- POPUP FOR GENERATED URL -->
+    <dialog id="urlDialog" class="dialog">
+      <h2>Share your calendar</h2>
+      <p>Copy and share this link:</p>
+      <input type="text" id="generatedUrl" readonly />
+      <div class="actions">
+        <button id="btnCopyUrl">Copy</button>
+        <button id="btnOpenUrl">Open</button>
+      </div>
     </dialog>
 
+    <footer>
+      <div>
+        <!-- Titel FROM PERSON -->
+        <p id="name-from"></p>
+      </div>
+    </footer>
+
     <!-- Bind JS file-->
-    <script src="script.js" defer></script>
+    <script type="module" src="js/main.js" defer></script>
   </body>
 </html>
