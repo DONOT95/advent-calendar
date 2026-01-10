@@ -1,15 +1,24 @@
 // Control: Set From-to, Navigator, System Lang
 import { getUiLanguage, setUiLanguage, uiTexts } from "./i18n.js";
 import { startClock, refreshClock } from "./clock.js";
+import { resetGenerator } from "./generator.js";
 
-// OPTIONS Theme:
-const THEME_REGISTRY = {
-  classic: { labelKey: "selcts.classic" },
-  family: { labelKey: "selects.family" },
-  neon: { labelKey: "selects.neon" },
-  horror: { labelKey: "selects.horror" },
+// "registry" OPTIONS Theme:
+export const THEME_REGISTRY = {
+  classic: { i18nKey: "selects.classic" },
+  family: { i18nKey: "selects.family" },
+  neon: { i18nKey: "selects.neon" },
+  horror: { i18nKey: "selects.horror" },
 };
 
+// OPTIONS lanuage:
+const LANGUAGES = {
+  en: "EN",
+  de: "DE",
+  hu: "HU",
+};
+
+// FUNCTION: HTML + JS bind, initialisation
 export function initUI(config) {
   const { lang, theme } = config;
 
@@ -34,20 +43,29 @@ export function initUI(config) {
 
   // Selected Theme (only for generate new calendar, current page theme can not be modifyed)
   const themeSelect = document.getElementById("themeSelect");
+
   // Fill the select (theme) optionen in HTML
-  THEMES.forEach((theme) => {
+  Object.entries(THEME_REGISTRY).forEach(([key, def]) => {
     const option = document.createElement("option");
-    option.value = theme;
-    option.setAttribute("data-i18n", `selects.${theme}`);
+    option.value = key; // e.g. horror (the value of element)
+    option.dataset.i18n = def.i18nKey; // e.g. Horror (Visible text)
     themeSelect.appendChild(option);
   });
 
-  const bodyEl = document.body;
+  // Fill the select (language) options in HTML
+  Object.entries(LANGUAGES).forEach(([langKey, langText]) => {
+    const option = document.createElement("option");
+    option.value = langKey; // e.g. en
+    option.textContent = langText; // e.g. EN
+    langSelect.appendChild(option);
+  });
+
+  /*   const bodyEl = document.body;
   function initTheme(theme) {
-    // Cleare
+    // Clear
     bodyEl.classList.remove(...THEMES.map((t) => `background-${t}`));
     bodyEl.classList.add(`background-${theme}`);
-  }
+  } */
 
   /*   if (themeSelect) {
     themeSelect.value = theme;
@@ -62,7 +80,7 @@ export function initUI(config) {
   initPopupCloseEvents();
   initNameFromTo(fromNameEl, toNameEl, config);
   initLanguage(lang);
-  initTheme(theme);
+  // initTheme(theme);
   startClock(currentHour, currentDate);
 
   //================   MENU   ================
@@ -92,6 +110,9 @@ export function initUI(config) {
 
   //================   PAGE SWITCH   ================
   function switchPage(pageName) {
+    // At evry create custom menu option, reset the slider.
+    resetGenerator();
+
     pages.forEach((sec) => {
       sec.classList.toggle("active", sec.id === `page-${pageName}`);
     });
@@ -101,8 +122,6 @@ export function initUI(config) {
   langSelect?.addEventListener("change", () => {
     const newLang = langSelect.value;
 
-    // Make sense a guard clause?????
-    if (langSelect.value === newLang) return;
     // Update all data-i18n Value
     setUiLanguage(newLang);
     // Change lang -> immediately update date-time
@@ -113,7 +132,6 @@ export function initUI(config) {
 // ================   OPEN POPUP, CALENDAR DAY   ================
 export function openPopup(day, message) {
   // =============   Bind HTML with consts (DATA)   =============
-
   const popup = document.getElementById("popup");
   const popupTitle = document.getElementById("popup-title");
   const popupText = document.getElementById("popup-text");

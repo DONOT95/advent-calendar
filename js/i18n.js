@@ -32,6 +32,9 @@ export const uiTexts = {
 
       // Calendar popup:
       popupdaytitle: "Day {day}",
+
+      // Preview messages list:
+      previewmessageslist: "Messages",
     },
     // Set Attribute ( Event listener on placeholder)
     placeholders: {
@@ -86,6 +89,8 @@ export const uiTexts = {
 
       // Calendar popup:
       popupdaytitle: "Tag {day}",
+
+      previewmessageslist: "Nachrichten",
     },
     // Set Attribute ( Event listener on placeholder)
     placeholders: {
@@ -140,6 +145,8 @@ export const uiTexts = {
 
       // Calendar popup:
       popupdaytitle: "{day}. nap",
+
+      previewmessageslist: "Üzenetek",
     },
     // Set Attribute
     placeholders: {
@@ -165,7 +172,7 @@ export const uiTexts = {
 };
 
 //================   DEFAULT LANG   ================
-let uiLang = "en";
+let defaultLang = "en";
 
 // INTERNAL: safely resolve "nav.calendar"
 function resolveKey(root, path) {
@@ -200,10 +207,10 @@ function applyUiLanguage(lang) {
 
 // Manually change website language in UI select
 export function setUiLanguage(lang) {
-  uiLang = uiTexts[lang] ? lang : "en";
-  applyUiLanguage(uiLang);
+  defaultLang = uiTexts[lang] ? lang : "en";
+  applyUiLanguage(defaultLang);
 }
 
 export function getUiLanguage() {
-  return uiLang;
+  return defaultLang;
 }

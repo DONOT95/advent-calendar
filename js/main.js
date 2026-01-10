@@ -7,12 +7,11 @@ import { initGenerator } from "./generator.js";
 document.addEventListener("DOMContentLoaded", () => {
   // Get Data from URL
   const config = readConfigFromUrl();
-  // Content values in Website (From, To, Datetime)
+
+  // Assign HTML with JS values
   initUI(config);
 
-  initGenerator();
-
-  // Only give needed DATA to Calendar
+  // Load Calendar
   initCalendar({
     container: document.getElementById("calendar"),
     template: document.getElementById("door-tpl"),
@@ -22,4 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
       openPopup(day, message);
     },
   });
+
+  // Create custom calendar option
+  initGenerator();
 });

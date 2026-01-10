@@ -15,7 +15,7 @@ body {
   color: #f0c107cd;
 
   /* BACKGROUND: BILD */
-  background-image: url("/Bilds/christmas_background_family.png");
+  background-image: url("/Bilds/christmas_background_neon.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -52,7 +52,6 @@ body {
 }
 
 /* --- MENU BUTTON --- */
-
 .hamburger-container {
   position: relative;
 }
@@ -148,7 +147,7 @@ body {
   white-space: nowrap;
 }
 
-/* NO ZIFFERN-ZITTERN*/
+/* NO ZIFFERN-ZITTERN */
 #todayLabel,
 .door .num {
   font-variant-numeric: tabular-nums; /* moderne Option */
@@ -300,6 +299,32 @@ dialog .actions button {
 
 dialog .actions button:hover {
   background: #16a34a;
+}
+
+/* Create calendar steps slider */
+#create-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* animation */
+#create-track {
+  display: flex;
+  width: 100%;
+  will-change: transform;
+  transition: transform 350ms ease;
+}
+
+.create-step {
+  flex: 0 0 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+}
+
+.prew {
+  display: flex;
 }
 
 /* FOOTER */

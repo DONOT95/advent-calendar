@@ -1,21 +1,40 @@
 import { defaultMessages } from "./messages.js";
 import { buildCalendarUrl } from "./urlData.js";
 
+// Step Select
+const track = document.getElementById("create-track");
+const steps = Array.from(document.querySelectorAll(".create-step"));
+let currentStep = 0;
+
+// Placeholders for UI values
+let customFromName = "";
+let customToName = "";
+// let customLang = "";
+let customTheme = "";
+
+let customMessages = Array(24).fill("");
+let currentMessageIndex = 0;
+
+// Step 1.
+const fromNameEl = document.getElementById("fromInput");
+const toNameEl = document.getElementById("toInput");
+const themeEl = document.getElementById("themeSelect");
+
 export function initGenerator() {
   // HTML Elements
   const langEl = document.getElementById("pageLanguage");
 
-  // Step 1.
-  const fromNameEl = document.getElementById("fromInput");
-  const toNameEl = document.getElementById("toInput");
-  const themeEl = document.getElementById("themeSelect");
-
+  // Navigate to step 3. (preview)
   const btnCreateDefaultURL = document.getElementById("btnCreateDefault");
-  // To do: navigate to the 2. Step beginning
+  // Navigate to step 2. (custom messages day 1)
   const btnCreateCustomURL = document.getElementById("btnAddCustom");
 
   // Step 2.
-  const currentDayNumber = document.getElementById("dailyNumber");
+  const currentDayNumberEl = document.getElementById("dailyNumber");
+
+  // Default Day: 1
+  currentDayNumberEl.textContent = currentMessageIndex + 1;
+
   const currentMessage = document.getElementById("messageEditor");
   const btnNextMessage = document.getElementById("btnNextDay");
   const btnPrevMessage = document.getElementById("btnPrevDay");
@@ -31,27 +50,20 @@ export function initGenerator() {
   const urlDialog = document.getElementById("urlDialog");
   const btnOpenUrl = document.getElementById("btnOpenUrl");
 
-  // Placeholders for UI values
-  let customFromName = "";
-  let customToName = "";
-
-  // let customLang = "";
-  let customTheme = "";
-
-  let customMessages = Array(24).fill("");
-  let currentMessageIndex = 0;
-  // Default day
-  currentDayNumber.textContent = currentMessageIndex + 1;
+  // Step 1. CUSTOM btn click -> Navigate to Step 2. (Create custom messages)
+  btnCreateCustomURL.addEventListener("click", () => goToStep(1));
 
   function setSenderName() {
     // Save from name value
     customFromName = fromNameEl.value.trim();
+    if (customFromName === "") customFromName = "Me";
     // Display from value
     fromPrevEl.textContent = customFromName;
   }
   function setRecieverName() {
     // Save To name value
     customToName = toNameEl.value.trim();
+    if (customToName === "") customToName = "You";
     // Display To value
     toPrevEl.textContent = customToName;
   }
@@ -78,6 +90,7 @@ export function initGenerator() {
     // No more than 24 messages allowed
     if (currentMessageIndex === 23) {
       displayCustomPreviewMessages();
+      goToStep(2);
       return;
     }
 
@@ -85,7 +98,7 @@ export function initGenerator() {
     currentMessageIndex++;
 
     // Increase day
-    currentDayNumber.textContent = currentMessageIndex + 1;
+    currentDayNumberEl.textContent++;
   }
 
   function showPreviousMessage() {
@@ -93,9 +106,8 @@ export function initGenerator() {
     if (currentMessageIndex === 0) return;
 
     // "Decrease" current day (change value to current index)
-    currentDayNumber.textContent = currentMessageIndex;
+    currentDayNumberEl.textContent = currentMessageIndex;
     currentMessageIndex--;
-
     currentMessage.value = customMessages[currentMessageIndex];
   }
 
@@ -150,14 +162,28 @@ export function initGenerator() {
       messages,
     });
 
-    openUrlDialog(urlDialog, generatedUrlInput, url);
+    // Open up the created URL dialog
+    //openUrlDialog(urlDialog, generatedUrlInput, url);
+
+    // Navigate to preview section
+    goToStep(3);
   });
 
   // Generate URL with Custom Messages
   btnGenerateUrl.addEventListener("click", () => {
     readBasicConfig();
 
-    const messages = customMessages.slice(0, 24);
+    var messages = customMessages.slice(0, 24);
+
+    // Check if there are all the custom messages left empty
+    // if so set default messages
+    var emptyCounter = 0;
+
+    messages.forEach((element) => {
+      if (element === "") emptyCounter++;
+    });
+
+    if (emptyCounter == 24) messages = getDefaultMessages();
 
     const url = buildCalendarUrl({
       lang: langEl.value,
@@ -202,4 +228,33 @@ export function initGenerator() {
   btnOpenUrl.addEventListener("click", () => {
     window.open(generatedUrlInput.value, "_blank");
   });
+}
+
+// Function to navigate step 1-3
+function goToStep(index) {
+  // Safe min-max select (can't be lower than min, can't be over max)
+  currentStep = Math.max(0, Math.min(index, steps.length - 1));
+
+  // Animation 0%, -100%, -200%...
+  track.style.transform = `translateX(-${currentStep * 100}%)`;
+}
+
+export function resetGenerator() {
+  // Function to navigate step 1-3
+  goToStep(0);
+  resetUIValues();
+}
+
+function resetUIValues() {
+  fromNameEl.value = "";
+  toNameEl.value = "";
+
+  // let customLang = "";
+  const selectedTheme = document.getElementById("themeSelect");
+  selectedTheme.value = "classic";
+
+  customMessages = Array(24).fill("");
+  currentMessageIndex = 0;
+  // Default day
+  document.getElementById("dailyNumber").textContent = currentMessageIndex + 1;
 }
