@@ -110,12 +110,14 @@ export function initUI(config) {
 
   //================   PAGE SWITCH   ================
   function switchPage(pageName) {
-    // At evry create custom menu option, reset the slider.
-    resetGenerator();
-
     pages.forEach((sec) => {
       sec.classList.toggle("active", sec.id === `page-${pageName}`);
     });
+
+    // At evry create custom menu option, reset the slider.
+    if (pageName === "create") {
+      resetGenerator();
+    }
   }
 
   //================   LANGUAGE SWITCH   ================

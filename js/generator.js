@@ -44,6 +44,7 @@ export function initGenerator() {
   const toPrevEl = document.getElementById("previewTo");
   const messagesPrev = document.getElementById("previewMessages");
   const generatedUrlInput = document.getElementById("generatedUrl");
+  const btnBackToEdit = document.getElementById("btnBackToEdit");
   const btnGenerateUrl = document.getElementById("btnGenerateUrl");
   const btnShowGeneratedUrl = document.getElementById("btnShowGenerated");
 
@@ -51,7 +52,16 @@ export function initGenerator() {
   const btnOpenUrl = document.getElementById("btnOpenUrl");
 
   // Step 1. CUSTOM btn click -> Navigate to Step 2. (Create custom messages)
-  btnCreateCustomURL.addEventListener("click", () => goToStep(1));
+  btnCreateCustomURL.addEventListener("click", () => {
+    // Save the step 1 values
+    readBasicConfig();
+
+    // Navigate to next step
+    goToStep(1);
+
+    // Set UI element content (1. value of messages)
+    currentMessage.value = customMessages[0];
+  });
 
   function setSenderName() {
     // Save from name value
@@ -78,21 +88,26 @@ export function initGenerator() {
 
   // Set message, increase counter, clear textarea
   function setCurrentMessage() {
-    // Take message from UI
-    const message = currentMessage.value;
+    // Take cleaned message from UI
+    var message = currentMessage.value.trim();
+
+    // If it is empty replace with '-'
+    if (message === "") {
+      message = "-";
+    }
 
     // Insert message to our Array at correct position
     customMessages[currentMessageIndex] = message;
 
-    // Clear text
-    currentMessage.value = "";
-
-    // No more than 24 messages allowed
+    // After the 24. Message -> navigate to PREVIEW
     if (currentMessageIndex === 23) {
-      displayCustomPreviewMessages();
+      displayMessages(false);
       goToStep(2);
       return;
     }
+
+    // Load next message (or empty)
+    currentMessage.value = customMessages[currentMessageIndex + 1];
 
     // Increase counter
     currentMessageIndex++;
@@ -103,7 +118,10 @@ export function initGenerator() {
 
   function showPreviousMessage() {
     // If already at startpoint
-    if (currentMessageIndex === 0) return;
+    if (currentMessageIndex === 0) {
+      goToStep(0);
+      return;
+    }
 
     // "Decrease" current day (change value to current index)
     currentDayNumberEl.textContent = currentMessageIndex;
@@ -111,33 +129,27 @@ export function initGenerator() {
     currentMessage.value = customMessages[currentMessageIndex];
   }
 
-  function displayCustomPreviewMessages() {
+  // Display either custom or default messages
+  function displayMessages(isDefault = true) {
+    if (isDefault) {
+      const messages = getDefaultMessages();
+      customMessages = messages;
+    }
+
     // Delete html list elements (from before)
     while (messagesPrev.firstChild) {
       messagesPrev.removeChild(messagesPrev.firstChild);
     }
+
     // Create list element with custom message as content
     // in the html
     customMessages.forEach((text) => {
       const li = document.createElement("li");
-      li.textContent = text;
-      messagesPrev.appendChild(li);
-      console.log(text);
-    });
-  }
-
-  function displayDefaultPreviewMessages() {
-    const messages = getDefaultMessages();
-
-    // Delete html list elements (from before)
-    while (messagesPrev.firstChild) {
-      messagesPrev.removeChild(messagesPrev.firstChild);
-    }
-
-    // Create list element with default message as content
-    messages.forEach((text) => {
-      const li = document.createElement("li");
-      li.textContent = text;
+      if (text === "") {
+        li.textContent = "-";
+      } else {
+        li.textContent = text;
+      }
       messagesPrev.appendChild(li);
     });
   }
@@ -149,38 +161,39 @@ export function initGenerator() {
     setTheme();
   }
 
-  // Generate URL with Default Messages
+  // NAVIGATE TO PREVIEW (Not yet generate)
   btnCreateDefaultURL.addEventListener("click", () => {
     readBasicConfig();
-    displayDefaultPreviewMessages();
-    const messages = getDefaultMessages();
+    displayMessages(true);
+    /* const messages = getDefaultMessages();
     const url = buildCalendarUrl({
       lang: langEl.value,
       theme: customTheme,
       from: customFromName,
       to: customToName,
       messages,
-    });
+    }); */
 
     // Open up the created URL dialog
     //openUrlDialog(urlDialog, generatedUrlInput, url);
 
     // Navigate to preview section
-    goToStep(3);
+    goToStep(2);
   });
 
   // Generate URL with Custom Messages
   btnGenerateUrl.addEventListener("click", () => {
+    // Get
     readBasicConfig();
 
     var messages = customMessages.slice(0, 24);
 
-    // Check if there are all the custom messages left empty
+    // Check if there are all the custom messages left 'empty' (already replaced empty spaces with '-')
     // if so set default messages
     var emptyCounter = 0;
 
     messages.forEach((element) => {
-      if (element === "") emptyCounter++;
+      if (element === "-") emptyCounter++;
     });
 
     if (emptyCounter == 24) messages = getDefaultMessages();
@@ -204,6 +217,13 @@ export function initGenerator() {
   // Previous daily message (custom)
   btnPrevMessage.addEventListener("click", () => {
     showPreviousMessage();
+  });
+
+  btnBackToEdit.addEventListener("click", () => {
+    currentMessageIndex = 23;
+    currentDayNumberEl.textContent = currentMessageIndex + 1;
+    currentMessage.value = customMessages[currentMessageIndex];
+    goToStep(1);
   });
 
   // Make possible to re-open the dialog(popup)
@@ -237,6 +257,29 @@ function goToStep(index) {
 
   // Animation 0%, -100%, -200%...
   track.style.transform = `translateX(-${currentStep * 100}%)`;
+
+  // Border for different height elements in flex row, always resizen
+  syncCreateContainerHeight(index);
+}
+
+function syncCreateContainerHeight(stepIndex) {
+  const page = document.getElementById("page-create");
+  const container = document.getElementById("create-container");
+  const track = document.getElementById("create-track");
+  if (!page || !container || !track) return;
+
+  // Wenn die Page nicht sichtbar ist: NICHT messen und NICHT überschreiben
+  if (!page.classList.contains("active")) return;
+
+  const steps = track.querySelectorAll(".create-step");
+  const activeStep = steps[stepIndex];
+  if (!activeStep) return;
+
+  // Erst nach Layout-Update messen (wichtig bei Transition/Fonts)
+  requestAnimationFrame(() => {
+    const h = activeStep.getBoundingClientRect().height;
+    if (h > 0) container.style.height = `${Math.ceil(h)}px`;
+  });
 }
 
 export function resetGenerator() {

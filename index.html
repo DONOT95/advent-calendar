@@ -81,7 +81,37 @@
         <section id="page-howto" class="page">
           <!-- page titel -->
           <h2 data-i18n="titles.howto"></h2>
-          <p id="howtotext">Text how to description</p>
+          <section class="howto-row">
+            <div class="box image">
+              <img src="Bilds/christmas_background_horror.png" alt="how to" />
+            </div>
+            <div class="box text">
+              <h3>Schritt 1 Beschreibung.</h3>
+              <p>Kurzer erklärender Text, was hier passiert.</p>
+            </div>
+          </section>
+
+          <!-- ROW 2 (reverse like sketch) -->
+          <section class="howto-row reverse">
+            <div class="box image">
+              <img src="Bilds/christmas_background_horror.png" alt="how to" />
+            </div>
+            <div class="box text">
+              <h3>Schritt 2 Beschreibung.</h3>
+              <p>Bild ist jetzt rechts, Text links.</p>
+            </div>
+          </section>
+
+          <!-- ROW 3 -->
+          <section class="howto-row">
+            <div class="box image">
+              <img src="Bilds/christmas_background_horror.png" alt="how to" />
+            </div>
+            <div class="box text">
+              <h3>Schritt 3 Beschreibung.</h3>
+              <p>Wieder Bild links, Text rechts.</p>
+            </div>
+          </section>
         </section>
 
         <!-- PAGE: CREATE CUSTOM -->
@@ -211,14 +241,13 @@
           <button id="btnOpenUrl">Open</button>
         </div>
       </dialog>
-
-      <footer>
-        <div>
-          <!-- Titel FROM PERSON -->
-          <p id="name-from"></p>
-        </div>
-      </footer>
     </div>
+    <footer>
+      <div>
+        <!-- Titel FROM PERSON -->
+        <p id="name-from"></p>
+      </div>
+    </footer>
   </body>
   <!-- Bind JS file -->
   <script type="module" src="js/main.js" defer></script>

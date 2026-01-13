@@ -5,6 +5,7 @@
 *,
 *::before,
 *::after {
+  /* Making elements size include: content, padding and border */
   box-sizing: border-box;
 }
 
@@ -67,7 +68,8 @@ a {
 
   /* ---- Layout widths ---- */
   --content-max: 980px;
-  --calendar-max: 900px;
+  --side-min: 1rem;
+  --calendar-max: 800px;
 
   /* ---- Radius ---- */
   --r-1: 0.5rem;
@@ -143,7 +145,19 @@ body {
 .app {
   min-height: 100vh;
   display: grid;
+
+  grid-template-columns:
+    minmax(var(--side-min), 1fr)
+    minmax(0, var(--content-max))
+    minmax(var(--side-min), 1fr);
+
   grid-template-rows: auto 1fr auto;
+}
+
+/* Span all the way throug grid columns */
+.topbar,
+footer {
+  grid-column: 1 / -1;
 }
 
 /* Theme background helpers (optional: keep your old classes but set tokens) */
@@ -230,7 +244,6 @@ footer,
   background: rgba(0, 0, 0, 0.25);
   color: inherit;
   cursor: pointer;
-  max-width: fit-content;
 }
 #pageLanguage:focus {
   outline: 3px solid rgba(34, 211, 238, 0.35);
@@ -311,18 +324,28 @@ footer,
    ========================= */
 main {
   padding: clamp(var(--sp-4), 3vh, var(--sp-10)) var(--sp-4);
-  display: grid;
-  place-items: center;
+  /* Position */
+  grid-column: 2;
+  grid-row: 2;
+
+  display: flex;
+  justify-content: center; /* horizontal center */
+  align-items: center;
   background-color: var(--surface);
 }
 
 /* Pages hide/show */
 .page {
   display: none;
-  width: min(100%, var(--content-max));
+  width: 100%;
+  margin-inline: auto;
+  align-items: center;
 }
 .page.active {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-6);
 }
 
 /* =========================
@@ -330,10 +353,11 @@ main {
    ========================= */
 .grid {
   display: grid;
+  justify-self: center;
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-  gap: var(--sp-4);
-
   width: min(100%, var(--calendar-max));
+  margin-inline: auto;
+  gap: var(--sp-4);
   padding: var(--sp-4);
   border-radius: var(--r-3);
 
@@ -385,6 +409,35 @@ main {
   opacity: 0.9;
   font-size: var(--fs-2);
   font-variant-numeric: tabular-nums;
+}
+
+/* HOW TO */
+/* ROW */
+.howto-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+}
+
+/* swap order */
+.reverse {
+  direction: rtl;
+}
+.reverse > * {
+  direction: ltr;
+}
+
+/* CONTENT BOXES */
+.box {
+  min-height: 220px;
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  background: var(--bg);
+  border: var(--border);
+  display: flex;
+  align-items: center;
+
+  flex-direction: column;
 }
 
 /* =========================
@@ -475,7 +528,12 @@ select {
   color: #e2e8f0;
 }
 
-/* Preview Messages list*/
+/* Preview Messages list */
+#previewMessages {
+  max-height: min(55vh, 500px);
+  overflow-y: auto;
+  overflow-x: auto;
+}
 ul {
   padding-inline-start: 0;
 }
@@ -519,6 +577,9 @@ select:focus {
   background: var(--panel);
   backdrop-filter: blur(6px);
   box-shadow: 0 4px 20px rgba(101, 196, 255, 0.1);
+
+  height: auto;
+  transition: height 220ms ease;
 }
 
 #create-track {
@@ -526,6 +587,7 @@ select:focus {
   width: 100%;
   will-change: transform;
   transition: transform 350ms ease;
+  align-items: flex-start;
 }
 
 .create-step {
@@ -545,6 +607,20 @@ select:focus {
   gap: var(--sp-2);
   align-items: baseline;
   flex-wrap: wrap;
+}
+
+/* Option select */
+select {
+  width: fit-content;
+}
+
+/* Form container */
+section#create-container {
+  width: min(100%, 520px);
+}
+
+section {
+  margin-inline: auto;
 }
 
 /* =========================
