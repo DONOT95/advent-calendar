@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Assign HTML with JS values
   initUI(config);
 
-  // Load Calendar
+  // Bild Default or Custom Calendar
   initCalendar({
     container: document.getElementById("calendar"),
     template: document.getElementById("door-tpl"),

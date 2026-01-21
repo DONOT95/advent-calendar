@@ -1,7 +1,11 @@
 // ===============   FILE TO Create Calendar, handle access (timer)   ===============
+import { LIMITS } from "./generator.js";
 
-const DAYS = 24;
+// Get the days from one source no double declaration for the same value
+const DAYS = LIMITS.messagesCount;
 
+// Variable to check if initCalendar is already called (No double)
+let calendarInitialized = false;
 export function initCalendar({
   container,
   template,
@@ -9,6 +13,10 @@ export function initCalendar({
   now,
   onDoorOpen,
 }) {
+  // Guard clause to prevent double function call
+  if (calendarInitialized) return;
+  calendarInitialized = true;
+
   const calendarEl = container;
   const tpl = template;
 

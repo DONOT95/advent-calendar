@@ -18,31 +18,45 @@ const LANGUAGES = {
   hu: "HU",
 };
 
+let popup,
+  menuBtn,
+  menuDropdown,
+  menuItems,
+  pages,
+  fromNameEl,
+  toNameEl,
+  currentHour,
+  currentDate,
+  langSelect,
+  themeSelect;
+
 // FUNCTION: HTML + JS bind, initialisation
 export function initUI(config) {
   const { lang, theme } = config;
 
+  popup = document.getElementById("popup");
+
   // Menu (NAV) HTML
-  const menuBtn = document.getElementById("menuBtn");
-  const menuDropdown = document.getElementById("menuDropdown");
+  menuBtn = document.getElementById("menuBtn");
+  menuDropdown = document.getElementById("menuDropdown");
 
   // Section Button ( create, how to, calendar)
-  const menuItems = document.querySelectorAll(".menu-item");
-  const pages = document.querySelectorAll(".page");
+  menuItems = document.querySelectorAll(".menu-item");
+  pages = document.querySelectorAll(".page");
 
   // From - To Names (values)
-  const fromNameEl = document.getElementById("name-from");
-  const toNameEl = document.getElementById("name-to");
+  fromNameEl = document.getElementById("name-from");
+  toNameEl = document.getElementById("name-to");
 
   // Current Date-Time
-  const currentHour = document.getElementById("currentHour");
-  const currentDate = document.getElementById("currentDate");
+  currentHour = document.getElementById("currentHour");
+  currentDate = document.getElementById("currentDate");
 
   // Selected Page language
-  const langSelect = document.getElementById("pageLanguage");
+  langSelect = document.getElementById("pageLanguage");
 
   // Selected Theme (only for generate new calendar, current page theme can not be modifyed)
-  const themeSelect = document.getElementById("themeSelect");
+  themeSelect = document.getElementById("themeSelect");
 
   // Fill the select (theme) optionen in HTML
   Object.entries(THEME_REGISTRY).forEach(([key, def]) => {
@@ -76,11 +90,11 @@ export function initUI(config) {
 
   if (!menuBtn || !menuDropdown) return;
 
-  // Start Time
   initPopupCloseEvents();
   initNameFromTo(fromNameEl, toNameEl, config);
   initLanguage(lang);
   // initTheme(theme);
+  // Start Time
   startClock(currentHour, currentDate);
 
   //================   MENU   ================
@@ -134,7 +148,7 @@ export function initUI(config) {
 // ================   OPEN POPUP, CALENDAR DAY   ================
 export function openPopup(day, message) {
   // =============   Bind HTML with consts (DATA)   =============
-  const popup = document.getElementById("popup");
+  //const popup = document.getElementById("popup");
   const popupTitle = document.getElementById("popup-title");
   const popupText = document.getElementById("popup-text");
 
@@ -156,11 +170,11 @@ export function openPopup(day, message) {
 // ================   CLOSE POPUP, CALENDAR DAY   ================
 function initPopupCloseEvents() {
   // Bind HTML elements
-  const popup = document.getElementById("popup");
+  //const popup = document.getElementById("popup");
   const dialogs = document.querySelectorAll("dialog");
   const popupClose = document.getElementById("popup-close-btn");
 
-  /*   // Close popup if click outside of element */
+  // Close popup if click outside of element
   dialogs.forEach((dialog) => {
     dialog.addEventListener("click", (event) => {
       const rect = dialog.getBoundingClientRect();
