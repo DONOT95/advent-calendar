@@ -21,6 +21,8 @@ const LANGUAGES = {
 // variables to bind HTML elements
 let bodyEl,
   popup,
+  popupTitle,
+  popupText,
   menuBtn,
   menuDropdown,
   menuItems,
@@ -36,7 +38,7 @@ let bodyEl,
 let uiInitialized = false;
 
 // FUNCTION: initialisation
-export function initUI(config, dateNow) {
+export function initUI(config, offsetMs) {
   //HTML + JS bind
   if (!bindDom()) return;
 
@@ -57,7 +59,7 @@ export function initUI(config, dateNow) {
   initMenuEvents();
   initLanguageEvents();
   // Start Time
-  startClock(currentHourEl, currentDateEl, dateNow);
+  startClock(currentHourEl, currentDateEl, offsetMs);
 }
 
 //===========================================================================
@@ -75,7 +77,12 @@ function bindDom() {
 
   menuItems = document.querySelectorAll(".menu-item");
   bodyEl = document.body;
+
+  // Daily message Elements on dialog
   popup = document.getElementById("popup");
+  popupTitle = document.getElementById("popup-title");
+  popupText = document.getElementById("popup-text");
+
   // From - To Names (values)
   fromNameEl = document.getElementById("name-from");
   toNameEl = document.getElementById("name-to");
@@ -176,9 +183,6 @@ function switchPage(pageName) {
 // ================   OPEN POPUP, CALENDAR DAY   ================
 export function openPopup(day, message) {
   // =============   Bind HTML with consts (DATA)   =============
-  //const popup = document.getElementById("popup");
-  const popupTitle = document.getElementById("popup-title");
-  const popupText = document.getElementById("popup-text");
 
   // Check selected language
   const lang = getUiLanguage();

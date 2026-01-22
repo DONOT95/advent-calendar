@@ -6,22 +6,24 @@ import { initGenerator } from "./generator.js";
 import { getServerDate } from "./clock.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const dateNow = await getServerDate();
+  const serverDateNow = await getServerDate();
+  const offsetMs = serverDateNow.getTime() - Date.now();
+
   // Get Data from URL
   const config = readConfigFromUrl();
 
   // Assign HTML with JS values
-  initUI(config, dateNow);
+  initUI(config, offsetMs);
 
   // Bild Default or Custom Calendar
   initCalendar({
     container: document.getElementById("calendar"),
     template: document.getElementById("door-tpl"),
     messages: config.messages,
-    now: dateNow,
-    onDoorOpen: (day, message) => {
+    offsetMs,
+    onDoorOpen: openPopup /*  (day, message) => {
       openPopup(day, message);
-    },
+    }, */,
   });
 
   // Create custom calendar option

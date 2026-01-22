@@ -18,12 +18,10 @@ export async function getServerDate() {
   }
 }
 
-export function startClock(currentHour, currentDate, serverNow) {
+export function startClock(currentHour, currentDate, offsetMs) {
   if (!currentHour || !currentDate) return;
 
   const pad = (n) => String(n).padStart(2, "0");
-
-  const offsetMs = serverNow.getTime() - Date.now();
 
   // Get Current Date
   function updateTime() {
