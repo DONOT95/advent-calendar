@@ -5,14 +5,31 @@ import { getUiLanguage, uiTexts } from "./i18n.js";
 let lastUpdateFn = null;
 let intervalId = null;
 
-export function startClock(currentHour, currentDate) {
+export async function getServerDate() {
+  try {
+    const res = await fetch(window.location.href, {
+      method: "HEAD",
+      cache: "no-store",
+    });
+    const dateHeader = res.headers.get("date");
+    return dateHeader ? new Date(dateHeader) : new Date();
+  } catch {
+    return new Date();
+  }
+}
+
+export function startClock(currentHour, currentDate, serverNow) {
   if (!currentHour || !currentDate) return;
+
   const pad = (n) => String(n).padStart(2, "0");
+
+  const offsetMs = serverNow.getTime() - Date.now();
 
   // Get Current Date
   function updateTime() {
     const lang = getUiLanguage();
-    const now = new Date();
+    //const now = new Date();
+    const now = new Date(Date.now() + offsetMs);
 
     const dict = uiTexts[lang] || uiTexts.en;
     var tmplHour = dict.currentHour || uiTexts.en.currentHour;

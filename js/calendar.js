@@ -1,9 +1,6 @@
 // ===============   FILE TO Create Calendar, handle access (timer)   ===============
 import { LIMITS } from "./generator.js";
 
-// Get the days from one source no double declaration for the same value
-const DAYS = LIMITS.messagesCount;
-
 // Variable to check if initCalendar is already called (No double)
 let calendarInitialized = false;
 export function initCalendar({
@@ -14,13 +11,14 @@ export function initCalendar({
   onDoorOpen,
 }) {
   // Guard clause to prevent double function call
+  if (!container || !template) return;
+
   if (calendarInitialized) return;
   calendarInitialized = true;
 
-  const calendarEl = container;
-  const tpl = template;
+  // Get the days from one source no double declaration for the same value
+  const DAYS = LIMITS.messagesCount;
 
-  if (!calendarEl || !tpl) return;
   // Check Date, set openable/closed state for days
   const m = now.getMonth() + 1; // 1..12
   const d = now.getDate();
@@ -31,7 +29,7 @@ export function initCalendar({
 
   // All door
   for (let i = 1; i <= DAYS; i++) {
-    const btn = tpl.content.firstElementChild.cloneNode(true);
+    const btn = template.content.firstElementChild.cloneNode(true);
     btn.querySelector(".num").textContent = i;
     // Locked doors
     if (i > allowedDay) btn.classList.add("locked");
@@ -50,12 +48,12 @@ export function initCalendar({
 
       // callback feuern insead of here the Opened window (popup) logic
       if (typeof onDoorOpen === "function") {
-        onDoorOpen(i, msg);
+        onDoorOpen?.(i, msg);
       }
     });
 
     frag.appendChild(btn);
   }
   // Swap Fragments ins DOM
-  calendarEl.replaceChildren(frag);
+  container.replaceChildren(frag);
 }

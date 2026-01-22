@@ -92,10 +92,8 @@ function bindDom() {
 
   container = document.getElementById("create-container");
   track = document.getElementById("create-track");
-  if (!container || !track) return false;
 
   steps = Array.from(document.querySelectorAll(".create-step"));
-  if (!steps.length) return false;
 
   // Step 1.
   fromNameEl = document.getElementById("fromInput");

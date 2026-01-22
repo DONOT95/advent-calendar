@@ -18,39 +18,71 @@ const LANGUAGES = {
   hu: "HU",
 };
 
-let popup,
+// variables to bind HTML elements
+let bodyEl,
+  popup,
   menuBtn,
   menuDropdown,
   menuItems,
   pages,
   fromNameEl,
   toNameEl,
-  currentHour,
-  currentDate,
+  currentHourEl,
+  currentDateEl,
   langSelect,
   themeSelect;
 
-// FUNCTION: HTML + JS bind, initialisation
-export function initUI(config) {
-  const { lang, theme } = config;
+// Boolean variable to check if initUI has been already fully executed.
+let uiInitialized = false;
 
-  popup = document.getElementById("popup");
+// FUNCTION: initialisation
+export function initUI(config, dateNow) {
+  //HTML + JS bind
+  if (!bindDom()) return;
+
+  // First need to fill HTML with options to be able to set values in applyConfig
+  if (!uiInitialized) {
+    fillHTMLSelectsWithOptionElements();
+  }
+
+  // Apply Data
+  applyConfig(config);
+
+  // Guard clause to avoid double initialization
+  if (uiInitialized) return;
+  uiInitialized = true;
+
+  // Only once at setup executed functions:
+  initPopupCloseEvents();
+  initMenuEvents();
+  initLanguageEvents();
+  // Start Time
+  startClock(currentHourEl, currentDateEl, dateNow);
+}
+
+//===========================================================================
+// Bind all the -by ui.js used- HTML elements with JS variables
+function bindDom() {
+  const app = document.getElementById("app");
+  if (!app) return false;
 
   // Menu (NAV) HTML
   menuBtn = document.getElementById("menuBtn");
   menuDropdown = document.getElementById("menuDropdown");
 
   // Section Button ( create, how to, calendar)
-  menuItems = document.querySelectorAll(".menu-item");
   pages = document.querySelectorAll(".page");
 
+  menuItems = document.querySelectorAll(".menu-item");
+  bodyEl = document.body;
+  popup = document.getElementById("popup");
   // From - To Names (values)
   fromNameEl = document.getElementById("name-from");
   toNameEl = document.getElementById("name-to");
 
   // Current Date-Time
-  currentHour = document.getElementById("currentHour");
-  currentDate = document.getElementById("currentDate");
+  currentHourEl = document.getElementById("currentHour");
+  currentDateEl = document.getElementById("currentDate");
 
   // Selected Page language
   langSelect = document.getElementById("pageLanguage");
@@ -58,52 +90,58 @@ export function initUI(config) {
   // Selected Theme (only for generate new calendar, current page theme can not be modifyed)
   themeSelect = document.getElementById("themeSelect");
 
-  // Fill the select (theme) optionen in HTML
-  Object.entries(THEME_REGISTRY).forEach(([key, def]) => {
-    const option = document.createElement("option");
-    option.value = key; // e.g. horror (the value of element)
-    option.dataset.i18n = def.i18nKey; // e.g. Horror (Visible text)
-    themeSelect.appendChild(option);
-  });
+  return true;
+}
+
+// Get data from config object and apply it to the website (Static data)
+function applyConfig(config) {
+  initNameFromTo(fromNameEl, toNameEl, config);
+  initLanguage(langSelect, config.lang);
+  // initTheme(theme);
+}
+
+// Fill HTML-SELECT elements with OPTIONS
+function fillHTMLSelectsWithOptionElements() {
+  // Fill the select (theme) options in HTML
+  if (themeSelect && themeSelect.options.length === 0) {
+    Object.entries(THEME_REGISTRY).forEach(([key, def]) => {
+      const option = document.createElement("option");
+      option.value = key; // e.g. horror (the value of element)
+      option.dataset.i18n = def.i18nKey; // e.g. Horror (Visible text)
+      themeSelect.appendChild(option);
+    });
+  }
 
   // Fill the select (language) options in HTML
-  Object.entries(LANGUAGES).forEach(([langKey, langText]) => {
-    const option = document.createElement("option");
-    option.value = langKey; // e.g. en
-    option.textContent = langText; // e.g. EN
-    langSelect.appendChild(option);
-  });
+  if (langSelect && langSelect.options.length === 0) {
+    Object.entries(LANGUAGES).forEach(([langKey, langText]) => {
+      const option = document.createElement("option");
+      option.value = langKey; // e.g. en
+      option.textContent = langText; // e.g. EN
+      langSelect.appendChild(option);
+    });
+  }
+}
+// Apply selected Theme
+function initTheme(theme) {
+  // Clear
+  bodyEl.classList.remove(
+    ...Object.keys(THEME_REGISTRY).map((t) => `background-${t}`),
+  );
+  bodyEl.classList.add(`background-${theme}`);
+}
 
-  /*   const bodyEl = document.body;
-  function initTheme(theme) {
-    // Clear
-    bodyEl.classList.remove(...THEMES.map((t) => `background-${t}`));
-    bodyEl.classList.add(`background-${theme}`);
-  } */
-
-  /*   if (themeSelect) {
-    themeSelect.value = theme;
-    themeSelect.addEventListener("change", (e) =>
-      setTheme(e.target.value, bodyEl)
-    );
-  } */
-
+//================   MENU   ================
+function initMenuEvents() {
+  // Guard clause
   if (!menuBtn || !menuDropdown) return;
 
-  initPopupCloseEvents();
-  initNameFromTo(fromNameEl, toNameEl, config);
-  initLanguage(lang);
-  // initTheme(theme);
-  // Start Time
-  startClock(currentHour, currentDate);
-
-  //================   MENU   ================
   // OPEN MENU
   menuBtn.addEventListener("click", () => {
     menuDropdown.classList.toggle("open");
   });
 
-  // CLOSE MENU
+  // CLOSE MENU if outside the opened menu clicked
   document.addEventListener("click", (e) => {
     if (!menuDropdown.contains(e.target) && !menuBtn.contains(e.target)) {
       menuDropdown.classList.remove("open");
@@ -114,37 +152,27 @@ export function initUI(config) {
   menuItems.forEach((item) => {
     item.addEventListener("click", () => {
       const pageName = item.dataset.page;
-      // Change "Seit"
+      // Change "Seit" (secion visibility)
       switchPage(pageName);
 
       // Close menu
       menuDropdown.classList.remove("open");
     });
   });
-
-  //================   PAGE SWITCH   ================
-  function switchPage(pageName) {
-    pages.forEach((sec) => {
-      sec.classList.toggle("active", sec.id === `page-${pageName}`);
-    });
-
-    // At evry create custom menu option, reset the slider.
-    if (pageName === "create") {
-      resetGenerator();
-    }
-  }
-
-  //================   LANGUAGE SWITCH   ================
-  langSelect?.addEventListener("change", () => {
-    const newLang = langSelect.value;
-
-    // Update all data-i18n Value
-    setUiLanguage(newLang);
-    // Change lang -> immediately update date-time
-    refreshClock();
-  });
 }
-//===========================================================================
+
+//================   PAGE SWITCH   ================
+function switchPage(pageName) {
+  pages.forEach((sec) => {
+    sec.classList.toggle("active", sec.id === `page-${pageName}`);
+  });
+
+  // At evry create custom menu option, reset the slider.
+  if (pageName === "create") {
+    resetGenerator();
+  }
+}
+
 // ================   OPEN POPUP, CALENDAR DAY   ================
 export function openPopup(day, message) {
   // =============   Bind HTML with consts (DATA)   =============
@@ -209,11 +237,22 @@ function initNameFromTo(fromNameEl, toNameEl, config) {
 // ================   READ THEME or set Default   ================
 
 // ================   INIT LANGUAGE   ================
-function initLanguage(lang) {
-  const selectedLang = document.getElementById("pageLanguage");
-  if (!selectedLang) return;
+function initLanguage(langEl, lang) {
+  // Make sure lang is not undefined
+  const getValidOrDefaultLang = lang || "en";
+  langEl.value = getValidOrDefaultLang;
+  // Apply Language
+  setUiLanguage(getValidOrDefaultLang);
+}
 
-  selectedLang.value = lang;
+//================   LANGUAGE SWITCH   ================
+function initLanguageEvents() {
+  langSelect?.addEventListener("change", () => {
+    const newLang = langSelect.value;
 
-  setUiLanguage(lang);
+    // Update all data-i18n Value
+    setUiLanguage(newLang);
+    // Change lang -> immediately update date-time
+    refreshClock();
+  });
 }
