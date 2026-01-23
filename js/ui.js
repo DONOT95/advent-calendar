@@ -1,22 +1,8 @@
 // Control: Set From-to, Navigator, System Lang
-import { getUiLanguage, setUiLanguage, uiTexts } from "./i18n.js";
-import { startClock, refreshClock } from "./clock.js";
+import { getUiLanguage, setUiLanguage, uiTexts } from "./i18n/i18n.js";
+import { startClock, refreshClock } from "./services/clockService.js";
 import { resetGenerator } from "./generator.js";
-
-// "registry" OPTIONS Theme:
-export const THEME_REGISTRY = {
-  classic: { i18nKey: "selects.classic" },
-  family: { i18nKey: "selects.family" },
-  neon: { i18nKey: "selects.neon" },
-  horror: { i18nKey: "selects.horror" },
-};
-
-// OPTIONS lanuage:
-const LANGUAGES = {
-  en: "EN",
-  de: "DE",
-  hu: "HU",
-};
+import { THEME_REGISTRY, LANGUAGES } from "./config/constants.js";
 
 // variables to bind HTML elements
 let bodyEl,

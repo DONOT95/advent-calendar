@@ -1,4 +1,4 @@
-import { getUiLanguage, uiTexts } from "./i18n.js";
+import { getUiLanguage, uiTexts } from "../i18n/i18n.js";
 //===========================================================================
 // ---   TIME FUNCTION   ---
 // Set, display time

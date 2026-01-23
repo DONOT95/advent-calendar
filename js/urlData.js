@@ -1,16 +1,18 @@
-import { defaultMessages } from "./messages.js";
+import { defaultMessages } from "./Data/defaultMessages.js";
+import { LIMITS } from "./config/constants.js";
+import { DEFAULTS } from "./state/appState.js";
+
 // ===============   FILE TO READ, WRITE URL DATA   ===============
-// --- Default DATA Values ---
-const DEFAULT_LANG = "en";
-const DEFAULT_THEME = "classic";
-const DEFAULT_FROM = "Me";
-const DEFAULT_TO = "You";
 
 // Function to get messages from a specific language + theme combination or
 // default (English + classic)
-function getDefaultMessages(lang = DEFAULT_LANG, theme = DEFAULT_THEME) {
-  const langSet = defaultMessages[lang] || defaultMessages[DEFAULT_LANG];
-  return langSet[theme] || langSet[DEFAULT_THEME];
+export function getDefaultMessages(
+  lang = DEFAULTS.config.lang,
+  theme = DEFAULTS.config.theme,
+) {
+  const langSet =
+    defaultMessages[lang] || defaultMessages[DEFAULTS.config.lang];
+  return langSet[theme] || langSet[DEFAULTS.config.theme];
 }
 
 // =============   read DATA from the URL   =============
@@ -24,10 +26,7 @@ export function readConfigFromUrl() {
   // NO DATA -> return DEFAULT DATA
   if (!rawParam) {
     return {
-      lang: DEFAULT_LANG,
-      theme: DEFAULT_THEME,
-      from: DEFAULT_FROM,
-      to: DEFAULT_TO,
+      ...DEFAULTS.config,
       messages: getDefaultMessages(),
     };
   }
@@ -39,8 +38,8 @@ export function readConfigFromUrl() {
     const json = decodeURIComponent(escape(atob(raw)));
     const data = JSON.parse(json);
 
-    const lang = data.lang || DEFAULT_LANG;
-    const theme = data.theme || DEFAULT_THEME;
+    const lang = data.lang || DEFAULTS.config.lang;
+    const theme = data.theme || DEFAULTS.config.theme;
 
     const defaults = getDefaultMessages(lang, theme);
 
@@ -55,8 +54,8 @@ export function readConfigFromUrl() {
     return {
       lang,
       theme,
-      from: data.from || DEFAULT_FROM,
-      to: data.to || DEFAULT_TO,
+      from: data.from || DEFAULTS.config.from,
+      to: data.to || DEFAULTS.config.to,
       messages,
     };
 
@@ -65,10 +64,7 @@ export function readConfigFromUrl() {
     console.warn("Invalid data in URL:", e);
 
     return {
-      lang: DEFAULT_LANG,
-      theme: DEFAULT_THEME,
-      from: DEFAULT_FROM,
-      to: DEFAULT_TO,
+      ...DEFAULTS.config,
       messages: getDefaultMessages(),
     };
   }

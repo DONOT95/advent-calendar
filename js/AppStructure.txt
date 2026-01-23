@@ -1,0 +1,45 @@
+Flow: View zeigt, Controller steuert, Service entscheidet, State speichert
+
+js/
+  config/
+    constants.js (LIMITS)
+
+  state/
+    appState.js (DEFAULTS, appState, reset)
+
+  validation/
+    validator.js (validate)
+    sanitizer.js (clean, replace)
+
+  services/ (Pure data operations)
+
+    wizardDataService.js:
+      - sanitize/validate
+      - update appState
+      - return {ok, errors}
+
+    urlDataService.js:
+      - parse URL 
+      - sanitize/validate 
+      - return config object
+
+  controllers/ (Bind DOM events, call services, display ok || error)
+    wizardController.js:
+       - bind events
+       - call wizardDataService
+       - call wizardView
+
+    calendarController.js:
+       - init calendar
+       - midnight refresh
+       - call calendarView
+
+    uiController.js:
+       - menu, language
+       - global UI
+       - call uiView
+
+  views/ (DOM ONLY)
+    wizardView.js       ✅ (Create / Generate)
+    calendarView.js     ✅ (Calendar)
+    uiView.js           ✅ (Header, Menu, How-To, global UI)

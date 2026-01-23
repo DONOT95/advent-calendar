@@ -1,5 +1,5 @@
 // ===============   FILE TO Create Calendar, handle access (timer)   ===============
-import { LIMITS } from "./generator.js";
+import { LIMITS } from "./config/constants.js";
 
 // Variable to check if initCalendar is already called (No double)
 let initialized = false;

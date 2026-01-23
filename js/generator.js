@@ -1,13 +1,7 @@
-import { defaultMessages } from "./messages.js";
+import { defaultMessages } from "./Data/defaultMessages.js";
 import { buildCalendarUrl } from "./urlData.js";
-
-// LIMITS for TEXT length
-export const LIMITS = {
-  from: 50,
-  to: 50,
-  message: 250,
-  messagesCount: 24,
-};
+import { LIMITS } from "./config/constants.js";
+import { appState, DEFAULTS, resetAppState } from "./state/appState.js";
 
 // LAZY DOM
 // UI ELEMENTS (placeholders)
@@ -22,18 +16,7 @@ let generatedUrlInput;
 let btnBackToEdit, btnGenerateUrl, btnShowGeneratedUrl;
 let urlDialog, btnOpenUrl;
 // ============================================
-
-let currentStep = 0;
-
-// Placeholders for FORM values (FROM, TO, THEME, LANGUAGE)
-let customFromName = "";
-let customToName = "";
 // let customLang = "";
-let customTheme = "";
-
-// Array to hold custom || default messages
-let calendarMessages = Array(LIMITS.messagesCount).fill("");
-let currentMessageIndex = 0;
 
 // Variable to check if initGenerator is already called (No double)
 let generatorInitialized = false;
@@ -53,7 +36,7 @@ export function initGenerator() {
   // At start 0% progress bar
   if (progressBar) progressBar.value = 0;
   // At start set Day: 1
-  currentDayNumberEl.textContent = currentMessageIndex + 1;
+  currentDayNumberEl.textContent = appState.generator.currentMessageIndex + 1;
 
   // ========================= ON BUTTONS EVENT LISTENERS ============================
   // Step 1. CUSTOM btn click -> Navigate to Step 2. (Create custom messages)
@@ -132,8 +115,8 @@ function bindDom() {
 }
 // Read out the daily default messages -> return a list
 function getDefaultMessages() {
-  const lang = langEl.value;
-  const theme = customTheme || "classic";
+  const lang = appState.config.lang || DEFAULTS.config.lang;
+  const theme = appState.config.theme || DEFAULTS.config.theme;
 
   // Either an existing lang + theme (default messages) OR an empty array
   const messages = defaultMessages?.[lang]?.[theme] ?? [];
@@ -148,35 +131,40 @@ function openUrlDialog(dialog, input, url) {
 
 function setSenderName() {
   // Save from name value
-  customFromName = fromNameEl.value.trim().slice(0, LIMITS.from);
-  if (customFromName === "") customFromName = "Me";
-  // Display from value
-  fromPrevEl.textContent = customFromName;
+  const name =
+    fromNameEl.value.trim().slice(0, LIMITS.from) || DEFAULTS.config.from;
+
+  // Update value
+  appState.config.from = name;
+  // Display value
+  fromPrevEl.textContent = name;
 }
 function setRecieverName() {
   // Save To name value
-  customToName = toNameEl.value.trim().slice(0, LIMITS.to);
-  if (customToName === "") customToName = "You";
+  const name = toNameEl.value.trim().slice(0, LIMITS.to) || DEFAULTS.config.to;
+  // Save State value
+  appState.config.to = name;
   // Display To value
-  toPrevEl.textContent = customToName;
+  toPrevEl.textContent = name;
 }
 
 function setTheme() {
-  customTheme = themeEl.value;
+  appState.config.theme = themeEl.value || DEFAULTS.config.theme;
 }
 
-/*   function setLangCalendar() {
-    customLang = langEl.value;
-  } */
+function setLangCalendar() {
+  appState.config.lang = langEl.value || DEFAULTS.config.lang;
+}
 
 // Set message, increase counter, clear textarea
 function showNextMessage() {
   saveCurrentMessage();
 
-  // Increase progress bar value
-  progressBar.value += 3;
   // After the 24. Message -> navigate to PREVIEW
-  if (currentMessageIndex === calendarMessages.length - 1) {
+  if (
+    appState.generator.currentMessageIndex ===
+    appState.calendar.messages.length - 1
+  ) {
     progressBar.value = 100;
     displayMessages(false);
     goToStep(2);
@@ -184,29 +172,48 @@ function showNextMessage() {
   }
 
   // Increase counter, Day, load next message
-  currentMessageIndex++;
+  appState.generator.currentMessageIndex++;
+
   // Load next message (or empty)
-  messageEL.value = calendarMessages[currentMessageIndex];
-  currentDayNumberEl.textContent = String(currentMessageIndex + 1);
+  messageEL.value =
+    appState.calendar.messages[appState.generator.currentMessageIndex] ??
+    DEFAULTS.calendar.emptyMessage;
+
+  // Increase Day
+  currentDayNumberEl.textContent = String(
+    appState.generator.currentMessageIndex + 1,
+  );
+
+  // Increase progress bar value
+  progressBar.value += 3;
 }
 
 function showPreviousMessage() {
   saveCurrentMessage();
-  // Decrease Progressbar value
-  progressBar.value -= 3;
 
   // If already at startpoint
-  if (currentMessageIndex === 0) {
+  if (appState.generator.currentMessageIndex === 0) {
     // reset progressbar
     progressBar.value = 0;
     goToStep(0);
     return;
   }
 
-  // Decrease counter, Day, load prev message
-  currentMessageIndex--;
-  messageEL.value = calendarMessages[currentMessageIndex];
-  currentDayNumberEl.textContent = String(currentMessageIndex + 1);
+  // Decrease Index
+  appState.generator.currentMessageIndex--;
+
+  // Load message
+  messageEL.value =
+    appState.calendar.messages[appState.generator.currentMessageIndex] ??
+    DEFAULTS.calendar.emptyMessage;
+
+  // Decrease Day
+  currentDayNumberEl.textContent = String(
+    appState.generator.currentMessageIndex + 1,
+  );
+
+  // Decrease Progressbar value
+  progressBar.value -= 3;
 }
 
 function saveCurrentMessage() {
@@ -214,22 +221,27 @@ function saveCurrentMessage() {
   const message = messageEL.value.trim().slice(0, LIMITS.message);
 
   // Insert message to our Array at correct position
-  calendarMessages[currentMessageIndex] = message === "" ? "-" : message;
+  appState.calendar.messages[appState.generator.currentMessageIndex] =
+    message === "" ? DEFAULTS.calendar.emptyMessage : message;
 }
 
 // Display either custom or default messages
 function displayMessages(isDefault = true) {
   if (isDefault) {
+    // DEFAULT messages
     const messages = getDefaultMessages();
 
-    calendarMessages = Array(LIMITS.messagesCount).fill("-");
-    // Set 24 message with empty ("-")
-    // Replace elements with fo
+    // Fill messages 24x "-"
+    appState.calendar.messages = Array(LIMITS.messagesCount).fill(
+      DEFAULTS.calendar.emptyMessage,
+    );
+
+    // Fill message with  "-" or valid String
     messages.forEach((message, index) => {
-      calendarMessages[index] =
+      appState.calendar.messages[index] =
         String(message ?? "")
           .trim()
-          .slice(0, LIMITS.message) || "-";
+          .slice(0, LIMITS.message) || DEFAULTS.calendar.emptyMessage;
     });
   }
 
@@ -240,7 +252,7 @@ function displayMessages(isDefault = true) {
 
   // Create list element with custom message as content
   // in the html
-  calendarMessages.forEach((text) => {
+  appState.calendar.messages.forEach((text) => {
     const li = document.createElement("li");
     li.textContent = text;
 
@@ -251,20 +263,23 @@ function displayMessages(isDefault = true) {
 function readBasicConfig() {
   setSenderName();
   setRecieverName();
-  //setLangCalendar();
+  setLangCalendar();
   setTheme();
 }
 
 // Function to navigate step 1-3
 function goToStep(index) {
   // Safe min-max select (can't be lower than min, can't be over max)
-  currentStep = Math.max(0, Math.min(index, steps.length - 1));
+  appState.generator.currentStep = Math.max(
+    0,
+    Math.min(index, steps.length - 1),
+  );
 
   // Animation 0%, -100%, -200%...
-  track.style.transform = `translateX(-${currentStep * 100}%)`;
+  track.style.transform = `translateX(-${appState.generator.currentStep * 100}%)`;
 
   // Border for different height elements in flex row, always resizen
-  syncCreateContainerHeight(currentStep);
+  syncCreateContainerHeight(appState.generator.currentStep);
 }
 
 // For different STEP (generate 1-3)
@@ -286,6 +301,7 @@ function syncCreateContainerHeight(stepIndex) {
 
 // Clear UI elements values, navigate to first step
 export function resetGenerator() {
+  resetAppState({ keepTime: true });
   // Function to navigate step 1-3
   goToStep(0);
   resetUIValues();
@@ -293,21 +309,17 @@ export function resetGenerator() {
 
 // Clear UI elements values
 function resetUIValues() {
-  fromNameEl.value = "";
-  toNameEl.value = "";
-  themeEl.value = "classic";
+  fromNameEl.value = appState.config.from;
+  toNameEl.value = appState.config.to;
+  themeEl.value = appState.config.theme;
   progressBar.value = 0;
 
   // let customLang = "";
   /* const selectedTheme = document.getElementById("themeSelect");
   selectedTheme.value = "classic"; */
-
-  // Clear custom messages list, reset index
-  calendarMessages = Array(LIMITS.messagesCount).fill("");
-  currentMessageIndex = 0;
-
   // Reset Day
-  document.getElementById("dailyNumber").textContent = currentMessageIndex + 1;
+  document.getElementById("dailyNumber").textContent =
+    appState.generator.currentMessageIndex + 1;
 }
 
 // SET HTML INPUT Maxlength for From, To and Message
@@ -326,7 +338,7 @@ function onCreateCustom() {
   goToStep(1);
 
   // Set UI element content (1. value of messages)
-  messageEL.value = calendarMessages[0];
+  messageEL.value = appState.calendar.messages[0];
   // Increase progress bar loading
   progressBar.value = 28;
 }
@@ -334,7 +346,8 @@ function onCreateCustom() {
 function onCreateDefault() {
   readBasicConfig();
   displayMessages(true);
-  currentMessageIndex = calendarMessages.length - 1;
+  appState.generator.currentMessageIndex =
+    appState.calendar.messages.length - 1;
   /* const messages = getDefaultMessages();
     const url = buildCalendarUrl({
       lang: langEl.value,
@@ -358,23 +371,19 @@ function onGenerateUrl() {
   // Get
   readBasicConfig();
 
-  var messages = calendarMessages.slice(0, LIMITS.messagesCount);
+  let messages = appState.calendar.messages.slice(0, LIMITS.messagesCount);
 
   // Check if there are all the custom messages left 'empty' (already replaced empty spaces with '-')
   // if so set default messages
-  var emptyCounter = 0;
+  const allEmpty = messages.every((m) => m === "-");
 
-  messages.forEach((element) => {
-    if (element === "-") emptyCounter++;
-  });
-
-  if (emptyCounter == LIMITS.messagesCount) messages = getDefaultMessages();
+  if (allEmpty) messages = getDefaultMessages();
 
   const url = buildCalendarUrl({
-    lang: langEl.value,
-    theme: customTheme,
-    from: customFromName,
-    to: customToName,
+    lang: appState.config.lang,
+    theme: appState.config.theme,
+    from: appState.config.from,
+    to: appState.config.to,
     messages,
   });
 
@@ -382,8 +391,9 @@ function onGenerateUrl() {
 }
 
 function onBackToEdit() {
-  currentDayNumberEl.textContent = currentMessageIndex + 1;
-  messageEL.value = calendarMessages[currentMessageIndex];
+  currentDayNumberEl.textContent = appState.generator.currentMessageIndex + 1;
+  messageEL.value =
+    appState.calendar.messages[appState.generator.currentMessageIndex];
   progressBar.value -= 3;
   goToStep(1);
 }
