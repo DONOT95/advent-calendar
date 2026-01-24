@@ -1,7 +1,9 @@
-import { defaultMessages } from "./Data/defaultMessages.js";
-import { buildCalendarUrl } from "./urlData.js";
+import { buildCalendarUrl } from "./services/urlDataService.js";
 import { LIMITS } from "./config/constants.js";
 import { appState, DEFAULTS, resetAppState } from "./state/appState.js";
+import { getDefaultMessages } from "./services/defaultMessagesService.js";
+import { validateMessagesArray } from "./validation/validator.js";
+import { sanitizeMessagesArray } from "./validation/sanitizer.js";
 
 // LAZY DOM
 // UI ELEMENTS (placeholders)
@@ -14,7 +16,7 @@ let btnCreateDefaultCalendar, btnCreateCustomCalendar;
 let fromPrevEl, toPrevEl, messagesPrev;
 let generatedUrlInput;
 let btnBackToEdit, btnGenerateUrl, btnShowGeneratedUrl;
-let urlDialog, btnOpenUrl;
+let urlDialog, btnOpenUrl, btnCopyUrl;
 // ============================================
 // let customLang = "";
 
@@ -65,6 +67,9 @@ export function initGenerator() {
   btnOpenUrl.addEventListener("click", () => {
     window.open(generatedUrlInput.value, "_blank");
   });
+
+  // Copy generated URL
+  btnCopyUrl.addEventListener("click", onCopyUrl);
 }
 // =============================== GENERATOR FUNCTONS ===============================
 // Bind all the -by generator used- HTML elements with JS variables
@@ -106,6 +111,7 @@ function bindDom() {
   btnShowGeneratedUrl = document.getElementById("btnShowGenerated");
 
   urlDialog = document.getElementById("urlDialog");
+  btnCopyUrl = document.getElementById("btnCopyUrl");
   btnOpenUrl = document.getElementById("btnOpenUrl");
 
   langEl = document.getElementById("pageLanguage");
@@ -114,13 +120,23 @@ function bindDom() {
   return true;
 }
 // Read out the daily default messages -> return a list
-function getDefaultMessages() {
+// If messages === 0, get default messages
+function getMessagesForWizard(messages) {
+  // DEFAULT MESSAGES
   const lang = appState.config.lang || DEFAULTS.config.lang;
   const theme = appState.config.theme || DEFAULTS.config.theme;
 
-  // Either an existing lang + theme (default messages) OR an empty array
-  const messages = defaultMessages?.[lang]?.[theme] ?? [];
-  return messages.slice(0, LIMITS.messagesCount);
+  const defaults = getDefaultMessages(lang, theme);
+
+  const base =
+    Array.isArray(messages) && messages.length === LIMITS.messagesCount
+      ? messages
+      : defaults;
+
+  return sanitizeMessagesArray(base, {
+    maxLenEach: LIMITS.message,
+    emptyFallback: DEFAULTS.calendar.emptyMessage,
+  });
 }
 
 // Open generated Url dialog popup
@@ -149,11 +165,13 @@ function setRecieverName() {
 }
 
 function setTheme() {
-  appState.config.theme = themeEl.value || DEFAULTS.config.theme;
+  const theme = themeEl?.value || DEFAULTS.config.theme;
+  appState.config.theme = theme;
 }
 
 function setLangCalendar() {
-  appState.config.lang = langEl.value || DEFAULTS.config.lang;
+  const lang = (langEl?.value || DEFAULTS.config.lang).trim();
+  appState.config.lang = lang;
 }
 
 // Set message, increase counter, clear textarea
@@ -226,38 +244,23 @@ function saveCurrentMessage() {
 }
 
 // Display either custom or default messages
-function displayMessages(isDefault = true) {
-  if (isDefault) {
-    // DEFAULT messages
-    const messages = getDefaultMessages();
+function displayMessages(displayDefault = true) {
+  const source = displayDefault ? null : appState.calendar.messages;
 
-    // Fill messages 24x "-"
-    appState.calendar.messages = Array(LIMITS.messagesCount).fill(
-      DEFAULTS.calendar.emptyMessage,
-    );
+  // Get messages
+  const list = getMessagesForWizard(source);
 
-    // Fill message with  "-" or valid String
-    messages.forEach((message, index) => {
-      appState.calendar.messages[index] =
-        String(message ?? "")
-          .trim()
-          .slice(0, LIMITS.message) || DEFAULTS.calendar.emptyMessage;
-    });
-  }
+  // Updata state (messages)
+  appState.calendar.messages = [...list];
 
-  // Delete html list elements (from before)
-  while (messagesPrev.firstChild) {
-    messagesPrev.removeChild(messagesPrev.firstChild);
-  }
-
-  // Create list element with custom message as content
-  // in the html
-  appState.calendar.messages.forEach((text) => {
-    const li = document.createElement("li");
-    li.textContent = text;
-
-    messagesPrev.appendChild(li);
-  });
+  // Render neu elemente
+  messagesPrev.replaceChildren(
+    ...list.map((text) => {
+      const li = document.createElement("li");
+      li.textContent = text;
+      return li;
+    }),
+  );
 }
 
 function readBasicConfig() {
@@ -371,13 +374,13 @@ function onGenerateUrl() {
   // Get
   readBasicConfig();
 
-  let messages = appState.calendar.messages.slice(0, LIMITS.messagesCount);
+  let messages = getMessagesForWizard(appState.calendar.messages);
 
-  // Check if there are all the custom messages left 'empty' (already replaced empty spaces with '-')
-  // if so set default messages
-  const allEmpty = messages.every((m) => m === "-");
+  // Check if there are all the custom messages left 'empty'
+  const allEmpty = messages.every((m) => m === DEFAULTS.calendar.emptyMessage);
 
-  if (allEmpty) messages = getDefaultMessages();
+  // set default messages
+  if (allEmpty) messages = getMessagesForWizard(null);
 
   const url = buildCalendarUrl({
     lang: appState.config.lang,
@@ -396,4 +399,46 @@ function onBackToEdit() {
     appState.calendar.messages[appState.generator.currentMessageIndex];
   progressBar.value -= 3;
   goToStep(1);
+}
+
+// TODO: CHANGE TEXT WITH i18n
+async function onCopyUrl() {
+  const url = generatedUrlInput?.value?.trim() ?? "";
+
+  if (!url) {
+    return;
+  }
+  const ok = await copyToClipboard(url);
+
+  if (ok) {
+    btnCopyUrl.textContent = "Copied!";
+    setTimeout(() => (btnCopyUrl.textContent = "Copy"), 900);
+  } else {
+    generatedUrlInput.focus();
+    generatedUrlInput.select();
+  }
+}
+
+async function copyToClipboard(text) {
+  // 1. Modern with Clipboard API
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    //
+  }
+
+  // 2. exeCommand old but works
+  try {
+    generatedUrlInput.focus();
+    generatedUrlInput.select();
+    generatedUrlInput.setSelectionRange(0, generatedUrlInput.value.length);
+
+    const success = document.execCommand("copy");
+    return success;
+  } catch {
+    return false;
+  }
 }

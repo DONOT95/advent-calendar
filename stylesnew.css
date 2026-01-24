@@ -18,7 +18,10 @@
 body {
   min-height: 100vh;
   line-height: 1.5;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 /* 4. Medien */
@@ -97,7 +100,7 @@ a {
   --fw-black: 800;
 
   /* ---- Colors (base) ---- */
-  --bg-img: url("/Bilds/christmas_background_neon.png");
+  --bg-img: url("/data/bilds/christmas_background_family.png");
   --bg-color: #0b1020;
 
   --header-bg: rgb(120, 0, 12);
@@ -162,16 +165,16 @@ footer {
 
 /* Theme background helpers (optional: keep your old classes but set tokens) */
 .background-classic {
-  --bg-img: url("Bilds/christmas_background_classic.png");
+  --bg-img: url("/data/bilds/christmas_background_classic.png");
 }
 .background-neon {
-  --bg-img: url("Bilds/christmas_background_neon.png");
+  --bg-img: url("/data/bilds/christmas_background_neon.png");
 }
 .background-family {
-  --bg-img: url("Bilds/christmas_background_family.png");
+  --bg-img: url("/data/bilds/christmas_background_family.png");
 }
 .background-horror {
-  --bg-img: url("Bilds/christmas_background_horror.png");
+  --bg-img: url("/data/bilds/christmas_background_horror.png");
 }
 
 /* Header, Footer, Kalender-Grid: keine Textselektion */
@@ -376,7 +379,9 @@ main {
   font-size: var(--fs-2);
   color: var(--door-text);
   background: var(--door-bg);
-  transition: transform 0.16s ease, box-shadow 0.16s ease;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease;
 }
 .door:hover {
   transform: scale(1.03);

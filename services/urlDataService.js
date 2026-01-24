@@ -1,19 +1,10 @@
-import { defaultMessages } from "./Data/defaultMessages.js";
-import { LIMITS } from "./config/constants.js";
-import { DEFAULTS } from "./state/appState.js";
-
-// ===============   FILE TO READ, WRITE URL DATA   ===============
-
-// Function to get messages from a specific language + theme combination or
-// default (English + classic)
-export function getDefaultMessages(
-  lang = DEFAULTS.config.lang,
-  theme = DEFAULTS.config.theme,
-) {
-  const langSet =
-    defaultMessages[lang] || defaultMessages[DEFAULTS.config.lang];
-  return langSet[theme] || langSet[DEFAULTS.config.theme];
-}
+import { DEFAULTS } from "../state/appState.js";
+import { LIMITS } from "../config/constants.js";
+import { getDefaultMessages } from "./defaultMessagesService.js";
+import {
+  sanitizeString,
+  sanitizeMessagesArray,
+} from "../validation/sanitizer.js";
 
 // =============   read DATA from the URL   =============
 export function readConfigFromUrl() {
@@ -25,12 +16,20 @@ export function readConfigFromUrl() {
 
   // NO DATA -> return DEFAULT DATA
   if (!rawParam) {
+    const defaults = getDefaultMessages();
+
     return {
-      ...DEFAULTS.config,
-      messages: getDefaultMessages(),
+      lang: DEFAULTS.config.lang,
+      theme: DEFAULTS.config.theme,
+      from: DEFAULTS.config.from,
+      to: DEFAULTS.config.to,
+      messages: sanitizeMessagesArray(defaults, {
+        maxLenEach: LIMITS.message,
+        emptyFallback: DEFAULTS.calendar.emptyMessage,
+      }),
     };
   }
-
+  // Some environments convert "+" to " " in query strings
   const raw = rawParam.replace(/ /g, "+");
 
   // --- Try to read DATA from URL data (raw) ---
@@ -44,20 +43,23 @@ export function readConfigFromUrl() {
     const defaults = getDefaultMessages(lang, theme);
 
     // pick fully valid (len check) message-array or fallback
-    const messages =
-      Array.isArray(data.messages) && data.messages.length === defaults.length
+    const baseMessages =
+      Array.isArray(data.messages) &&
+      data.messages.length === LIMITS.messagesCount
         ? data.messages
         : defaults;
 
+    // Sanitize untrusted URL values
     // If data contains truthy values take them,
     //  otherwise take DEFAULT values
-    return {
-      lang,
-      theme,
-      from: data.from || DEFAULTS.config.from,
-      to: data.to || DEFAULTS.config.to,
-      messages,
-    };
+    const from = sanitizeString(data.from, DEFAULTS.config.from, LIMITS.from);
+    const to = sanitizeString(data.to, DEFAULTS.config.to, LIMITS.to);
+    const messages = sanitizeMessagesArray(baseMessages, {
+      maxLenEach: LIMITS.message,
+      emptyFallback: DEFAULTS.calendar.emptyMessage,
+    });
+
+    return { lang, theme, from, to, messages };
 
     // Error Handling
   } catch (e) {

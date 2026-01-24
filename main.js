@@ -1,5 +1,5 @@
 // The Starting Point of the APP
-import { readConfigFromUrl } from "./urlData.js";
+import { readConfigFromUrl } from "./services/urlDataService.js";
 import { initCalendar } from "./calendar.js";
 import { initUI, openPopup } from "./ui.js";
 import { initGenerator } from "./generator.js";
