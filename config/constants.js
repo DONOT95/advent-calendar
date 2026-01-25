@@ -13,10 +13,3 @@ export const THEME_REGISTRY = Object.freeze({
   neon: { i18nKey: "selects.neon" },
   horror: { i18nKey: "selects.horror" },
 });
-
-// OPTIONS lanuage:
-export const LANGUAGES = Object.freeze({
-  en: "EN",
-  de: "DE",
-  hu: "HU",
-});

@@ -20,8 +20,13 @@ export const uiTexts = {
       showurl: "Show URL",
       backtoedit: "Back",
 
-      // Calendar popup:
+      // Calendar dialog:
       closecalendar: "Close",
+
+      // dialog URL
+      copy: "Copy",
+      copied: "Copied!",
+      open: "Open",
     },
     labels: {
       // Create Custom step 1:
@@ -80,6 +85,11 @@ export const uiTexts = {
 
       // Calendar:
       closecalendar: "Schließen",
+
+      // dialog URL
+      copy: "Kopie",
+      copied: "Kopiert!",
+      open: "Offen",
     },
     labels: {
       from: "Von:",
@@ -136,6 +146,11 @@ export const uiTexts = {
 
       // Calendar:
       closecalendar: "Bezárás",
+
+      // dialog URL
+      copy: "Másol",
+      copied: "Másolva!",
+      open: "Megnyit",
     },
     labels: {
       from: "Feladó:",
@@ -170,6 +185,8 @@ export const uiTexts = {
     currentDate: "Ma: {y}.{m}.{d}.",
   },
 };
+
+export const SUPPORTED_LANGUAGES = Object.freeze(Object.keys(uiTexts));
 
 //================   DEFAULT LANG   ================
 let defaultLang = "en";

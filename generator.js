@@ -1,33 +1,46 @@
 import { buildCalendarUrl } from "./services/urlDataService.js";
 import { LIMITS } from "./config/constants.js";
 import { appState, DEFAULTS, resetAppState } from "./state/appState.js";
-import { getDefaultMessages } from "./services/defaultMessagesService.js";
-import { validateMessagesArray } from "./validation/validator.js";
-import { sanitizeMessagesArray } from "./validation/sanitizer.js";
+import {
+  applyWizardConfig,
+  getMessagesForUrl,
+} from "./services/wizardDataService.js";
+
+import {
+  renderPreviewList,
+  openUrlDialog,
+  flashCopyButtonText,
+  copyUrlFromWizard,
+  selectInputText,
+  bindWizardDom,
+  isWizardDomReady,
+  setWizardStep,
+} from "./views/wizardView.js";
 
 // LAZY DOM
 // UI ELEMENTS (placeholders)
-let page, container, track, steps;
-let fromNameEl, toNameEl, themeEl, progressBar;
-let currentDayNumberEl, messageEL;
-let btnNextMessage, btnPrevMessage;
+
+let fromNameEl, toNameEl, themeEl;
 let langEl;
-let btnCreateDefaultCalendar, btnCreateCustomCalendar;
-let fromPrevEl, toPrevEl, messagesPrev;
+let fromPrevEl, toPrevEl;
 let generatedUrlInput;
-let btnBackToEdit, btnGenerateUrl, btnShowGeneratedUrl;
-let urlDialog, btnOpenUrl, btnCopyUrl;
+let urlDialog, btnCopyUrl;
+
+let dom = null;
 // ============================================
 // let customLang = "";
 
 // Variable to check if initGenerator is already called (No double)
 let generatorInitialized = false;
+
 export function initGenerator() {
   // Guard clause to prevent double function call
   if (generatorInitialized) return;
 
   // bind HTML elements with JS variables
-  if (!bindDom()) return;
+  // if (!bindDom()) return;
+  dom = bindWizardDom();
+  if (!isWizardDomReady(dom)) return;
 
   // prevent duplicate event listener bindings
   generatorInitialized = true;
@@ -36,114 +49,42 @@ export function initGenerator() {
   applyTextLengths();
 
   // At start 0% progress bar
-  if (progressBar) progressBar.value = 0;
+  if (dom.stepProgress) dom.stepProgress.value = 0;
   // At start set Day: 1
-  currentDayNumberEl.textContent = appState.generator.currentMessageIndex + 1;
+  dom.dailyNumber.textContent = appState.generator.currentMessageIndex + 1;
 
   // ========================= ON BUTTONS EVENT LISTENERS ============================
   // Step 1. CUSTOM btn click -> Navigate to Step 2. (Create custom messages)
-  btnCreateCustomCalendar.addEventListener("click", onCreateCustom);
+  dom.btnAddCustom.addEventListener("click", onCreateCustom);
 
   // NAVIGATE TO PREVIEW (Not yet generate)
-  btnCreateDefaultCalendar.addEventListener("click", onCreateDefault);
+  dom.btnCreateDefault.addEventListener("click", onCreateDefault);
 
   // Generate URL with Custom Messages
-  btnGenerateUrl.addEventListener("click", onGenerateUrl);
+  dom.btnGenerateUrl.addEventListener("click", onGenerateUrl);
 
   // Next daily message (custom)
-  btnNextMessage.addEventListener("click", showNextMessage);
+  dom.btnNextDay.addEventListener("click", showNextMessage);
 
   // Previous daily message (custom)
-  btnPrevMessage.addEventListener("click", showPreviousMessage);
+  dom.btnPrevDay.addEventListener("click", showPreviousMessage);
 
-  btnBackToEdit.addEventListener("click", onBackToEdit);
+  dom.btnBackToEdit.addEventListener("click", onBackToEdit);
 
   // Make possible to re-open the dialog(popup)
-  btnShowGeneratedUrl.addEventListener("click", () => {
-    if (!urlDialog.open) urlDialog.showModal();
+  dom.btnShowGenerated.addEventListener("click", () => {
+    if (!dom.urlDialog.open) dom.urlDialog.showModal();
   });
 
   // Open created Calendar in new Window
-  btnOpenUrl.addEventListener("click", () => {
-    window.open(generatedUrlInput.value, "_blank");
+  dom.btnOpenUrl.addEventListener("click", () => {
+    window.open(dom.generatedUrl.value, "_blank");
   });
 
   // Copy generated URL
-  btnCopyUrl.addEventListener("click", onCopyUrl);
+  dom.btnCopyUrl?.addEventListener("click", onCopyUrl);
 }
 // =============================== GENERATOR FUNCTONS ===============================
-// Bind all the -by generator used- HTML elements with JS variables
-function bindDom() {
-  // UI Containers with guard clause
-  page = document.getElementById("page-create");
-  if (!page) return false;
-
-  container = document.getElementById("create-container");
-  track = document.getElementById("create-track");
-
-  steps = Array.from(document.querySelectorAll(".create-step"));
-
-  // Step 1.
-  fromNameEl = document.getElementById("fromInput");
-  toNameEl = document.getElementById("toInput");
-  themeEl = document.getElementById("themeSelect");
-  progressBar = document.getElementById("stepProgress");
-
-  // Step 2.
-  currentDayNumberEl = document.getElementById("dailyNumber");
-  messageEL = document.getElementById("messageEditor");
-
-  btnNextMessage = document.getElementById("btnNextDay");
-  btnPrevMessage = document.getElementById("btnPrevDay");
-  // Navigate to step 3. (preview)
-  btnCreateDefaultCalendar = document.getElementById("btnCreateDefault");
-  // Navigate to step 2. (custom messages day 1)
-  btnCreateCustomCalendar = document.getElementById("btnAddCustom");
-
-  // Step 3.
-  fromPrevEl = document.getElementById("previewFrom");
-  toPrevEl = document.getElementById("previewTo");
-  messagesPrev = document.getElementById("previewMessages");
-
-  generatedUrlInput = document.getElementById("generatedUrl");
-  btnBackToEdit = document.getElementById("btnBackToEdit");
-  btnGenerateUrl = document.getElementById("btnGenerateUrl");
-  btnShowGeneratedUrl = document.getElementById("btnShowGenerated");
-
-  urlDialog = document.getElementById("urlDialog");
-  btnCopyUrl = document.getElementById("btnCopyUrl");
-  btnOpenUrl = document.getElementById("btnOpenUrl");
-
-  langEl = document.getElementById("pageLanguage");
-
-  // Only if all element existing and not null return true
-  return true;
-}
-// Read out the daily default messages -> return a list
-// If messages === 0, get default messages
-function getMessagesForWizard(messages) {
-  // DEFAULT MESSAGES
-  const lang = appState.config.lang || DEFAULTS.config.lang;
-  const theme = appState.config.theme || DEFAULTS.config.theme;
-
-  const defaults = getDefaultMessages(lang, theme);
-
-  const base =
-    Array.isArray(messages) && messages.length === LIMITS.messagesCount
-      ? messages
-      : defaults;
-
-  return sanitizeMessagesArray(base, {
-    maxLenEach: LIMITS.message,
-    emptyFallback: DEFAULTS.calendar.emptyMessage,
-  });
-}
-
-// Open generated Url dialog popup
-function openUrlDialog(dialog, input, url) {
-  input.value = url;
-  if (!dialog.open) dialog.showModal();
-}
 
 function setSenderName() {
   // Save from name value
@@ -183,8 +124,8 @@ function showNextMessage() {
     appState.generator.currentMessageIndex ===
     appState.calendar.messages.length - 1
   ) {
-    progressBar.value = 100;
-    displayMessages(false);
+    dom.stepProgress.value = 100;
+    displayMessages();
     goToStep(2);
     return;
   }
@@ -193,17 +134,17 @@ function showNextMessage() {
   appState.generator.currentMessageIndex++;
 
   // Load next message (or empty)
-  messageEL.value =
+  dom.messageEditor.value =
     appState.calendar.messages[appState.generator.currentMessageIndex] ??
     DEFAULTS.calendar.emptyMessage;
 
   // Increase Day
-  currentDayNumberEl.textContent = String(
+  dom.dailyNumber.textContent = String(
     appState.generator.currentMessageIndex + 1,
   );
 
   // Increase progress bar value
-  progressBar.value += 3;
+  dom.stepProgress.value += 3;
 }
 
 function showPreviousMessage() {
@@ -212,7 +153,7 @@ function showPreviousMessage() {
   // If already at startpoint
   if (appState.generator.currentMessageIndex === 0) {
     // reset progressbar
-    progressBar.value = 0;
+    dom.stepProgress.value = 0;
     goToStep(0);
     return;
   }
@@ -221,22 +162,22 @@ function showPreviousMessage() {
   appState.generator.currentMessageIndex--;
 
   // Load message
-  messageEL.value =
+  dom.messageEditor.value =
     appState.calendar.messages[appState.generator.currentMessageIndex] ??
     DEFAULTS.calendar.emptyMessage;
 
   // Decrease Day
-  currentDayNumberEl.textContent = String(
+  dom.dailyNumber.textContent = String(
     appState.generator.currentMessageIndex + 1,
   );
 
   // Decrease Progressbar value
-  progressBar.value -= 3;
+  dom.stepProgress.value -= 3;
 }
 
 function saveCurrentMessage() {
   // Take cleaned message from UI
-  const message = messageEL.value.trim().slice(0, LIMITS.message);
+  const message = dom.messageEditor.value.trim().slice(0, LIMITS.message);
 
   // Insert message to our Array at correct position
   appState.calendar.messages[appState.generator.currentMessageIndex] =
@@ -244,92 +185,72 @@ function saveCurrentMessage() {
 }
 
 // Display either custom or default messages
-function displayMessages(displayDefault = true) {
-  const source = displayDefault ? null : appState.calendar.messages;
-
+function displayMessages() {
   // Get messages
-  const list = getMessagesForWizard(source);
+  const list = getMessagesForUrl(appState.calendar.messages);
 
   // Updata state (messages)
   appState.calendar.messages = [...list];
 
   // Render neu elemente
-  messagesPrev.replaceChildren(
-    ...list.map((text) => {
-      const li = document.createElement("li");
-      li.textContent = text;
-      return li;
-    }),
-  );
+  renderPreviewList(dom.previewMessages, list);
 }
 
 function readBasicConfig() {
-  setSenderName();
-  setRecieverName();
-  setLangCalendar();
-  setTheme();
+  applyWizardConfig({
+    lang: dom.pageLanguage.value,
+    theme: dom.themeSelect.value,
+    from: dom.fromInput.value,
+    to: dom.toInput.value,
+  });
+
+  dom.previewFrom.textContent = appState.config.from;
+  dom.previewTo.textContent = appState.config.to;
 }
 
 // Function to navigate step 1-3
 function goToStep(index) {
-  // Safe min-max select (can't be lower than min, can't be over max)
-  appState.generator.currentStep = Math.max(
-    0,
-    Math.min(index, steps.length - 1),
-  );
+  if (!dom) return;
 
-  // Animation 0%, -100%, -200%...
-  track.style.transform = `translateX(-${appState.generator.currentStep * 100}%)`;
+  const safe = setWizardStep(dom, index);
 
-  // Border for different height elements in flex row, always resizen
-  syncCreateContainerHeight(appState.generator.currentStep);
-}
-
-// For different STEP (generate 1-3)
-// Make border fit content
-function syncCreateContainerHeight(stepIndex) {
-  // Wenn die Page nicht sichtbar ist: NICHT messen und NICHT überschreiben
-  if (!page.classList.contains("active")) return;
-
-  const steps = track.querySelectorAll(".create-step");
-  const activeStep = steps[stepIndex];
-  if (!activeStep) return;
-
-  // Erst nach Layout-Update messen (wichtig bei Transition/Fonts)
-  requestAnimationFrame(() => {
-    const h = activeStep.getBoundingClientRect().height;
-    if (h > 0) container.style.height = `${Math.ceil(h)}px`;
-  });
+  if (typeof safe === "number") {
+    appState.generator.step = safe;
+  }
 }
 
 // Clear UI elements values, navigate to first step
 export function resetGenerator() {
+  if (!dom) {
+    dom = bindWizardDom();
+  }
   resetAppState({ keepTime: true });
+
+  if (!dom?.createTrack || !dom?.createSteps?.length) return;
   // Function to navigate step 1-3
   goToStep(0);
-  resetUIValues();
+  resetUIValuesToDefault();
 }
 
 // Clear UI elements values
-function resetUIValues() {
-  fromNameEl.value = appState.config.from;
-  toNameEl.value = appState.config.to;
-  themeEl.value = appState.config.theme;
-  progressBar.value = 0;
+function resetUIValuesToDefault() {
+  dom.fromInput.value = "";
+  dom.toInput.value = "";
+  //dom.themeSelect.value = appState.config.theme;
+  //dom.stepProgress.value = 0;
 
   // let customLang = "";
   /* const selectedTheme = document.getElementById("themeSelect");
   selectedTheme.value = "classic"; */
   // Reset Day
-  document.getElementById("dailyNumber").textContent =
-    appState.generator.currentMessageIndex + 1;
+  dom.dailyNumber.textContent = appState.generator.currentMessageIndex + 1;
 }
 
 // SET HTML INPUT Maxlength for From, To and Message
 function applyTextLengths() {
-  fromNameEl.maxLength = LIMITS.from;
-  toNameEl.maxLength = LIMITS.to;
-  messageEL.maxLength = LIMITS.message;
+  dom.fromInput.maxLength = LIMITS.from;
+  dom.toInput.maxLength = LIMITS.to;
+  dom.messageEditor.maxLength = LIMITS.message;
 }
 
 // =============================== ON CLICK FUNCTONS ===============================
@@ -341,46 +262,29 @@ function onCreateCustom() {
   goToStep(1);
 
   // Set UI element content (1. value of messages)
-  messageEL.value = appState.calendar.messages[0];
+  dom.messageEditor.value = appState.calendar.messages[0];
   // Increase progress bar loading
-  progressBar.value = 28;
+  dom.stepProgress.value = 28;
 }
 
 function onCreateDefault() {
   readBasicConfig();
-  displayMessages(true);
+  displayMessages();
   appState.generator.currentMessageIndex =
     appState.calendar.messages.length - 1;
-  /* const messages = getDefaultMessages();
-    const url = buildCalendarUrl({
-      lang: langEl.value,
-      theme: customTheme,
-      from: customFromName,
-      to: customToName,
-      messages,
-    }); */
-
-  // Open up the created URL dialog
-  //openUrlDialog(urlDialog, generatedUrlInput, url);
 
   // Navigate to preview section
 
   // Increase progressbar
-  progressBar.value = 100;
+  dom.stepProgress.value = 100;
   goToStep(2);
 }
 
 function onGenerateUrl() {
-  // Get
+  // Get lang, theme, from, to from USER
   readBasicConfig();
 
-  let messages = getMessagesForWizard(appState.calendar.messages);
-
-  // Check if there are all the custom messages left 'empty'
-  const allEmpty = messages.every((m) => m === DEFAULTS.calendar.emptyMessage);
-
-  // set default messages
-  if (allEmpty) messages = getMessagesForWizard(null);
+  const messages = getMessagesForUrl(appState.calendar.messages);
 
   const url = buildCalendarUrl({
     lang: appState.config.lang,
@@ -390,55 +294,24 @@ function onGenerateUrl() {
     messages,
   });
 
-  openUrlDialog(urlDialog, generatedUrlInput, url);
+  openUrlDialog(dom.urlDialog, dom.generatedUrl, url);
 }
 
 function onBackToEdit() {
-  currentDayNumberEl.textContent = appState.generator.currentMessageIndex + 1;
-  messageEL.value =
+  dom.dailyNumber.textContent = appState.generator.currentMessageIndex + 1;
+  dom.messageEditor.value =
     appState.calendar.messages[appState.generator.currentMessageIndex];
-  progressBar.value -= 3;
+  dom.stepProgress.value -= 3;
   goToStep(1);
 }
 
 // TODO: CHANGE TEXT WITH i18n
 async function onCopyUrl() {
-  const url = generatedUrlInput?.value?.trim() ?? "";
-
-  if (!url) {
-    return;
-  }
-  const ok = await copyToClipboard(url);
+  const ok = await copyUrlFromWizard(dom.generatedUrl);
 
   if (ok) {
-    btnCopyUrl.textContent = "Copied!";
-    setTimeout(() => (btnCopyUrl.textContent = "Copy"), 900);
+    flashCopyButtonText(dom.btnCopyUrl, 900);
   } else {
-    generatedUrlInput.focus();
-    generatedUrlInput.select();
-  }
-}
-
-async function copyToClipboard(text) {
-  // 1. Modern with Clipboard API
-  try {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(text);
-      return true;
-    }
-  } catch {
-    //
-  }
-
-  // 2. exeCommand old but works
-  try {
-    generatedUrlInput.focus();
-    generatedUrlInput.select();
-    generatedUrlInput.setSelectionRange(0, generatedUrlInput.value.length);
-
-    const success = document.execCommand("copy");
-    return success;
-  } catch {
-    return false;
+    selectInputText(dom.generatedUrl);
   }
 }
