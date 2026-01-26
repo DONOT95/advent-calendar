@@ -1,10 +1,10 @@
 // The Starting Point of the APP
 import { readConfigFromUrl } from "./services/urlDataService.js";
-import { initCalendar } from "./calendar.js";
-import { initUI, openPopup } from "./ui.js";
-import { initGenerator } from "./generator.js";
+import { initCalendar } from "./controllers/calendarController.js";
+import { initGenerator } from "./controllers/wizardController.js";
+import { initUI, openPopup } from "./controllers/uiController.js";
 import { getServerDate } from "./services/clockService.js";
-import { appState } from "./state/appState.js";
+import { appState, applyConfigToState } from "./state/appState.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const serverDateNow = await getServerDate();
@@ -14,20 +14,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Get Data from URL
   const config = readConfigFromUrl();
 
+  // Time
   appState.time.offsetMs = Number.isFinite(offsetMs) ? offsetMs : 0;
   // Safe object assign, with no override (config and appState.config != inhalt...)
   // Take only the correct values (no messages)
-  Object.assign(appState.config, {
-    lang: config.lang,
-    theme: config.theme,
-    from: config.from,
-    to: config.to,
-  });
-
-  // Safe reassign for messages
-  appState.calendar.messages = Array.isArray(config.messages)
-    ? [...config.messages]
-    : [];
+  applyConfigToState(config);
 
   // Assign HTML with JS values
   initUI(appState.config, appState.time.offsetMs);

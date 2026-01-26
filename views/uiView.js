@@ -4,8 +4,8 @@
 Language-Select
 Theme-Klassen am <body>
 Navigation / Menu
-How-To Section (ja, absolut hier)
-Alles, was nicht Wizard und nicht Kalender ist. */
+How-To Section -> Static
+ */
 
 // ========== DOM BINDING ==========
 export function bindUiDom() {
@@ -100,3 +100,26 @@ export function shouldCloseMenuOnDocumentClick(e, menuBtnEl, menuDropdownEl) {
   return !menuDropdownEl.contains(target) && !menuBtnEl.contains(target);
 }
 //========== END ==========
+
+//========== SET THEME ==========
+export function applyTheme(bodyEl, themeRegistry, themeKey) {
+  if (!bodyEl || !themeRegistry) return;
+
+  // Remove all type of theme classes
+  bodyEl.classList.remove(
+    ...Object.keys(themeRegistry).map((t) => `background-${t}`),
+  );
+
+  // Add selected theme class
+  bodyEl.classList.add(`background-${themeKey}`);
+}
+
+//========== SET DIALOG TITLE/TEXT ==========
+export function showPopup(popupEl, titleEl, textEl, titleText, messageText) {
+  if (!popupEl || !titleEl || !textEl) return;
+
+  titleEl.textContent = titleText;
+  textEl.textContent = messageText;
+
+  if (!popupEl.open) popupEl.showModal();
+}

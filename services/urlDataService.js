@@ -16,7 +16,7 @@ export function readConfigFromUrl() {
 
   // NO DATA -> return DEFAULT DATA
   if (!rawParam) {
-    const defaults = getDefaultMessages();
+    /* const defaults = getDefaultMessages();
 
     return {
       lang: DEFAULTS.config.lang,
@@ -27,7 +27,8 @@ export function readConfigFromUrl() {
         maxLenEach: LIMITS.message,
         emptyFallback: DEFAULTS.calendar.emptyMessage,
       }),
-    };
+    }; */
+    return null;
   }
   // Some environments convert "+" to " " in query strings
   const raw = rawParam.replace(/ /g, "+");
@@ -65,10 +66,11 @@ export function readConfigFromUrl() {
   } catch (e) {
     console.warn("Invalid data in URL:", e);
 
-    return {
+    /* return {
       ...DEFAULTS.config,
       messages: getDefaultMessages(),
-    };
+    }; */
+    return null;
   }
 }
 

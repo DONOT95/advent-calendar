@@ -46,9 +46,7 @@ export function getMessagesForUrl(messages) {
 
 // Save values from User OR Defaults: lang, theme, from, to
 export function applyWizardConfig({ lang, theme, from, to }) {
-  appState.config.lang =
-    (lang || DEFAULTS.config.lang).trim() || DEFAULTS.config.lang;
-
+  appState.config.lang = lang || DEFAULTS.config.lang;
   appState.config.theme = theme || DEFAULTS.config.theme;
 
   appState.config.from = sanitizeString(
@@ -57,4 +55,38 @@ export function applyWizardConfig({ lang, theme, from, to }) {
     LIMITS.from,
   );
   appState.config.to = sanitizeString(to, DEFAULTS.config.to, LIMITS.to);
+}
+
+export function setWizardMessages(messages) {
+  appState.calendar.messages = sanitizeMessagesArray(messages, {
+    maxLenEach: LIMITS.message,
+    emptyFallback: DEFAULTS.calendar.emptyMessage,
+  });
+}
+
+export function setMessageWithWizardAt(index, rawValue) {
+  const i = Number(index);
+  if (!Number.isInteger(i) || i < 0 || i >= LIMITS.messagesCount) return;
+
+  const cleaned = sanitizeString(
+    rawValue,
+    DEFAULT.calendar.emptyMessage,
+    LIMITS.message,
+  );
+
+  appState.calendar.messages[i] = cleaned;
+}
+
+export function ensureWizardMessages() {
+  const hasValid =
+    Array.isArray(appState.calendar.messages) &&
+    appState.calendar.messages.length === LIMITS.messagesCount;
+
+  // If valid, no action
+  if (hasValid) return;
+
+  appState.calendar.messages = getDefaultMessages(
+    appState.config.lang,
+    appState.config.theme,
+  );
 }

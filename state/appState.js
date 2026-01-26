@@ -48,7 +48,7 @@ export const appState = createInitialState();
 // State Helpers
 export function resetAppState({ keepTime = true } = {}) {
   // Time value unchanged
-  const offsetMs = appState.time.offsetMs;
+  const oldOffset = appState.time.offsetMs;
 
   // New default object
   const fresh = createInitialState();
@@ -58,7 +58,28 @@ export function resetAppState({ keepTime = true } = {}) {
   appState.calendar.messages = fresh.calendar.messages;
   Object.assign(appState.generator, fresh.generator);
 
-  if (keepTime) {
-    appState.time.offsetMs = offsetMs;
+  appState.time.offsetMs = keepTime ? oldOffset : 0;
+}
+
+export function applyConfigToState(config) {
+  if (!config) {
+    resetAppState({ keepTime: true });
+    return;
+  }
+
+  const lang = config?.lang ?? DEFAULTS.config.lang;
+  const theme = config?.theme ?? DEFAULTS.config.theme;
+  const from = config?.from ?? DEFAULTS.config.from;
+  const to = config?.to ?? DEFAULTS.config.to;
+
+  Object.assign(appState.config, { lang, theme, from, to });
+
+  const msgs = Array.isArray(config?.messages) ? config.messages : [];
+  if (msgs.length === LIMITS.messagesCount) {
+    appState.calendar.messages = [...msgs];
+  } else {
+    appState.calendar.messages = Array(LIMITS.messagesCount).fill(
+      DEFAULTS.calendar.emptyMessage,
+    );
   }
 }
