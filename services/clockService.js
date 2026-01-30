@@ -1,4 +1,4 @@
-import { getUiLanguage, uiTexts } from "../i18n/i18n.js";
+import { formatPlaceholder } from "../i18n/i18n.js";
 //===========================================================================
 // ---   TIME FUNCTION   ---
 // Set, display time
@@ -25,13 +25,8 @@ export function startClock(currentHour, currentDate, offsetMs) {
 
   // Get Current Date
   function updateTime() {
-    const lang = getUiLanguage();
     //const now = new Date();
     const now = new Date(Date.now() + offsetMs);
-
-    const dict = uiTexts[lang] || uiTexts.en;
-    var tmplHour = dict.currentHour || uiTexts.en.currentHour;
-    var tmplDate = dict.currentDate || uiTexts.en.currentDate;
 
     const y = now.getFullYear();
     const m = now.getMonth() + 1;
@@ -40,20 +35,18 @@ export function startClock(currentHour, currentDate, offsetMs) {
     const min = now.getMinutes();
     const sec = now.getSeconds();
 
-    tmplDate = tmplDate
-      .replace("{d}", `${pad(d)}`)
-      .replace("{m}", `${pad(m)}`)
-      .replace("{y}", `${pad(y)}`);
-
-    currentDate.textContent = tmplDate;
+    currentDate.textContent = formatPlaceholder("currentDate", {
+      d: pad(d),
+      m: pad(m),
+      y: pad(y),
+    });
 
     // Formatted datum + actual values
-    tmplHour = tmplHour
-      .replace("{h}", `${pad(h)}`)
-      .replace("{min}", `${pad(min)}`)
-      .replace("{sec}", `${pad(sec)}`);
-
-    currentHour.textContent = tmplHour;
+    currentHour.textContent = formatPlaceholder("currentHour", {
+      h: pad(h),
+      min: pad(min),
+      sec: pad(sec),
+    });
   }
 
   lastUpdateFn = updateTime;

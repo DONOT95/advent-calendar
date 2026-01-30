@@ -60,6 +60,7 @@ export function fillThemeOptions(themeSelectEl, themeRegistry) {
   });
 }
 
+// TODO: Values can instead of "EN" -> "English"  als i18n usw
 export function fillLanguageOptions(languageSelectEl, supportedLangs) {
   if (!languageSelectEl || languageSelectEl.options.length > 0) return;
 
@@ -109,6 +110,8 @@ export function applyTheme(bodyEl, themeRegistry, themeKey) {
   bodyEl.classList.remove(
     ...Object.keys(themeRegistry).map((t) => `background-${t}`),
   );
+
+  if (!themeRegistry[themeKey]) themeKey = Object.keys(themeRegistry[0]);
 
   // Add selected theme class
   bodyEl.classList.add(`background-${themeKey}`);

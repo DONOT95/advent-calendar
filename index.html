@@ -138,6 +138,11 @@
                     id="fromInput"
                     data-i18n-placeholder="placeholders.from"
                   />
+                  <label
+                    for="fromInput"
+                    class="charactercounter"
+                    id="charactersFromCount"
+                  ></label>
                 </div>
                 <!-- To Field -->
                 <div class="field">
@@ -147,6 +152,11 @@
                     id="toInput"
                     data-i18n-placeholder="placeholders.to"
                   />
+                  <label
+                    for="toInput"
+                    class="charactercounter"
+                    id="charactersToCount"
+                  ></label>
                 </div>
 
                 <!-- Theme option -->
@@ -186,6 +196,11 @@
                   rows="5"
                   maxlength="250"
                 ></textarea>
+                <label
+                  for="messageEditor"
+                  class="charactercounter"
+                  id="charactersMessageEditor"
+                ></label>
                 <div class="btn-row">
                   <button
                     id="btnPrevDay"
@@ -240,8 +255,8 @@
 
       <!-- POPUP FOR GENERATED URL -->
       <dialog id="urlDialog" class="dialog">
-        <h2>Share your calendar</h2>
-        <p>Copy and share this link:</p>
+        <h2 data-i18n="labels.sharecalendartitle"></h2>
+        <p data-i18n="labels.copyinstruction"></p>
         <input type="text" id="generatedUrl" readonly />
         <div class="actions">
           <button id="btnCopyUrl" data-i18n="buttons.copy"></button>

@@ -43,3 +43,10 @@ js/
     wizardView.js       ✅ (Create / Generate)
     calendarView.js     ✅ (Calendar)
     uiView.js           ✅ (Header, Menu, How-To, global UI)
+
+
+View        → nur DOM
+Controller  → Flow & Events
+Service     → Logik & Validation
+State       → einzige Wahrheit
+i18n        → reine Darstellung

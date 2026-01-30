@@ -11,8 +11,8 @@ import {
 // else default messages for current lang/theme - Sanitize them
 export function getMessagesForWizard(messages) {
   // Selected lang+theme OR default lang+theme
-  const lang = appState.config.lang || DEFAULTS.config.lang;
-  const theme = appState.config.theme || DEFAULTS.config.theme;
+  const lang = appState.calendarConfig.lang || DEFAULTS.calendarConfig.lang;
+  const theme = appState.calendarConfig.theme || DEFAULTS.calendarConfig.theme;
 
   // Get the default messages from Data/defaultMessages.js file
   const defaults = getDefaultMessages(lang, theme);
@@ -46,15 +46,19 @@ export function getMessagesForUrl(messages) {
 
 // Save values from User OR Defaults: lang, theme, from, to
 export function applyWizardConfig({ lang, theme, from, to }) {
-  appState.config.lang = lang || DEFAULTS.config.lang;
-  appState.config.theme = theme || DEFAULTS.config.theme;
+  appState.calendarConfig.lang = lang || DEFAULTS.calendarConfig.lang;
+  appState.calendarConfig.theme = theme || DEFAULTS.calendarConfig.theme;
 
-  appState.config.from = sanitizeString(
+  appState.calendarConfig.from = sanitizeString(
     from,
-    DEFAULTS.config.from,
+    DEFAULTS.calendarConfig.from,
     LIMITS.from,
   );
-  appState.config.to = sanitizeString(to, DEFAULTS.config.to, LIMITS.to);
+  appState.calendarConfig.to = sanitizeString(
+    to,
+    DEFAULTS.calendarConfig.to,
+    LIMITS.to,
+  );
 }
 
 export function setWizardMessages(messages) {
@@ -70,7 +74,7 @@ export function setMessageWithWizardAt(index, rawValue) {
 
   const cleaned = sanitizeString(
     rawValue,
-    DEFAULT.calendar.emptyMessage,
+    DEFAULTS.calendar.emptyMessage,
     LIMITS.message,
   );
 
@@ -86,7 +90,7 @@ export function ensureWizardMessages() {
   if (hasValid) return;
 
   appState.calendar.messages = getDefaultMessages(
-    appState.config.lang,
-    appState.config.theme,
+    appState.calendarConfig.lang,
+    appState.calendarConfig.theme,
   );
 }

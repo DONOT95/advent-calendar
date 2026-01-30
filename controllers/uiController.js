@@ -1,9 +1,9 @@
 // Control: Set From-to, Navigator, System Lang
 import {
-  getUiLanguage,
-  setUiLanguage,
-  uiTexts,
   SUPPORTED_LANGUAGES,
+  applyUiLanguage,
+  getUiLanguage,
+  formatPlaceholder,
 } from "../i18n/i18n.js";
 import { startClock, refreshClock } from "../services/clockService.js";
 import { resetGenerator } from "./wizardController.js";
@@ -21,12 +21,12 @@ import {
   applyTheme,
   showPopup,
 } from "../views/uiView.js";
+import { DEFAULTS, appState } from "../state/appState.js";
 
 // Boolean variable to check if initUI has been already fully executed.
 let uiInitialized = false;
 
 let dom = null;
-
 // FUNCTION: initialisation
 export function initUI(config, offsetMs) {
   //HTML + JS bind
@@ -39,8 +39,10 @@ export function initUI(config, offsetMs) {
     fillHTMLSelectsWithOptionElements();
   }
 
-  // Apply Data
+  // Apply Data from url or defaults to UI elements
   applyConfig(config);
+  // Set the
+  dom.pageLanguage.value = getUiLanguage();
 
   // Guard clause to avoid double initialization
   if (uiInitialized) return;
@@ -54,12 +56,12 @@ export function initUI(config, offsetMs) {
   startClock(dom.currentHour, dom.currentDate, offsetMs);
 }
 
-//===========================================================================
-
 // Get data from config object and apply it to the FROM/TO/ SELECTED LANGUAGE elements. Set THEME
 function applyConfig(config) {
   initNameFromTo(dom.nameFrom, dom.nameTo, config);
-  initLanguage(dom.pageLanguage, config.lang);
+
+  dom.pageLanguage.value = config.lang;
+  applyUiLanguage();
   applyTheme(dom.body, THEME_REGISTRY, config.theme);
 }
 
@@ -112,18 +114,8 @@ function switchPage(pageName) {
 }
 
 // ================   OPEN POPUP, CALENDAR DAY   ================
-export function openPopup(day, message) {
-  // Check selected language
-  const lang = getUiLanguage();
-
-  // Navigate to selected lang or pick default
-  const dict = uiTexts[lang] || uiTexts.en;
-
-  let tmpl = dict?.labels?.popupdaytitle || uiTexts.en.labels.popupdaytitle;
-
-  // Proper title format
-  const titleText = tmpl.replace("{day}", day);
-
+export function openCalendarWithProperDayTitleDialog(day, message) {
+  const titleText = formatPlaceholder("labels.popupdaytitle", { day });
   // SET title, message for popup
   showPopup(dom.popup, dom.popupTitle, dom.popupText, titleText, message);
 }
@@ -156,28 +148,22 @@ function initPopupCloseEvents() {
 // ================   READ FROM-TO Name or set Default   ================
 // NO NEED HERE TO SET DEFAULT VALUE... Read config URL in main already does
 function initNameFromTo(fromNameEl, toNameEl, config) {
-  fromNameEl.textContent = config.from || "Me";
-  toNameEl.textContent = config.to || "You";
+  fromNameEl.textContent = config.from ?? DEFAULTS.calendarConfig.from;
+  toNameEl.textContent = config.to ?? DEFAULTS.calendarConfig.to;
 }
 
 // ================   READ THEME or set Default   ================
-
-// ================   INIT LANGUAGE   ================
-function initLanguage(langEl, lang) {
-  // Make sure lang is not undefined
-  const getValidOrDefaultLang = lang || "en";
-  langEl.value = getValidOrDefaultLang;
-  // Apply Language
-  setUiLanguage(getValidOrDefaultLang);
-}
 
 //================   LANGUAGE SWITCH   ================
 function initLanguageEvents() {
   dom.pageLanguage?.addEventListener("change", () => {
     const newLang = dom.pageLanguage.value;
 
+    appState.calendarConfig.lang = SUPPORTED_LANGUAGES.includes(newLang)
+      ? newLang
+      : DEFAULTS.calendarConfig.lang;
     // Update all data-i18n Value
-    setUiLanguage(newLang);
+    applyUiLanguage();
     // Change lang -> immediately update date-time
     refreshClock();
   });

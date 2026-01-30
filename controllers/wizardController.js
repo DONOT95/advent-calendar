@@ -4,6 +4,8 @@ import { appState, DEFAULTS, resetAppState } from "../state/appState.js";
 import {
   applyWizardConfig,
   getMessagesForUrl,
+  setMessageWithWizardAt,
+  setWizardMessages,
 } from "../services/wizardDataService.js";
 
 import {
@@ -16,6 +18,7 @@ import {
   isWizardDomReady,
   setWizardStep,
 } from "../views/wizardView.js";
+import { getDefaultMessages } from "../services/defaultMessagesService.js";
 
 // LAZY DOM
 // UI ELEMENTS (placeholders)
@@ -46,10 +49,10 @@ export function initGenerator() {
   // Set the max length in HTML form (inputs)
   applyTextLengths();
 
-  // At start 0% progress bar
-  if (dom.stepProgress) dom.stepProgress.value = 0;
+  // Character counter for Input fields
+  setCountersAndProgressToZero();
+
   // At start set Day: 1
-  dom.dailyNumber.textContent = appState.generator.currentMessageIndex + 1;
 
   // ========================= ON BUTTONS EVENT LISTENERS ============================
   // Step 1. CUSTOM btn click -> Navigate to Step 2. (Create custom messages)
@@ -81,36 +84,60 @@ export function initGenerator() {
 
   // Copy generated URL
   dom.btnCopyUrl?.addEventListener("click", onCopyUrl);
+
+  // Character counter events
+  dom.fromInput?.addEventListener("input", () =>
+    updateCounter(dom.fromInput, dom.fromInputCharactersCounter, LIMITS.from),
+  );
+  dom.toInput?.addEventListener("input", () =>
+    updateCounter(dom.toInput, dom.toInputCharactersCounter, LIMITS.to),
+  );
+  dom.messageEditor?.addEventListener("input", () =>
+    updateCounter(
+      dom.messageEditor,
+      dom.messageEditorCharactersCounter,
+      LIMITS.message,
+    ),
+  );
 }
 // =============================== GENERATOR FUNCTONS ===============================
-
-function setSenderName() {
-  // Save from name value
-  const name =
-    fromNameEl.value.trim().slice(0, LIMITS.from) || DEFAULTS.config.from;
-
-  // Update value
-  appState.config.from = name;
-  // Display value
-  fromPrevEl.textContent = name;
-}
-function setRecieverName() {
-  // Save To name value
-  const name = toNameEl.value.trim().slice(0, LIMITS.to) || DEFAULTS.config.to;
-  // Save State value
-  appState.config.to = name;
-  // Display To value
-  toPrevEl.textContent = name;
+function updateCounter(inputEl, counterEl, limit) {
+  const length = inputEl.value.length;
+  counterEl.textContent = `${length}/${limit}`;
 }
 
-function setTheme() {
-  const theme = themeEl?.value || DEFAULTS.config.theme;
-  appState.config.theme = theme;
+function resetmessageCharacterCounter(counterEl, limit) {
+  counterEl.textContent = `0/${limit}`;
 }
 
-function setLangCalendar() {
-  const lang = (langEl?.value || DEFAULTS.config.lang).trim();
-  appState.config.lang = lang;
+function setCountersAndProgressToZero() {
+  if (
+    dom.fromInputCharactersCounter &&
+    dom.toInputCharactersCounter &&
+    dom.messageEditorCharactersCounter
+  ) {
+    // Input characters counter
+    dom.fromInputCharactersCounter.textContent = `0/${LIMITS.from}`;
+    dom.toInputCharactersCounter.textContent = `0/${LIMITS.to}`;
+    dom.messageEditorCharactersCounter.textContent = `0/${LIMITS.message}`;
+  }
+
+  resetProgressBar();
+
+  if (dom.dailyNumber) {
+    // Day Number
+    dom.dailyNumber.textContent = appState.generator.currentMessageIndex + 1;
+  }
+}
+// Progress bar functions:
+function increaseProgress(value = 3) {
+  if (dom.stepProgress) stepProgress.value += value;
+}
+function decreaseProgress(value = 3) {
+  if (dom.stepProgress) stepProgress.value -= value;
+}
+function resetProgressBar() {
+  if (dom.stepProgress) stepProgress.value = 0;
 }
 
 // Set message, increase counter, clear textarea
@@ -136,13 +163,18 @@ function showNextMessage() {
     appState.calendar.messages[appState.generator.currentMessageIndex] ??
     DEFAULTS.calendar.emptyMessage;
 
+  updateCounter(
+    dom.messageEditor,
+    dom.messageEditorCharactersCounter,
+    LIMITS.message,
+  );
   // Increase Day
   dom.dailyNumber.textContent = String(
     appState.generator.currentMessageIndex + 1,
   );
 
   // Increase progress bar value
-  dom.stepProgress.value += 3;
+  increaseProgress();
 }
 
 function showPreviousMessage() {
@@ -164,22 +196,25 @@ function showPreviousMessage() {
     appState.calendar.messages[appState.generator.currentMessageIndex] ??
     DEFAULTS.calendar.emptyMessage;
 
+  updateCounter(
+    dom.messageEditor,
+    dom.messageEditorCharactersCounter,
+    LIMITS.message,
+  );
   // Decrease Day
   dom.dailyNumber.textContent = String(
     appState.generator.currentMessageIndex + 1,
   );
 
   // Decrease Progressbar value
-  dom.stepProgress.value -= 3;
+  decreaseProgress();
 }
 
 function saveCurrentMessage() {
-  // Take cleaned message from UI
-  const message = dom.messageEditor.value.trim().slice(0, LIMITS.message);
-
-  // Insert message to our Array at correct position
-  appState.calendar.messages[appState.generator.currentMessageIndex] =
-    message === "" ? DEFAULTS.calendar.emptyMessage : message;
+  setMessageWithWizardAt(
+    appState.generator.currentMessageIndex,
+    dom.messageEditor.value,
+  );
 }
 
 // Display either custom or default messages
@@ -202,8 +237,8 @@ function readBasicConfig() {
     to: dom.toInput.value,
   });
 
-  dom.previewFrom.textContent = appState.config.from;
-  dom.previewTo.textContent = appState.config.to;
+  dom.previewFrom.textContent = appState.calendarConfig.from;
+  dom.previewTo.textContent = appState.calendarConfig.to;
 }
 
 // Function to navigate step 1-3
@@ -226,19 +261,21 @@ export function resetGenerator() {
 
   if (!dom?.createTrack || !dom?.createSteps?.length) return;
   resetUIValuesToDefault();
+  setCountersAndProgressToZero();
   // Function to navigate step 1-3
   goToStep(0);
 }
 
-// Clear UI elements values
+// Clear HTML element values in WIZARD
 function resetUIValuesToDefault() {
+  // Clear Form Inputs
   dom.fromInput.value = "";
   dom.toInput.value = "";
-  dom.themeSelect.value = appState.config.theme;
-  dom.stepProgress.value = 0;
+  // Set default Theme
+  dom.themeSelect.value = DEFAULTS.calendarConfig.theme;
 
-  // Reset Day
-  dom.dailyNumber.textContent = appState.generator.currentMessageIndex + 1;
+  // Reset
+  setCountersAndProgressToZero();
 }
 
 // SET HTML INPUT Maxlength for From, To and Message
@@ -258,13 +295,25 @@ function onCreateCustom() {
 
   // Set UI element content (1. value of messages)
   dom.messageEditor.value = appState.calendar.messages[0];
+
   // Increase progress bar loading
   dom.stepProgress.value = 28;
 }
 
 function onCreateDefault() {
+  // From, to lang, theme
   readBasicConfig();
+
+  // Default messges...(lang,theme)
+  setWizardMessages(
+    getDefaultMessages(
+      appState.calendarConfig.lang,
+      appState.calendarConfig.theme,
+    ),
+  );
+  // Display messges for preview
   displayMessages();
+
   appState.generator.currentMessageIndex =
     appState.calendar.messages.length - 1;
 
@@ -282,10 +331,10 @@ function onGenerateUrl() {
   const messages = getMessagesForUrl(appState.calendar.messages);
 
   const url = buildCalendarUrl({
-    lang: appState.config.lang,
-    theme: appState.config.theme,
-    from: appState.config.from,
-    to: appState.config.to,
+    lang: appState.calendarConfig.lang,
+    theme: appState.calendarConfig.theme,
+    from: appState.calendarConfig.from,
+    to: appState.calendarConfig.to,
     messages,
   });
 
@@ -296,11 +345,10 @@ function onBackToEdit() {
   dom.dailyNumber.textContent = appState.generator.currentMessageIndex + 1;
   dom.messageEditor.value =
     appState.calendar.messages[appState.generator.currentMessageIndex];
-  dom.stepProgress.value -= 3;
+  decreaseProgress();
   goToStep(1);
 }
 
-// TODO: CHANGE TEXT WITH i18n
 async function onCopyUrl() {
   const ok = await copyUrlFromWizard(dom.generatedUrl);
 

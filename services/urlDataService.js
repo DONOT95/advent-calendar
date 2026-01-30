@@ -14,20 +14,8 @@ export function readConfigFromUrl() {
   // Take only the DATA part from the URL string
   const rawParam = params.get("data");
 
-  // NO DATA -> return DEFAULT DATA
+  // NO DATA -> null
   if (!rawParam) {
-    /* const defaults = getDefaultMessages();
-
-    return {
-      lang: DEFAULTS.config.lang,
-      theme: DEFAULTS.config.theme,
-      from: DEFAULTS.config.from,
-      to: DEFAULTS.config.to,
-      messages: sanitizeMessagesArray(defaults, {
-        maxLenEach: LIMITS.message,
-        emptyFallback: DEFAULTS.calendar.emptyMessage,
-      }),
-    }; */
     return null;
   }
   // Some environments convert "+" to " " in query strings
@@ -38,8 +26,8 @@ export function readConfigFromUrl() {
     const json = decodeURIComponent(escape(atob(raw)));
     const data = JSON.parse(json);
 
-    const lang = data.lang || DEFAULTS.config.lang;
-    const theme = data.theme || DEFAULTS.config.theme;
+    const lang = data.lang || DEFAULTS.calendarConfig.lang;
+    const theme = data.theme || DEFAULTS.calendarConfig.theme;
 
     const defaults = getDefaultMessages(lang, theme);
 
@@ -53,8 +41,12 @@ export function readConfigFromUrl() {
     // Sanitize untrusted URL values
     // If data contains truthy values take them,
     //  otherwise take DEFAULT values
-    const from = sanitizeString(data.from, DEFAULTS.config.from, LIMITS.from);
-    const to = sanitizeString(data.to, DEFAULTS.config.to, LIMITS.to);
+    const from = sanitizeString(
+      data.from,
+      DEFAULTS.calendarConfig.from,
+      LIMITS.from,
+    );
+    const to = sanitizeString(data.to, DEFAULTS.calendarConfig.to, LIMITS.to);
     const messages = sanitizeMessagesArray(baseMessages, {
       maxLenEach: LIMITS.message,
       emptyFallback: DEFAULTS.calendar.emptyMessage,
@@ -66,10 +58,6 @@ export function readConfigFromUrl() {
   } catch (e) {
     console.warn("Invalid data in URL:", e);
 
-    /* return {
-      ...DEFAULTS.config,
-      messages: getDefaultMessages(),
-    }; */
     return null;
   }
 }

@@ -1,4 +1,5 @@
 // LANGUAGE: ELEMENTS
+import { DEFAULTS, appState } from "../state/appState.js";
 export const uiTexts = {
   en: {
     nav: {
@@ -37,6 +38,10 @@ export const uiTexts = {
 
       // Calendar popup:
       popupdaytitle: "Day {day}",
+
+      // Wizard generated dialog:
+      sharecalendartitle: "Share your calendar",
+      copyinstruction: "Copy and share this link:",
 
       // Preview messages list:
       previewmessageslist: "Messages",
@@ -100,6 +105,10 @@ export const uiTexts = {
       // Calendar popup:
       popupdaytitle: "Tag {day}",
 
+      // Wizard generated dialog:
+      sharecalendartitle: "Teile deinen Kalender",
+      copyinstruction: "Kopiere diesen Link und teile ihn:",
+
       previewmessageslist: "Nachrichten",
     },
     // Set Attribute ( Event listener on placeholder)
@@ -161,6 +170,10 @@ export const uiTexts = {
       // Calendar popup:
       popupdaytitle: "{day}. nap",
 
+      // Wizard generated dialog:
+      sharecalendartitle: "Oszd meg a naptárad",
+      copyinstruction: "Másold ki és oszd meg a linket:",
+
       previewmessageslist: "Üzenetek",
     },
     // Set Attribute
@@ -189,7 +202,6 @@ export const uiTexts = {
 export const SUPPORTED_LANGUAGES = Object.freeze(Object.keys(uiTexts));
 
 //================   DEFAULT LANG   ================
-let defaultLang = "en";
 
 // INTERNAL: safely resolve "nav.calendar"
 function resolveKey(root, path) {
@@ -197,8 +209,10 @@ function resolveKey(root, path) {
 }
 
 // APPLY TEXT TO PAGE
-function applyUiLanguage(lang) {
-  const dict = uiTexts[lang] || uiTexts.en;
+export function applyUiLanguage() {
+  const lang = getUiLanguage();
+  const dict =
+    uiTexts[lang] || uiTexts[DEFAULTS.calendarConfig.lang] || uiTexts.en;
 
   // Set <html lang="xx">
   document.documentElement.lang = lang;
@@ -209,7 +223,7 @@ function applyUiLanguage(lang) {
     const key = el.dataset.i18n; // e.g. "nav.calendar"
     const text = resolveKey(dict, key);
 
-    if (text) el.textContent = text;
+    if (text != null) el.textContent = text;
   });
 
   // FOR ATTRIBUTES
@@ -218,16 +232,37 @@ function applyUiLanguage(lang) {
     const key = el.dataset.i18nPlaceholder;
     const text = resolveKey(dict, key);
 
-    if (text) el.setAttribute("placeholder", text);
+    if (text != null) el.setAttribute("placeholder", text);
   });
 }
 
-// Manually change website language in UI select
-export function setUiLanguage(lang) {
-  defaultLang = uiTexts[lang] ? lang : "en";
-  applyUiLanguage(defaultLang);
+export function getUiLanguage() {
+  return appState.calendarConfig.lang ?? DEFAULTS.calendarConfig.lang;
 }
 
-export function getUiLanguage() {
-  return defaultLang;
+export function getLangAndDictThanResolveKey(key) {
+  // Get language
+  const lang = getUiLanguage();
+
+  // Get selected language or Default dictionary
+  const dict = uiTexts[lang] || uiTexts[DEFAULTS.calendarConfig.lang];
+
+  const fallback = uiTexts[DEFAULTS.calendarConfig.lang];
+
+  const value = resolveKey(dict, key) ?? resolveKey(fallback, key) ?? "";
+
+  // Notice if no matching element in dictionary
+  if (value === "") {
+    console.warn("[i18n missing]", key);
+  }
+  return value;
+}
+
+export function formatPlaceholder(key, params = {}) {
+  let text = getLangAndDictThanResolveKey(key);
+  for (const [k, v] of Object.entries(params)) {
+    text = text.replaceAll(`{${k}}`, String(v));
+  }
+
+  return text;
 }

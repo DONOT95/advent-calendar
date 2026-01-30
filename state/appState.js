@@ -1,9 +1,12 @@
 import { LIMITS } from "../config/constants.js";
+import { getDefaultMessages } from "../services/defaultMessagesService.js";
+import { sanitizeMessagesArray } from "../validation/sanitizer.js";
+import { setWizardMessages } from "../services/wizardDataService.js";
 
 // IMMUTABLE DEFAULT  State Object
 // for "empty" init/ reset
 export const DEFAULTS = Object.freeze({
-  config: Object.freeze({
+  calendarConfig: Object.freeze({
     lang: "en",
     theme: "classic",
     from: "Me",
@@ -16,7 +19,7 @@ export const DEFAULTS = Object.freeze({
   }),
 
   calendar: Object.freeze({
-    emptyMessage: "-",
+    emptyMessage: "",
   }),
 });
 
@@ -27,8 +30,8 @@ export function createInitialState() {
       offsetMs: 0,
     },
 
-    config: {
-      ...DEFAULTS.config,
+    calendarConfig: {
+      ...DEFAULTS.calendarConfig,
     },
 
     calendar: {
@@ -53,9 +56,26 @@ export function resetAppState({ keepTime = true } = {}) {
   // New default object
   const fresh = createInitialState();
 
-  // Clear the existing object values
-  Object.assign(appState.config, fresh.config);
-  appState.calendar.messages = fresh.calendar.messages;
+  // Reset the existing object values
+  Object.assign(appState.calendarConfig, fresh.calendarConfig);
+  // Set DEFAULT MESSAGES
+  /* const defMsgs = getDefaultMessages(
+    fresh.calendarConfig.lang,
+    fresh.calendarConfig.theme,
+  );
+
+  appState.calendar.messages = sanitizeMessagesArray(defMsgs, {
+    maxLenEach: LIMITS.message,
+    emptyFallback: DEFAULTS.calendar.emptyMessage,
+  }); */
+  // Clean list for user input messages
+
+  // fill Empty list (no need defaults)
+  setWizardMessages(
+    Array(LIMITS.messagesCount).fill(DEFAULTS.calendar.emptyMessage),
+  );
+
+  // Reset generator
   Object.assign(appState.generator, fresh.generator);
 
   appState.time.offsetMs = keepTime ? oldOffset : 0;
@@ -67,19 +87,23 @@ export function applyConfigToState(config) {
     return;
   }
 
-  const lang = config?.lang ?? DEFAULTS.config.lang;
-  const theme = config?.theme ?? DEFAULTS.config.theme;
-  const from = config?.from ?? DEFAULTS.config.from;
-  const to = config?.to ?? DEFAULTS.config.to;
+  const lang = config?.lang ?? DEFAULTS.calendarConfig.lang;
+  const theme = config?.theme ?? DEFAULTS.calendarConfig.theme;
+  const from = config?.from ?? DEFAULTS.calendarConfig.from;
+  const to = config?.to ?? DEFAULTS.calendarConfig.to;
 
-  Object.assign(appState.config, { lang, theme, from, to });
+  Object.assign(appState.calendarConfig, { lang, theme, from, to });
 
-  const msgs = Array.isArray(config?.messages) ? config.messages : [];
-  if (msgs.length === LIMITS.messagesCount) {
-    appState.calendar.messages = [...msgs];
-  } else {
-    appState.calendar.messages = Array(LIMITS.messagesCount).fill(
-      DEFAULTS.calendar.emptyMessage,
-    );
-  }
+  // Either valid custom messages, valid Default messages or empty messages.
+  const defMsgs = getDefaultMessages(lang, theme);
+
+  const msgs =
+    Array.isArray(config?.messages) &&
+    config.messages.length === LIMITS.messagesCount
+      ? config.messages
+      : defMsgs;
+  appState.calendar.messages = sanitizeMessagesArray(msgs, {
+    maxLenEach: LIMITS.message,
+    emptyFallback: DEFAULTS.calendar.emptyMessage,
+  });
 }

@@ -1,4 +1,4 @@
-import { getUiLanguage, uiTexts } from "../i18n/i18n.js";
+import { getLangAndDictThanResolveKey } from "../i18n/i18n.js";
 /* Zuständig für: Section „Create / Generate“
 Step 1–3 Rendering
 Progressbar
@@ -10,7 +10,9 @@ export function bindWizardDom() {
   return {
     // Step 1
     fromInput: document.getElementById("fromInput"),
+    fromInputCharactersCounter: document.getElementById("charactersFromCount"),
     toInput: document.getElementById("toInput"),
+    toInputCharactersCounter: document.getElementById("charactersToCount"),
     themeSelect: document.getElementById("themeSelect"),
     stepProgress: document.getElementById("stepProgress"),
     btnCreateDefault: document.getElementById("btnCreateDefault"),
@@ -19,6 +21,9 @@ export function bindWizardDom() {
     // Step 2
     dailyNumber: document.getElementById("dailyNumber"),
     messageEditor: document.getElementById("messageEditor"),
+    messageEditorCharactersCounter: document.getElementById(
+      "charactersMessageEditor",
+    ),
     btnPrevDay: document.getElementById("btnPrevDay"),
     btnNextDay: document.getElementById("btnNextDay"),
 
@@ -75,7 +80,7 @@ export function renderPreviewList(listEl, messages) {
 
 // Open generated Url dialog popup
 export function openUrlDialog(dialogEl, inputEl, url) {
-  if ((!dialogEl, !inputEl)) return;
+  if (!dialogEl || !inputEl) return;
   inputEl.value = url;
   if (!dialogEl.open) dialogEl.showModal();
 }
@@ -85,29 +90,29 @@ export function openUrlDialog(dialogEl, inputEl, url) {
 export function flashCopyButtonText(btnEl, durationMs = 900) {
   if (!btnEl) return;
 
-  const lang = getUiLanguage();
-  const dict = uiTexts[lang] || uiTexts.en;
+  // Get Lang, Dictionary[lang] select
+  // Set text from dictionary
+  const copyText = getLangAndDictThanResolveKey("buttons.copy");
+  const copiedText = getLangAndDictThanResolveKey("buttons.copied");
 
-  const copyText = dict?.buttons?.copy ?? uiTexts.en?.buttons.copy ?? "Copy";
-  const copiedText =
-    dict?.buttons?.copied ?? uiTexts.en?.buttons?.copied ?? "Copied!";
-
-  btnEl.textContent = copiedText;
+  btnEl.textContent = copiedText || "Copied!";
 
   window.setTimeout(() => {
-    btnEl.textContent = copyText;
+    btnEl.textContent = copyText || "Copy";
   }, durationMs);
 }
 
 export function selectInputText(inputEl) {
   if (!inputEl) return;
-  (inputEl.focus(), inputEl.select());
+  inputEl.focus();
+  inputEl.select();
+
   inputEl.setSelectionRange(0, inputEl.value.length);
 }
 
 export async function copyUrlFromWizard(inputEl) {
   const url = inputEl?.value?.trim?.() ?? "";
-  if (!url) return;
+  if (!url) return false;
   // 1. Modern with Clipboard API
   try {
     if (navigator.clipboard?.writeText) {
@@ -115,7 +120,7 @@ export async function copyUrlFromWizard(inputEl) {
       return true;
     }
   } catch {
-    //
+    // nothing, go to 2. try
   }
 
   // 2. exeCommand old but works
@@ -130,17 +135,17 @@ export async function copyUrlFromWizard(inputEl) {
   }
 }
 
-export function setWizardStep(dom, stepIndex){
-  if(!dom?.createTrack || !Array.isArray(dom.createSteps)) return;
+export function setWizardStep(dom, stepIndex) {
+  if (!dom?.createTrack || !Array.isArray(dom.createSteps)) return;
 
   // Safe min-max select (can't be lower than min, can't be over max)
   const maxIndex = dom.createSteps.length - 1;
   const safeIndex = Math.max(0, Math.min(stepIndex, maxIndex));
-  
+
   // Animation 0%, -100%, -200%...
   dom.createTrack.style.transform = `translateX(-${safeIndex * 100}%)`;
 
-  syncCreateContainerHeight(dom, stepIndex);
+  syncCreateContainerHeight(dom, safeIndex);
 
   return safeIndex;
 }
@@ -153,7 +158,7 @@ export function syncCreateContainerHeight(dom, stepIndex) {
 
   const activeStep = dom.createSteps?.[stepIndex];
   const container = dom.createContainer;
-  if (!activeStep || !dom.createContainer) return;
+  if (!activeStep || !container) return;
 
   // Erst nach Layout-Update messen (wichtig bei Transition/Fonts)
   requestAnimationFrame(() => {
