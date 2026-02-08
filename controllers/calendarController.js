@@ -72,7 +72,7 @@ function buildCalendar() {
       // Mark already opened door
       markDoorOpened(btn);
 
-      // message if found, empty (should never bee) URL or default...
+      // message if found, empty
       const msg = messages?.[i - 1] ?? "";
 
       // callback feuer insead of here the Opened window (popup) logic
@@ -121,7 +121,7 @@ function getAllowedDay(now, daysCount) {
   const day = now.getDate();
 
   // Not December → no doors available
-  if (month !== 1) return 0;
+  if (month !== 2) return 0;
 
   // December 1–24
   if (day >= 1 && day <= daysCount) return day;

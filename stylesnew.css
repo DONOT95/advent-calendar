@@ -2,6 +2,7 @@
    0) Reset
    ========================= */
 /* 1. Box sizing */
+
 *,
 *::before,
 *::after {
@@ -12,16 +13,7 @@
 /* 2. Margins entfernen */
 * {
   margin: 0;
-}
-
-/* 3. Body Defaults */
-body {
-  min-height: 100vh;
-  line-height: 1.5;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
+  padding: 0;
 }
 
 /* 4. Medien */
@@ -59,6 +51,7 @@ a {
    1) Tokens (Design System)
    ========================= */
 :root {
+  font-size: 62.5%;
   /* ---- Spacing scale ---- */
   --sp-1: 0.25rem;
   --sp-2: 0.5rem;
@@ -70,14 +63,15 @@ a {
   --sp-10: 2.5rem;
 
   /* ---- Layout widths ---- */
-  --content-max: 980px;
+  --content-max: 130rem;
   --side-min: 1rem;
-  --calendar-max: 800px;
+  --calendar-max: 80rem;
 
   /* ---- Radius ---- */
   --r-1: 0.5rem;
   --r-2: 0.75rem;
   --r-3: 1rem;
+  --r-8: 8px;
 
   /* ---- Borders ---- */
   --bw-1: 1px;
@@ -89,15 +83,17 @@ a {
   --shadow-2: 0 12px 30px rgba(0, 0, 0, 0.45);
 
   /* ---- Typography (responsive) ---- */
-  --fs-0: clamp(0.9rem, 0.2vw + 0.85rem, 1rem);
+  /*   --fs-0: clamp(0.9rem, 0.2vw + 0.85rem, 1rem);
   --fs-1: clamp(1rem, 0.25vw + 0.95rem, 1.1rem);
   --fs-2: clamp(1.1rem, 0.4vw + 1rem, 1.25rem);
   --fs-3: clamp(1.35rem, 1vw + 1.05rem, 2rem);
-  --fs-4: clamp(1.6rem, 2.2vw + 1rem, 3.2rem);
+  --fs-4: clamp(1.6rem, 2.2vw + 1rem, 3.2rem); */
 
-  --fw-regular: 500;
-  --fw-bold: 700;
-  --fw-black: 800;
+  --fw-4: 400;
+  --fw-5: 500;
+  --fw-6: 600;
+  --fw-7: 700;
+  --fw-8: 800;
 
   /* ---- Colors (base) ---- */
   --bg-img: url("/data/bilds/christmas_background_family.png");
@@ -105,8 +101,9 @@ a {
 
   --header-bg: rgb(120, 0, 12);
   --header-border: #f0c107;
+  --br: rgb(240, 193, 7);
 
-  --text: rgba(240, 193, 7, 0.92);
+  --text: rgb(241, 238, 226);
   --text-soft: rgba(240, 193, 7, 0.78);
 
   --surface: rgba(54, 54, 54, 0.23); /* main overlay */
@@ -131,14 +128,19 @@ a {
    2) Base page layout
    ========================= */
 body {
+  font-family:
+    "Rubik",
+    system-ui,
+    -apple-system,
+    sans-serif;
+
   margin: 0;
   min-height: 100vh;
-  font-family: system-ui, Arial, sans-serif;
   line-height: 1.4;
   font-size: var(--fs-1);
   color: var(--text);
 
-  background: var(--bg-img), var(--bg-color);
+  background: var(--bg-color);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -163,7 +165,7 @@ footer {
   grid-column: 1 / -1;
 }
 
-/* Theme background helpers (optional: keep your old classes but set tokens) */
+/* Theme background helpers*/
 .background-classic {
   --bg-img: url("/data/bilds/christmas_background_classic.png");
 }
@@ -177,7 +179,7 @@ footer {
   --bg-img: url("/data/bilds/christmas_background_horror.png");
 }
 
-/* Header, Footer, Kalender-Grid: keine Textselektion */
+/* Header, Footer, Calendar -> NO SELECT allowed */
 .topbar,
 footer,
 .grid,
@@ -186,93 +188,80 @@ footer,
   -webkit-user-select: none;
   -ms-user-select: none;
 }
+/* ============== HEADER ==============*/
 
-/* =========================
-   Header (left | title | right)
-   ========================= */
 .topbar {
-  padding: var(--sp-1) var(--sp-4);
-  background: var(--header-bg);
-  border-top: var(--bw-3) solid var(--header-border);
-  border-bottom: var(--bw-3) solid var(--header-border);
+  position: sticky;
+  top: 0;
+  z-index: 5000;
 
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: var(--sp-3);
+  padding: 3rem 2rem;
+
+  /*Fix height for sticky navigation */
+  height: 4rem;
+
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 20px rgba(101, 196, 255, 0.12);
+}
+
+/* Border bottom */
+.topbar {
+  position: relative;
+}
+
+.topbar::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  width: 100%;
+  height: 2px;
+
+  background: linear-gradient(to right, #f0c107, rgba(220, 215, 195, 0.92));
 }
 
 .header-side {
   display: flex;
+  flex: 1;
   align-items: center;
-  gap: var(--sp-3);
-  min-width: 0;
-}
-.header-side.left {
-  justify-content: flex-start;
-}
-.header-side.right {
-  justify-content: flex-end;
-  flex-wrap: wrap;
 }
 
-.topbar h1#name-to {
-  margin: 0;
-  text-align: center;
-  font-weight: var(--fw-black);
-  letter-spacing: 0.02em;
-  font-size: var(--fs-4);
+/* ============== LOGO ==============*/
 
-  max-width: min(70vw, 42rem);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Date/time: stable digits */
-#currentDate,
-#currentHour {
-  font-size: var(--fs-0);
-  font-weight: var(--fw-bold);
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-soft);
-}
-
-/* Language select */
-#pageLanguage {
-  padding: 0.2rem 0.3rem;
-  border-radius: var(--r-2);
-  border: var(--bw-1) solid rgba(240, 193, 7, 0.35);
-  background: rgba(0, 0, 0, 0.25);
-  color: inherit;
+#homeBtn {
+  overflow: hidden; /* schneidet sichtbar */
+  width: 160px;
+  height: 48px;
   cursor: pointer;
-}
-#pageLanguage:focus {
-  outline: 3px solid rgba(34, 211, 238, 0.35);
-  border-color: rgba(34, 211, 238, 0.6);
+  background-color: var(--bg-color);
+  padding: 0 !important;
+  border: none !important;
+  margin-right: 2rem;
 }
 
-/* =========================
-   2) Hamburger dropdown
-   ========================= */
+#btn-img {
+  position: relative;
+  top: -2.5rem;
+  width: 40rem;
+}
+/* ============== MENU ==============*/
 .hamburger-container {
   position: relative;
+  z-index: 6000;
 }
 
 .hamburger-btn {
-  font-size: 2.2rem;
   background: transparent;
-  border: none;
   color: var(--header-border);
-  cursor: pointer;
-  padding: 0.15rem 0.4rem;
 }
 .hamburger-btn:hover {
   color: #fff2a3;
 }
 
-/* Fix: right:1 is invalid; use right:0 */
 .menu-dropdown {
   position: absolute;
   left: 0;
@@ -280,8 +269,8 @@ footer,
 
   display: none;
   flex-direction: column;
-  min-width: 200px;
-  z-index: 999;
+  min-width: 170px;
+  z-index: 7000;
 
   background: rgba(0, 0, 0, 0.88);
   backdrop-filter: blur(8px);
@@ -290,7 +279,7 @@ footer,
   box-shadow: var(--shadow-2);
   overflow: hidden;
 
-  animation: fadeInMenu 0.15s ease-out forwards;
+  animation: fadeInMenu 0.2s ease-out forwards;
 }
 .menu-dropdown.open {
   display: flex;
@@ -299,7 +288,7 @@ footer,
 @keyframes fadeInMenu {
   from {
     opacity: 0;
-    transform: translateY(-6px);
+    transform: translateY(-15px);
   }
   to {
     opacity: 1;
@@ -312,37 +301,67 @@ footer,
   color: var(--header-border);
   border: none;
   text-align: left;
-  font-size: var(--fs-2);
+  font-size: 1.8rem;
   padding: var(--sp-3) var(--sp-4);
   cursor: pointer;
   width: 100%;
 }
 .menu-item:hover {
   background: rgba(255, 255, 255, 0.08);
-  color: #fffacd;
+  color: #fff2a3;
 }
 
-/* =========================
-   3) Main + Pages
-   ========================= */
+.header-side.right {
+  font-size: 1.5rem;
+  font-weight: var(--fw-5);
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+/* ============== DATE/TIME ==============*/
+#currentDate,
+#currentHour {
+  font-weight: var(--fw-4);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  margin-right: 2rem;
+}
+
+/* ============== LANGUAGE SELECT ==============*/
+#pageLanguage {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  border: var(--bw-1) solid rgba(240, 193, 7, 0.35);
+
+  color: inherit;
+  cursor: pointer;
+}
+#pageLanguage:focus {
+  outline: 2px solid #f0c10781;
+  border-color: var(--bg-color);
+}
+
+/* ============== CONTENT ==============*/
+
 main {
-  padding: clamp(var(--sp-4), 3vh, var(--sp-10)) var(--sp-4);
   /* Position */
-  grid-column: 2;
+  grid-column: 1 / -1;
   grid-row: 2;
 
   display: flex;
   justify-content: center; /* horizontal center */
   align-items: center;
-  background-color: var(--surface);
 }
 
 /* Pages hide/show */
 .page {
   display: none;
   width: 100%;
+  height: 100%;
   margin-inline: auto;
   align-items: center;
+  justify-content: center;
 }
 .page.active {
   display: flex;
@@ -351,18 +370,24 @@ main {
   gap: var(--sp-6);
 }
 
-/* =========================
-   4) Calendar Grid
-   ========================= */
+#page-calendar {
+  background-image: var(--bg-img);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* ============== CALENDAR ==============*/
+
 .grid {
   display: grid;
   justify-self: center;
-  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  grid-template-columns: repeat(6, minmax(11rem, 1fr));
   width: min(100%, var(--calendar-max));
   margin-inline: auto;
   gap: var(--sp-4);
   padding: var(--sp-4);
-  border-radius: var(--r-3);
+  border-radius: 8px;
 
   background: transparent;
   box-shadow: 0 4px 20px rgba(101, 196, 255, 0.13);
@@ -408,11 +433,12 @@ main {
 
 .door .num {
   position: absolute;
-  top: var(--sp-2);
-  left: var(--sp-3);
-  font-weight: var(--fw-black);
+  top: var(--sp-4);
+  left: var(--sp-5);
+  font-weight: var(--fw-6);
   opacity: 0.9;
-  font-size: var(--fs-2);
+  font-size: 1.5rem;
+
   font-variant-numeric: tabular-nums;
 }
 
@@ -495,9 +521,9 @@ dialog .actions {
 }
 
 dialog .actions button {
-  background: rgba(34, 197, 94, 0.22);
+  background: rgba(21, 124, 59, 0.22);
   color: #d6ffea;
-  border: var(--bw-1) solid rgba(34, 197, 94, 0.35);
+  border: var(--bw-1) solid rgba(31, 173, 83, 0.35);
   border-radius: var(--r-2);
   padding: 0.65rem 1.1rem;
   font-weight: var(--fw-bold);
@@ -574,6 +600,7 @@ select:focus {
 /* =========================
    7) Create calendar step slider (your structure)
    ========================= */
+
 #create-container {
   width: min(100%, var(--content-max));
   overflow: hidden;
@@ -659,5 +686,269 @@ footer {
 
   .grid {
     grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  }
+}
+
+/* =========================
+   STARTPAGE / HERO
+   ========================= */
+
+.hero-container {
+  width: 100%;
+  padding: 6rem 0 6rem 0;
+  background-image:
+    linear-gradient(rgba(2, 2, 2, 0.6), rgba(2, 2, 2, 0.6)),
+    url(data/bilds/hero_bg_left.png);
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+#hero {
+  display: grid;
+  max-width: 130rem;
+  grid-template-columns: 1fr 1fr;
+  margin: 0 auto;
+  gap: 9rem;
+  align-items: center;
+}
+
+.hero-left {
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(101, 196, 255, 0.12);
+  background: rgba(32, 32, 32, 0.176);
+  border-radius: 8px;
+  padding: 4rem 2rem;
+}
+
+.hero-kicker {
+  font-size: 1.1rem;
+  color: #0e0e0e;
+  font-weight: var(--fw-8);
+  background-color: #f0c107;
+  border-radius: 2px;
+  width: fit-content;
+  padding: 0 5px;
+  margin: 0 0 -2px -15px;
+
+  letter-spacing: 0.04em;
+}
+
+.hero-title {
+  font-size: 5.8rem;
+  font-weight: var(--fw-6);
+  line-height: 1;
+  letter-spacing: -1px;
+  margin-bottom: 3.2rem;
+}
+
+.hero-subtitle {
+  font-size: 2rem;
+  font-weight: var(--fw-4);
+  color: var(--text);
+  line-height: 1.6;
+  max-width: 55ch;
+  margin-bottom: 5rem;
+}
+
+.hero-actions {
+  display: grid;
+  max-width: fit-content;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--r-3);
+  margin-bottom: var(--sp-4);
+}
+
+.hero-trust {
+  font-size: 1.5rem;
+  font-weight: var(--fw-4);
+  color: var(--text);
+}
+
+.hero-right {
+  height: 55rem;
+}
+
+.hero-image {
+  width: 100%;
+  height: 60rem;
+  border-radius: var(--r-3);
+  border: var(--bw-1) solid rgba(240, 193, 7, 0.18);
+  box-shadow: var(--shadow-1);
+  object-fit: cover;
+  aspect-ratio: 4 / 3;
+}
+
+/* Buttons (generic) */
+.btn {
+  border-radius: 8px;
+  padding: 0.8rem 1.6rem;
+  font-size: 1.5rem;
+  font-weight: var(--fw-5);
+
+  border: var(--bw-1) solid rgba(240, 193, 7, 0.22);
+  cursor: pointer;
+  transition: 
+  /*transform 0.12s ease,*/ background-color 0.2s ease;
+}
+
+.btn:active {
+  transform: translateY(0.5px);
+}
+
+.btn-primary {
+  background: rgba(5, 88, 35, 0.6);
+  border-color: rgba(34, 197, 94, 0.6);
+  color: #d1ffe7;
+}
+
+.btn-primary:hover {
+  background: rgba(34, 197, 94, 0.2);
+}
+
+.btn-secondary {
+  background: rgba(51, 51, 51, 0.01);
+  border-color: rgba(220, 215, 195, 0.2);
+  color: var(--text);
+}
+
+.btn-secondary:hover {
+  background: rgba(89, 139, 170, 0.1);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: rgb(12, 55, 82);
+  color: rgb(114, 199, 252);
+}
+
+.btn-ghost:hover {
+  background: rgba(89, 139, 170, 0.1);
+}
+
+/* =========================
+   CARDS (No disadvantages / Advantages)
+   ========================= */
+.cards {
+  height: 100vh;
+  width: min(100%, var(--content-max));
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+  align-content: center;
+}
+
+.card {
+  height: 50vh;
+  border-radius: var(--r-3);
+  border: var(--bw-1) solid var(--border);
+  background: rgba(0, 0, 0, 0.16);
+  padding: var(--sp-5);
+}
+
+.card-accent {
+  border-color: rgba(101, 196, 255, 0.35);
+  box-shadow: 0 4px 18px rgba(101, 196, 255, 0.12);
+}
+
+.card-title {
+  font-size: var(--fs-2);
+  font-weight: var(--fw-black);
+  margin-bottom: var(--sp-3);
+}
+
+.card-list {
+  display: grid;
+  gap: var(--sp-2);
+  color: var(--text-soft);
+}
+
+.card-list li::before {
+  content: "•";
+  margin-right: 0.6rem;
+  color: rgba(240, 193, 7, 0.9);
+}
+
+/* =========================
+   HOW IT WORKS
+   ========================= */
+.how {
+  height: 100vh;
+  width: min(100%, var(--content-max));
+  border-radius: var(--r-3);
+  border: var(--bw-1) solid var(--border);
+  background: rgba(0, 0, 0, 0.14);
+  padding: var(--sp-6);
+}
+
+.how-head {
+  margin-bottom: var(--sp-4);
+}
+
+.how-title {
+  font-size: var(--fs-3);
+  font-weight: var(--fw-black);
+}
+
+.how-subtitle {
+  color: var(--text-soft);
+}
+
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-4);
+}
+
+.how-step {
+  border-radius: var(--r-3);
+  border: var(--bw-1) solid rgba(240, 193, 7, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+  padding: var(--sp-4);
+  min-height: 160px;
+}
+
+.step-num {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--fw-black);
+  margin-bottom: var(--sp-3);
+
+  background: rgba(101, 196, 255, 0.16);
+  border: 1px solid rgba(101, 196, 255, 0.35);
+  color: rgb(101, 196, 255);
+}
+
+.how-step h4 {
+  font-size: var(--fs-1);
+  margin-bottom: var(--sp-2);
+}
+
+.how-step p {
+  color: var(--text-soft);
+  font-size: var(--fs-0);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+  .cards {
+    grid-template-columns: 1fr;
+  }
+  .how-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 520px) {
+  .how-grid {
+    grid-template-columns: 1fr;
   }
 }

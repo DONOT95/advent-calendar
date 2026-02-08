@@ -4,8 +4,9 @@ export const uiTexts = {
   en: {
     nav: {
       calendar: "Calendar",
-      howto: "How-To",
+      openlink: "Open link",
       create: "Create custom",
+      menu: "Menu",
     },
     buttons: {
       // Generate Calendar: Step 1
@@ -28,6 +29,8 @@ export const uiTexts = {
       copy: "Copy",
       copied: "Copied!",
       open: "Open",
+
+      cancel: "Cancel",
     },
     labels: {
       // Create Custom step 1:
@@ -45,6 +48,9 @@ export const uiTexts = {
 
       // Preview messages list:
       previewmessageslist: "Messages",
+
+      openlinktitle: "Open a calendar",
+      openlinkhint: "Paste a calendar link to open it.",
     },
     // Set Attribute ( Event listener on placeholder)
     placeholders: {
@@ -66,13 +72,73 @@ export const uiTexts = {
     },
     currentHour: "{h}:{min}:{sec}",
     currentDate: "Today: {d}.{m}.{y}",
+
+    hero: {
+      kicker: "40% CREATIVITY · 40% CARE · 100% LOVE",
+      title: "Make The Christmas Waiting Magical",
+      subtitle:
+        "Create a personal Advent Calendar in minutes - free, simple, and made with love. Surprise friends, family, or colleagues with daily messages they'll actually remember.",
+
+      createbtn: "Create calendar",
+      viewbtn: "View calendar",
+      openlink: "Open link",
+
+      trust: "No cookies · No ads · No account · No fees",
+    },
+
+    cardnegative: {
+      title: "No disadvantages. Just joy.",
+      li1: "❌ No cookies",
+      li2: "❌ No ads",
+      li3: "❌ No costs",
+      li4: "❌ No account",
+      li5: "❌ No costs",
+      li6: "❌ No upload / download",
+    },
+
+    cardpositive: {
+      title: "Everything you need. Nothing you don't.",
+      li1: "✅ Easy to use",
+      li2: "✅ Takes only minutes to create",
+      li3: "✅ Create unlimited calendars",
+      li4: "✅ Create unlimited calendars",
+      li5: "✅ Share instantly via a single link",
+      li6: "✅ Your data stays inside your URL (copy & send)",
+    },
+
+    how: {
+      title: "How it works",
+      subtitle: "Three minutes now — daily smiles all December.",
+
+      step1: {
+        instruction: "Choose names & a theme",
+        hint: "Pick “From”, “To”, language, and a look that fits your vibe.",
+      },
+
+      step2: {
+        instruction: "Write your daily surprises",
+        hint: "Add personal messages, memories, jokes, or tiny tasks — one per day.",
+      },
+
+      step3: {
+        instruction: "Generate your share link",
+        hint: "One link contains everything. Copy it and send it anywhere.",
+      },
+
+      step4: {
+        instruction: "Open doors day by day",
+        hint: "The receiver opens a new door each day — simple and magical.",
+      },
+    },
   },
 
   de: {
     nav: {
       calendar: "Kalender",
       howto: "Anleitung",
+      openlink: "Link öffnen",
       create: "Eigenen Kalender",
+      menu: "Menü",
     },
     buttons: {
       // Generate Calendar: Step 1
@@ -95,6 +161,8 @@ export const uiTexts = {
       copy: "Kopie",
       copied: "Kopiert!",
       open: "Offen",
+
+      cancel: "Abbrechen",
     },
     labels: {
       from: "Von:",
@@ -110,6 +178,9 @@ export const uiTexts = {
       copyinstruction: "Kopiere diesen Link und teile ihn:",
 
       previewmessageslist: "Nachrichten",
+
+      openlinktitle: "Kalender öffnen",
+      openlinkhint: "Füge einen Kalender-Link ein.",
     },
     // Set Attribute ( Event listener on placeholder)
     placeholders: {
@@ -137,7 +208,9 @@ export const uiTexts = {
     nav: {
       calendar: "Naptár",
       howto: "Útmutató",
+      openlink: "Link megnyitása",
       create: "Saját naptár",
+      menu: "Menü",
     },
     buttons: {
       // Generate Calendar: Step 1
@@ -160,6 +233,8 @@ export const uiTexts = {
       copy: "Másol",
       copied: "Másolva!",
       open: "Megnyit",
+
+      cancel: "Mégse",
     },
     labels: {
       from: "Feladó:",
@@ -175,6 +250,9 @@ export const uiTexts = {
       copyinstruction: "Másold ki és oszd meg a linket:",
 
       previewmessageslist: "Üzenetek",
+
+      openlinktitle: "Naptár megnyitása",
+      openlinkhint: "Illeszd be a naptár linkjét.",
     },
     // Set Attribute
     placeholders: {

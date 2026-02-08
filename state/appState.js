@@ -56,27 +56,18 @@ export function resetAppState({ keepTime = true } = {}) {
   // New default object
   const fresh = createInitialState();
 
-  // Reset the existing object values
-  Object.assign(appState.calendarConfig, fresh.calendarConfig);
-  // Set DEFAULT MESSAGES
-  /* const defMsgs = getDefaultMessages(
-    fresh.calendarConfig.lang,
-    fresh.calendarConfig.theme,
-  );
+  // FOR WIZARD VALUES:
 
-  appState.calendar.messages = sanitizeMessagesArray(defMsgs, {
-    maxLenEach: LIMITS.message,
-    emptyFallback: DEFAULTS.calendar.emptyMessage,
-  }); */
-  // Clean list for user input messages
-
-  // fill Empty list (no need defaults)
+  // Clear messages array
   setWizardMessages(
     Array(LIMITS.messagesCount).fill(DEFAULTS.calendar.emptyMessage),
   );
 
-  // Reset generator
+  // Reset generator state
   Object.assign(appState.generator, fresh.generator);
+
+  // Reset selected theme to default
+  appState.calendarConfig.theme = DEFAULTS.calendarConfig.theme;
 
   appState.time.offsetMs = keepTime ? oldOffset : 0;
 }

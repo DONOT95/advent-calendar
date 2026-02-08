@@ -11,9 +11,12 @@ How-To Section -> Static
 export function bindUiDom() {
   return {
     app: document.getElementById("app"),
-    body: document.body,
+
+    calendarPage: document.getElementById("page-calendar"),
 
     // Menu
+    homeBtn: document.getElementById("homeBtn"),
+
     menuBtn: document.getElementById("menuBtn"),
     menuDropdown: document.getElementById("menuDropdown"),
     menuItems: Array.from(document.querySelectorAll(".menu-item")),
@@ -28,6 +31,12 @@ export function bindUiDom() {
     currentDate: document.getElementById("currentDate"),
     pageLanguage: document.getElementById("pageLanguage"),
 
+    // CTA Buttons
+    heroActions: document.getElementById("heroActions"),
+    createBtn: document.getElementById("heroCreateBtn"),
+    openBtn: document.getElementById("heroOpenLinkBtn"),
+    viewBtn: document.getElementById("heroViewBtn"),
+
     // Popup (calendar day dialog)
     popup: document.getElementById("popup"),
     popupTitle: document.getElementById("popup-title"),
@@ -37,8 +46,15 @@ export function bindUiDom() {
     // Dialogs (optional helper for outside-click close)
     dialogs: Array.from(document.querySelectorAll("dialog")),
 
-    // Theme select exists on create page (still UI-level binding)
+    // Theme select exists on create page
     themeSelect: document.getElementById("themeSelect"),
+
+    // Dialog for Open link
+    openLinkDialog: document.getElementById("openLinkDialog"),
+    openLinkInput: document.getElementById("openLinkInput"),
+    openLinkError: document.getElementById("openLinkError"),
+    btnOpenLinkCancel: document.getElementById("btnOpenLinkCancel"),
+    btnOpenLinkGo: document.getElementById("btnOpenLinkGo"),
   };
 }
 
@@ -103,18 +119,18 @@ export function shouldCloseMenuOnDocumentClick(e, menuBtnEl, menuDropdownEl) {
 //========== END ==========
 
 //========== SET THEME ==========
-export function applyTheme(bodyEl, themeRegistry, themeKey) {
-  if (!bodyEl || !themeRegistry) return;
+export function applyTheme(htmlEl, themeRegistry, themeKey) {
+  if (!htmlEl || !themeRegistry) return;
 
   // Remove all type of theme classes
-  bodyEl.classList.remove(
+  htmlEl.classList.remove(
     ...Object.keys(themeRegistry).map((t) => `background-${t}`),
   );
 
   if (!themeRegistry[themeKey]) themeKey = Object.keys(themeRegistry[0]);
 
   // Add selected theme class
-  bodyEl.classList.add(`background-${themeKey}`);
+  htmlEl.classList.add(`background-${themeKey}`);
 }
 
 //========== SET DIALOG TITLE/TEXT ==========

@@ -4,6 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
 
+    <!-- link typography-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+      rel="stylesheet"
+    />
+
     <!-- Bind CSS Style -->
     <link rel="stylesheet" href="stylesnew.css" />
   </head>
@@ -14,8 +22,20 @@
       <header class="topbar">
         <!-- Menu icon -->
         <div class="header-side left">
+          <button id="homeBtn" class="btn">
+            <img
+              id="btn-img"
+              src="data/bilds/logo.png"
+              alt="logo with brand name: advent4u, advent for you."
+            />
+          </button>
+
           <div class="hamburger-container">
-            <button id="menuBtn" class="hamburger-btn">☰</button>
+            <button
+              id="menuBtn"
+              class="btn hamburger-btn"
+              data-i18n="nav.menu"
+            ></button>
             <div id="menuDropdown" class="menu-dropdown">
               <button
                 class="menu-item"
@@ -24,8 +44,8 @@
               ></button>
               <button
                 class="menu-item"
-                data-page="howto"
-                data-i18n="nav.howto"
+                data-page="openlink"
+                data-i18n="nav.openlink"
               ></button>
               <button
                 class="menu-item"
@@ -35,8 +55,6 @@
             </div>
           </div>
         </div>
-        <!-- Titel TO PERSON -->
-        <h1 id="name-to"></h1>
         <!-- Current day -->
         <div class="header-side right">
           <!-- Current date-time -->
@@ -51,6 +69,8 @@
       <main>
         <!-- PAGE: CALENDAR -->
         <section id="page-calendar" class="page">
+          <!-- Titel TO PERSON -->
+          <h2 id="name-to"></h2>
           <div class="grid" id="calendar"></div>
 
           <!-- Windows-->
@@ -77,45 +97,110 @@
           </dialog>
         </section>
 
-        <!-- PAGE: HOW-TO -->
-        <section id="page-howto" class="page">
-          <!-- page titel -->
-          <h2 data-i18n="titles.howto"></h2>
-          <section class="howto-row">
-            <div class="box image">
-              <img
-                src="data/bilds/christmas_background_family.png"
-                alt="how to"
-              />
-            </div>
-            <div class="box text">
-              <h3>Schritt 1 Beschreibung.</h3>
-              <p>Kurzer erklärender Text, was hier passiert.</p>
-            </div>
+        <!-- PAGE: STARTSEIT -->
+        <section id="page-home" class="page">
+          <!-- HERO -->
+          <section class="hero-container">
+            <section id="hero">
+              <!-- title, text -->
+              <div class="hero-left">
+                <p class="hero-kicker" data-i18n="hero.kicker"></p>
+                <h1 class="hero-title" data-i18n="hero.title"></h1>
+                <p class="hero-subtitle" data-i18n="hero.subtitle"></p>
+
+                <!-- action buttons -->
+                <div id="heroActions" class="hero-actions">
+                  <button
+                    class="btn btn-primary"
+                    data-page="create"
+                    type="button"
+                    id="heroCreateBtn"
+                    data-i18n="hero.createbtn"
+                  ></button>
+
+                  <button
+                    class="btn btn-ghost"
+                    data-page="openlink"
+                    type="button"
+                    id="heroOpenLinkBtn"
+                    data-i18n="hero.openlink"
+                  ></button>
+
+                  <button
+                    class="btn btn-secondary"
+                    data-page="calendar"
+                    type="button"
+                    id="heroViewBtn"
+                    data-i18n="hero.viewbtn"
+                  ></button>
+                </div>
+
+                <p class="hero-trust" data-i18n="hero.trust"></p>
+              </div>
+
+              <!-- hero right side  -->
+              <div class="hero-right"></div>
+            </section>
           </section>
 
-          <!-- ROW 2 (reverse like sketch) -->
-          <section class="howto-row reverse">
-            <div class="box image">
-              <img
-                src="data/bilds/christmas_background_family.png"
-                alt="how to"
-              />
-            </div>
-            <div class="box text">
-              <h3>Schritt 2 Beschreibung.</h3>
-              <p>Bild ist jetzt rechts, Text links.</p>
-            </div>
+          <!-- 2 CARDS -->
+          <section class="cards">
+            <article class="card">
+              <h3 class="card-title" data-i18n="cardnegative.title"></h3>
+              <ul class="card-list-negative">
+                <li data-i18n="cardnegative.li1"></li>
+                <li data-i18n="cardnegative.li2"></li>
+                <li data-i18n="cardnegative.li3"></li>
+                <li data-i18n="cardnegative.li4"></li>
+                <li data-i18n="cardnegative.li5"></li>
+                <li data-i18n="cardnegative.li6"></li>
+              </ul>
+            </article>
+
+            <article class="card card-accent">
+              <h3 class="card-title" data-i18n="cardpositive.title"></h3>
+              <ul class="card-list-positive">
+                <li data-i18n="cardpositive.li1"></li>
+                <li data-i18n="cardpositive.li2"></li>
+                <li data-i18n="cardpositive.li3"></li>
+                <li data-i18n="cardpositive.li4"></li>
+                <li data-i18n="cardpositive.li5"></li>
+                <li data-i18n="cardpositive.li6"></li>
+              </ul>
+            </article>
           </section>
 
-          <!-- ROW 3 -->
-          <section class="howto-row">
-            <div class="box image">
-              <img src="data/bilds/background_tree_horror1.png" alt="how to" />
+          <!-- HOW IT WORKS -->
+          <section class="how">
+            <div class="how-head">
+              <h3 class="how-title" data-i18n="how.title"></h3>
+              <p class="how-subtitle" data-i18n="how.subtitle"></p>
             </div>
-            <div class="box text">
-              <h3>Schritt 3 Beschreibung.</h3>
-              <p>Wieder Bild links, Text rechts.</p>
+
+            <div class="how-grid">
+              <article class="how-step">
+                <span class="step-num">1</span>
+                <h4 data-i18n="how.step1.instruction"></h4>
+                <p data-i18n="how.step1.hint"></p>
+              </article>
+
+              <article class="how-step">
+                <span class="step-num">2</span>
+                <h4 data-i18n="how.step2.instruction"></h4>
+                <p data-i18n="how.step2.hint"></p>
+              </article>
+
+              <article class="how-step">
+                <span class="step-num">3</span>
+                <h4 data-i18n="how.step3.instruction"></h4>
+                <p data-i18n="how.step3.hint"></p>
+              </article>
+
+              <article class="how-step">
+                <span class="step-num">4</span>
+                <h4 data-i18n="how.step4.instruction"></h4>
+                <p data-i18n="how.step4.hint"></p>
+              </article>
             </div>
           </section>
         </section>
@@ -165,10 +250,7 @@
                   <label data-i18n="labels.theme" for="themeSelect"></label>
 
                   <!-- Options Theme -->
-                  <select id="themeSelect">
-                    <!-- OPTIONEN GENERATED IN UI.js 
-                  <option value="classic" data-i18n="selects.classic"></option> -->
-                  </select>
+                  <select id="themeSelect"></select>
                 </div>
 
                 <!-- Generate URL default or create custom messages BTN-->
@@ -257,10 +339,40 @@
       <dialog id="urlDialog" class="dialog">
         <h2 data-i18n="labels.sharecalendartitle"></h2>
         <p data-i18n="labels.copyinstruction"></p>
+
         <input type="text" id="generatedUrl" readonly />
         <div class="actions">
           <button id="btnCopyUrl" data-i18n="buttons.copy"></button>
           <button id="btnOpenUrl" data-i18n="buttons.open"></button>
+        </div>
+      </dialog>
+
+      <!-- POPUP FOR OPEN EXISTING LINK -->
+      <dialog id="openLinkDialog" class="dialog">
+        <h2 data-i18n="labels.openlinktitle"></h2>
+        <p data-i18n="labels.openlinkhint"></p>
+
+        <input
+          id="openLinkInput"
+          type="text"
+          inputmode="url"
+          autocomplete="off"
+          placeholder="https://...?data=..."
+        />
+
+        <p id="openLinkError" class="dialog-error" hidden></p>
+
+        <div class="actions">
+          <button
+            id="btnOpenLinkCancel"
+            type="button"
+            data-i18n="buttons.cancel"
+          ></button>
+          <button
+            id="btnOpenLinkGo"
+            type="button"
+            data-i18n="buttons.open"
+          ></button>
         </div>
       </dialog>
     </div>

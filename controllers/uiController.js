@@ -50,8 +50,10 @@ export function initUI(config, offsetMs) {
 
   // Only once at setup executed functions:
   initPopupCloseEvents();
+  initOpenLinkEvents();
   initMenuEvents();
   initLanguageEvents();
+  initCTAButtonEvents();
   // Start Time
   startClock(dom.currentHour, dom.currentDate, offsetMs);
 }
@@ -62,7 +64,7 @@ function applyConfig(config) {
 
   dom.pageLanguage.value = config.lang;
   applyUiLanguage();
-  applyTheme(dom.body, THEME_REGISTRY, config.theme);
+  applyTheme(dom.calendarPage, THEME_REGISTRY, config.theme);
 }
 
 // Fill HTML-SELECT elements with OPTIONS
@@ -72,6 +74,20 @@ function fillHTMLSelectsWithOptionElements() {
 
   // Fill the select (language) options in HTML
   fillLanguageOptions(dom.pageLanguage, SUPPORTED_LANGUAGES);
+}
+
+function initCTAButtonEvents() {
+  if (!dom?.heroActions) return;
+
+  dom.createBtn?.addEventListener("click", () => {
+    switchPage(dom.createBtn.dataset.page);
+  });
+  dom.openBtn?.addEventListener("click", () => {
+    switchPage(dom.openBtn.dataset.page);
+  });
+  dom.viewBtn?.addEventListener("click", () => {
+    switchPage(dom.viewBtn.dataset.page);
+  });
 }
 
 //================   MENU   ================
@@ -101,16 +117,26 @@ function initMenuEvents() {
       closeMenu(dom.menuDropdown);
     });
   });
+
+  dom.homeBtn?.addEventListener("click", () => {
+    setActivePage(dom.pages, "home");
+  });
 }
 
 //================   PAGE SWITCH   ================
 function switchPage(pageName) {
-  setActivePage(dom.pages, pageName);
+  // Open link dialog check
+  if (pageName === "openlink") {
+    openLinkDialog();
+    return;
+  }
 
   // At every create custom menu option, reset the slider.
   if (pageName === "create") {
     resetGenerator();
   }
+
+  setActivePage(dom.pages, pageName);
 }
 
 // ================   OPEN POPUP, CALENDAR DAY   ================
@@ -145,6 +171,35 @@ function initPopupCloseEvents() {
   //Close-btn on popup (opened day)
   dom.popupCloseBtn?.addEventListener("click", () => dom.popup?.close());
 }
+
+// OPEN EXISTING LINK given by USER
+function initOpenLinkEvents() {
+  dom.btnOpenLinkCancel?.addEventListener("click", () => {
+    dom.openLinkDialog?.close();
+  });
+
+  dom.btnOpenLinkGo?.addEventListener("click", () => {
+    const url = normalizeCalendarUrl(dom.openLinkInput?.value);
+
+    if (!url) {
+      showOpenLinkError(
+        "Warning! Invalid url. Please paste a valid calendar link.",
+      );
+      dom.openLinkInput?.focus();
+      return;
+    }
+
+    // Reload app with new url
+    window.location.href = url;
+  });
+
+  dom.openLinkInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      dom.btnOpenLinkGo?.click();
+    }
+  });
+}
 // ================   READ FROM-TO Name or set Default   ================
 // NO NEED HERE TO SET DEFAULT VALUE... Read config URL in main already does
 function initNameFromTo(fromNameEl, toNameEl, config) {
@@ -167,4 +222,43 @@ function initLanguageEvents() {
     // Change lang -> immediately update date-time
     refreshClock();
   });
+}
+
+function openLinkDialog() {
+  if (!dom?.openLinkDialog || !dom?.openLinkInput) return;
+
+  // reset UI
+  dom.openLinkInput.value = "";
+  if (dom.openLinkError) {
+    dom.openLinkError.hidden = true;
+    dom.openLinkError.textContent = "";
+  }
+
+  if (!dom.openLinkDialog.open) dom.openLinkDialog.showModal();
+  dom.openLinkInput.focus();
+}
+
+function normalizeCalendarUrl(input) {
+  const raw = (input ?? "").trim();
+
+  if (!raw) return "";
+
+  if (/^https?:\/\//i.test(raw)) return raw;
+
+  const cleaned = raw.sartsWith("?") ? raw.slice(1) : raw;
+  const hasData = cleaned.startsWith("data=") || cleaned.includes("&data=");
+
+  if (!hasData) {
+    return "";
+  }
+
+  const base = `${window.location.origin}${window.location.pathname}`;
+
+  return `${base}?${cleaned}`;
+}
+
+function showOpenLinkError(msg) {
+  if (!dom?.openLinkError) return;
+  dom.openLinkError.textContent = msg;
+  dom.openLinkError.hidden = false;
 }
