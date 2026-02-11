@@ -1,6 +1,9 @@
 import { LIMITS } from "../config/constants.js";
 import { getDefaultMessages } from "../services/defaultMessagesService.js";
-import { sanitizeMessagesArray } from "../validation/sanitizer.js";
+import {
+  sanitizeMessagesArray,
+  sanitizeString,
+} from "../validation/sanitizer.js";
 import { setWizardMessages } from "../services/wizardDataService.js";
 
 // IMMUTABLE DEFAULT  State Object
@@ -35,9 +38,23 @@ export function createInitialState() {
     },
 
     calendar: {
+      source: "demo", // demo || url
+
       messages: Array(LIMITS.messagesCount).fill(
         DEFAULTS.calendar.emptyMessage,
       ),
+
+      lastUrlStatus: "none", // none || ok || repaired || invalid
+      lastUrlIssues: [],
+    },
+
+    // Wizard, generator for user Custom calendar values
+    wizardDraft: {
+      from: "",
+      to: "",
+      theme: null,
+
+      messages: Array(LIMITS.messagesCount).fill(""),
     },
 
     generator: { ...DEFAULTS.generator },
@@ -47,6 +64,15 @@ export function createInitialState() {
 // MUTABLE State Object OBJECT 1x deklariert,
 // but the values can be replaced (update/modify)
 export const appState = createInitialState();
+
+// Only wizard reset when leaving create page
+export function resetWizardDraft() {
+  appState.wizardDraft.from = "";
+  appState.wizardDraft.to = "";
+  appState.wizardDraft.theme = null;
+  appState.wizardDraft.messages = Array(LIMITS.messagesCount).fill("");
+  Object.assign(appState.generator, DEFAULTS.generator);
+}
 
 // State Helpers
 export function resetAppState({ keepTime = true } = {}) {
@@ -72,28 +98,63 @@ export function resetAppState({ keepTime = true } = {}) {
   appState.time.offsetMs = keepTime ? oldOffset : 0;
 }
 
+/*
+ * Apply URL config  (ALWAYS valid data from readConfigFromUrl).
+ * - If config is null => calendar stays in "demo" mode; messages are NOT forced here
+ *   (demo messages are computed when Calendar section opens).
+ * - If config has valid messages => calendar becomes "url" with sanitized messages.
+ */
 export function applyConfigToState(config) {
+  // First load
+  // Demo mode, dynamic messages later
   if (!config) {
-    resetAppState({ keepTime: true });
+    Object.assign(appState.calendarConfig, DEFAULTS.calendarConfig);
+
+    appState.calendar.source = "demo";
+    appState.calendar.messages = Array(LIMITS.messagesCount).fill(
+      DEFAULTS.calendar.emptyMessage,
+    );
     return;
   }
 
   const lang = config?.lang ?? DEFAULTS.calendarConfig.lang;
   const theme = config?.theme ?? DEFAULTS.calendarConfig.theme;
-  const from = config?.from ?? DEFAULTS.calendarConfig.from;
-  const to = config?.to ?? DEFAULTS.calendarConfig.to;
+
+  // from/to sanitized if url was "Modifyed"
+  const from = sanitizeString(
+    config.from,
+    DEFAULTS.calendarConfig.from,
+    LIMITS.from,
+  );
+  const to = sanitizeString(config.to, DEFAULTS.calendarConfig.to, LIMITS.to);
 
   Object.assign(appState.calendarConfig, { lang, theme, from, to });
 
-  // Either valid custom messages, valid Default messages or empty messages.
-  const defMsgs = getDefaultMessages(lang, theme);
+  // config.messages already sanitized in urlDataService, but safe to sanitize again if you want
+  const msgs = sanitizeMessagesArray(config.messages, {
+    maxLenEach: LIMITS.message,
+    emptyFallback: DEFAULTS.calendar.emptyMessage,
+  });
 
-  const msgs =
-    Array.isArray(config?.messages) &&
-    config.messages.length === LIMITS.messagesCount
-      ? config.messages
-      : defMsgs;
-  appState.calendar.messages = sanitizeMessagesArray(msgs, {
+  // Change source state
+  appState.calendar.source = "url";
+  appState.calendar.messages = msgs;
+}
+
+/*
+ * Ensure demo messages are loaded dynamically for the CURRENT language/theme.
+ * Call this when switching to the Calendar section (and optionally on language change),
+ * but only when calendar.source === "demo".
+ */
+export function ensureDemoCalendarMessages() {
+  if (appState.calendar.source !== "demo") return;
+
+  const lang = appState.calendarConfig.lang ?? DEFAULTS.calendarConfig.lang;
+  const theme = appState.calendarConfig.theme ?? DEFAULTS.calendarConfig.theme;
+
+  const defaults = getDefaultMessages(lang, theme);
+
+  appState.calendar.messages = sanitizeMessagesArray(defaults, {
     maxLenEach: LIMITS.message,
     emptyFallback: DEFAULTS.calendar.emptyMessage,
   });
