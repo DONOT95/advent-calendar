@@ -48,3 +48,36 @@ export function markDoorOpened(buttonEl) {
   if (!buttonEl) return;
   buttonEl.classList.add("opened");
 }
+
+//========== SET DIALOG TITLE/TEXT ==========
+export function displayCalendarMessage(
+  popupEl,
+  titleEl,
+  datumEl,
+  textEl,
+
+  titleText,
+  datumText,
+  messageText,
+) {
+  if (!popupEl || !titleEl || !datumEl || !textEl) return;
+
+  titleEl.textContent = titleText;
+  datumEl.textContent = datumText;
+  textEl.textContent = messageText;
+
+  if (!popupEl.open) popupEl.showModal();
+}
+
+export function setFromAndToDefaultMultiLang(
+  container,
+  fromEl,
+  toEl,
+  fromLbl,
+  toLbl,
+) {
+  if (!container || !fromEl || !toEl) return;
+
+  fromEl.textContent = fromLbl;
+  toEl.textContent = toLbl;
+}

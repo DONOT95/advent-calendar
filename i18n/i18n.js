@@ -1,5 +1,6 @@
 // LANGUAGE: ELEMENTS
 import { DEFAULTS, appState } from "../state/appState.js";
+import { setProperFromTo } from "../controllers/uiController.js";
 export const uiTexts = {
   en: {
     nav: {
@@ -23,7 +24,7 @@ export const uiTexts = {
       backtoedit: "Back",
 
       // Calendar dialog:
-      closecalendar: "Close",
+      close: "Close",
 
       // dialog URL
       copy: "Copy",
@@ -39,24 +40,42 @@ export const uiTexts = {
       theme: "Theme:",
       day: "Day",
 
+      fromPerson: "Me",
+      toPerson: "You",
+
       // Calendar popup:
       popupdaytitle: "Day {day}",
+
+      popupTitle: "Today's message",
+      dayPrefix: "{day}. December:",
 
       // Wizard generated dialog:
       sharecalendartitle: "Share your calendar",
       copyinstruction: "Copy and share this link:",
 
       // Preview messages list:
-      previewmessageslist: "Messages",
+      previewMessageLabel: "Messages",
 
       openlinktitle: "Open a calendar",
       openlinkhint: "Paste a calendar link to open it.",
+
+      // Sender, reciever at Calendar view
+      fromTxt: "From:",
+      toTxt: "To:",
+
+      // 2 different warning message for URL error dialog
+      invalidErrorDemo:
+        "This link is invalid or damaged. Showing demo content.",
+      invalidErrorRepaired:
+        "This link was incomplete. Missing values were replaced with defaults.",
     },
     // Set Attribute ( Event listener on placeholder)
     placeholders: {
       from: "From name",
       to: "To name",
     },
+
+    // Themes
     selects: {
       classic: "Classic",
       family: "Family",
@@ -69,7 +88,12 @@ export const uiTexts = {
       createstep1: "Step 1 - Names & Theme",
       createstep2: "Step 2 - Edit Daily Messages",
       createstep3: "Step 3 - Check Preview",
+
+      // Url Error dialog title
+      errorTitle: "Link problem",
     },
+
+    // Formatted
     currentHour: "{h}:{min}:{sec}",
     currentDate: "Today: {d}.{m}.{y}",
 
@@ -86,48 +110,53 @@ export const uiTexts = {
       trust: "No cookies · No ads · No account · No fees",
     },
 
+    cards: {
+      label: "Why you'll love it",
+      subtitle:
+        "Everything you need for a meaningful Advent Calendar — nothing more, nothing less.",
+    },
+
     cardnegative: {
       title: "No disadvantages. Just joy.",
-      li1: "❌ No cookies",
-      li2: "❌ No ads",
-      li3: "❌ No costs",
-      li4: "❌ No account",
-      li5: "❌ No costs",
-      li6: "❌ No upload / download",
+      li1: " cookies or tracking",
+      li2: " ads or distractions",
+      li3: " hidden costs",
+      li4: " account required",
+      li5: " upload / download",
     },
 
     cardpositive: {
-      title: "Everything you need. Nothing you don't.",
-      li1: "✅ Easy to use",
-      li2: "✅ Takes only minutes to create",
-      li3: "✅ Create unlimited calendars",
-      li4: "✅ Create unlimited calendars",
-      li5: "✅ Share instantly via a single link",
-      li6: "✅ Your data stays inside your URL (copy & send)",
+      title: "Only what you need.",
+      li1: "Easy to use",
+      li2: "Takes only minutes to create",
+      li3: "Unlimited calendars",
+      li4: "Share instantly with a single link",
+      li5: "Your data stays inside your URL (copy & send)",
     },
 
     how: {
-      title: "How it works",
-      subtitle: "Three minutes now — daily smiles all December.",
+      label: "How it works",
+      subtitle:
+        "Set it up in minutes — enjoy the magic every day until Christmas.",
 
       step1: {
-        instruction: "Choose names & a theme",
-        hint: "Pick “From”, “To”, language, and a look that fits your vibe.",
+        instruction: "Address and style",
+        hint: "Choose who it’s from and who it’s for, pick a language, and select a theme that matches your mood — cozy, playful, or a little bit magical.",
       },
 
       step2: {
         instruction: "Write your daily surprises",
-        hint: "Add personal messages, memories, jokes, or tiny tasks — one per day.",
+        hint: "Fill each day with something special: a kind message, a shared memory, a small joke, or a tiny challenge. Every door can be a new smile.",
       },
 
       step3: {
         instruction: "Generate your share link",
-        hint: "One link contains everything. Copy it and send it anywhere.",
+        hint: "We turn everything into a single, private link. Just copy it and share it — no accounts, no downloads, no extra steps.",
       },
 
       step4: {
         instruction: "Open doors day by day",
-        hint: "The receiver opens a new door each day — simple and magical.",
+        hint: "From December 1st on, one door opens each day. Take your time, enjoy the moment, and let the anticipation grow until Christmas.",
       },
     },
   },
@@ -155,7 +184,7 @@ export const uiTexts = {
       backtoedit: "Zurück",
 
       // Calendar:
-      closecalendar: "Schließen",
+      close: "Schließen",
 
       // dialog URL
       copy: "Kopie",
@@ -170,17 +199,32 @@ export const uiTexts = {
       theme: "Thema:",
       day: "Tag",
 
+      fromPerson: "Mir",
+      toPerson: "Dich",
+
       // Calendar popup:
       popupdaytitle: "Tag {day}",
+
+      popupTitle: "Heutige Nachricht",
+      dayPrefix: "{day}. Dezember:",
 
       // Wizard generated dialog:
       sharecalendartitle: "Teile deinen Kalender",
       copyinstruction: "Kopiere diesen Link und teile ihn:",
 
-      previewmessageslist: "Nachrichten",
+      previewMessageLabel: "Nachrichten",
 
       openlinktitle: "Kalender öffnen",
       openlinkhint: "Füge einen Kalender-Link ein.",
+
+      fromTxt: "Von:",
+      toTxt: "An:",
+
+      // 2 different warning message for URL error dialog
+      invalidErrorDemo:
+        "Dieser Link ist ungültig oder beschädigt. Demo-Kalender Inhalt wird angezeigt.",
+      invalidErrorRepaired:
+        "Dieser Link war unvollständig. Fehlende Werte wurden durch Standardwerte ersetzt.",
     },
     // Set Attribute ( Event listener on placeholder)
     placeholders: {
@@ -199,9 +243,77 @@ export const uiTexts = {
       createstep1: "Schritt 1 - Namen & Thema",
       createstep2: "Schritt 2 - Tägliche Nachrichten Bearbeiten",
       createstep3: "Schritt 3 - Vorschau Überprüfen",
+
+      // Url error dialog title
+      errorTitle: "Link-Problem",
     },
+
+    // Format
     currentHour: "{h}:{min}:{sec}",
     currentDate: "Heute: {d}.{m}.{y}",
+    previewitemPrefix: "{day}. Dezember:",
+
+    hero: {
+      kicker: "40 % KREATIVITÄT · 40 % FÜRSORGE · 100 % LIEBE",
+      title: "Mach das Warten auf Weihnachten magisch",
+      subtitle:
+        "Erstelle in wenigen Minuten einen persönlichen Adventskalender - kostenlos, einfach und mit viel Liebe gemacht. Überrasche Freunde, Familie oder Kolleg:innen mit täglichen Nachrichten, die wirklich in Erinnerung bleiben.",
+
+      createbtn: "Kalender erstellen",
+      viewbtn: "Kalender ansehen",
+      openlink: "Link öffnen",
+
+      trust: "Keine Cookies · Keine Werbung · Kein Konto · Keine Kosten",
+    },
+
+    cards: {
+      label: "Warum du es lieben wirst",
+      subtitle:
+        "Alles, was du für einen bedeutungsvollen Adventskalender brauchst - nicht mehr und nicht weniger.",
+    },
+
+    cardnegative: {
+      title: "Keine Nachteile. Nur Freude.",
+      li1: "Keine Cookies oder Tracking",
+      li2: "Keine Werbung oder Ablenkungen",
+      li3: "Keine versteckten Kosten",
+      li4: "Kein Benutzerkonto erforderlich",
+      li5: "Kein Upload / Download",
+    },
+
+    cardpositive: {
+      title: "Alles, was du brauchst.",
+      li1: "Einfach und intuitiv zu bedienen",
+      li2: "In wenigen Minuten erstellt",
+      li3: "Unbegrenzt viele Kalender",
+      li4: "Sofort teilen mit einem einzigen Link",
+      li5: "Deine Daten bleiben in deiner URL (kopieren & senden)",
+    },
+
+    how: {
+      label: "So funktioniert’s",
+      subtitle: "Ein paar Minuten jetzt - tägliche Freude den ganzen Dezember.",
+
+      step1: {
+        instruction: "Absender & Stil wählen",
+        hint: "Lege fest, von wem der Kalender ist, für wen er gedacht ist, wähle Sprache und Design - gemütlich, verspielt oder ganz festlich.",
+      },
+
+      step2: {
+        instruction: "Tägliche Überraschungen schreiben",
+        hint: "Fülle jeden Tag mit etwas Besonderem: einer lieben Nachricht, einer gemeinsamen Erinnerung, einem kleinen Scherz oder einer Mini-Aufgabe. Jede Tür kann ein Lächeln sein.",
+      },
+
+      step3: {
+        instruction: "Deinen Link erstellen",
+        hint: "Wir verwandeln alles in einen einzigen, privaten Link. Einfach kopieren und teilen - kein Konto, keine Downloads, keine Umwege.",
+      },
+
+      step4: {
+        instruction: "Tag für Tag Türen öffnen",
+        hint: "Ab dem 1. Dezember öffnet sich jeden Tag eine neue Tür. Lass dir Zeit und genieße dieses besondere Gefühl des Wartens bis Weihnachten.",
+      },
+    },
   },
 
   hu: {
@@ -227,7 +339,7 @@ export const uiTexts = {
       backtoedit: "Vissza",
 
       // Calendar:
-      closecalendar: "Bezárás",
+      close: "Bezárás",
 
       // dialog URL
       copy: "Másol",
@@ -242,17 +354,31 @@ export const uiTexts = {
       theme: "Téma:",
       day: "Nap",
 
+      fromPerson: "Én",
+      toPerson: "Te",
+
       // Calendar popup:
       popupdaytitle: "{day}. nap",
+
+      popupTitle: "Mai üzenet",
+      dayPrefix: "{day}. december:",
 
       // Wizard generated dialog:
       sharecalendartitle: "Oszd meg a naptárad",
       copyinstruction: "Másold ki és oszd meg a linket:",
 
-      previewmessageslist: "Üzenetek",
+      previewMessageLabel: "Üzenetek",
 
       openlinktitle: "Naptár megnyitása",
       openlinkhint: "Illeszd be a naptár linkjét.",
+
+      fromTxt: "Feladó:",
+      toTxt: "Címzett:",
+
+      invalidErrorDemo:
+        "Ez a link érvénytelen vagy sérült. Demo Kalendár nézet aktiválva.",
+      invalidErrorRepaired:
+        "Ez a link hiányos volt. A hiányzó értékeket alapértelmezett értékekkel helyettesítettük.",
     },
     // Set Attribute
     placeholders: {
@@ -271,9 +397,78 @@ export const uiTexts = {
       createstep1: "1. Lépés - Nevek és Téma",
       createstep2: "2. Lépés - Napi Üzenetek Szerkesztése",
       createstep3: "3. Lépés - Előnézet Ellenőrzése",
+
+      // Url Error dialog title
+      errorTitle: "Link probléma",
     },
+
+    // Formatted
     currentHour: "{h}:{min}:{sec}",
     currentDate: "Ma: {y}.{m}.{d}.",
+    previewitemPrefix: "{day}. December:",
+
+    hero: {
+      kicker: "40% KREATIVITÁS · 40% TÖRŐDÉS · 100% SZERETET",
+      title: "Tedd varázslatossá a karácsonyi várakozást",
+      subtitle:
+        "Készíts személyes adventi naptárat néhány perc alatt - ingyenesen, egyszerűen és szeretettel. Lepd meg barátaidat, családodat vagy kollégáidat olyan napi üzenetekkel, amelyek igazán emlékezetesek maradnak.",
+
+      createbtn: "Naptár létrehozása",
+      viewbtn: "Naptár megtekintése",
+      openlink: "Link megnyitása",
+
+      trust: "Nincs cookie · Nincs reklám · Nincs fiók · Nincs költség",
+    },
+
+    cards: {
+      label: "Miért fogod szeretni",
+      subtitle:
+        "Minden, amire egy igazán jó adventi naptárhoz szükséged van - se több, se kevesebb.",
+    },
+
+    cardnegative: {
+      title: "Semmi hátrány. Csak öröm.",
+      li1: "Nincsenek sütik vagy követés",
+      li2: "Nincsenek hirdetések vagy zavaró elemek",
+      li3: "Nincsenek rejtett költségek",
+      li4: "Nincs szükség felhasználói fiókra",
+      li5: "Nincs feltöltés / letöltés",
+    },
+
+    cardpositive: {
+      title: "Minden, amire szükséged van.",
+      li1: "Egyszerű és könnyen használható",
+      li2: "Pár perc alatt elkészíthető",
+      li3: "Korlátlan számú naptár",
+      li4: "Azonnali megosztás egyetlen linkkel",
+      li5: "Az adataid a linkben maradnak (másolás & küldés)",
+    },
+
+    how: {
+      label: "Hogyan működik",
+      subtitle:
+        "Pár perc alatt elkészül - élvezze a varázslatot minden nap karácsonyig.",
+
+      step1: {
+        instruction: "Feladó és stílus",
+        hint: "Válaszd ki, kitől szól és kinek készül a naptár, állítsd be a nyelvet és a hangulatot - meghitt, játékos vagy ünnepi.",
+      },
+
+      step2: {
+        instruction: "Napi meglepetések megírása",
+        hint: "Tölts meg minden napot valami különlegessel: kedves üzenettel, közös emlékkel, egy kis poénnal vagy apró kihívással. Minden ajtó egy új mosoly lehet.",
+      },
+
+      step3: {
+        instruction: "Megosztható link létrehozása",
+        hint: "Mindent egyetlen, privát linkké alakítunk. Csak másold ki és oszd meg - nincs fiók, nincs letöltés, nincs bonyodalom.",
+      },
+
+      step4: {
+        instruction: "Ajtók megnyitása nap mint nap",
+        hint: "December 1-től minden nap egy új ajtó nyílik meg. Szánj rá időt, és élvezd a karácsonyig tartó várakozás különleges érzését.",
+      },
+    },
   },
 };
 
@@ -281,12 +476,13 @@ export const SUPPORTED_LANGUAGES = Object.freeze(Object.keys(uiTexts));
 
 //================   DEFAULT LANG   ================
 
-// INTERNAL: safely resolve "nav.calendar"
+// INTERNAL: safely resolve
+// eg: root -> uiTexts[lang] , path -> "nav.calendar"
 function resolveKey(root, path) {
   return path.split(".").reduce((acc, part) => acc?.[part], root);
 }
 
-// APPLY TEXT TO PAGE
+// APPLY on DOM -> DYNAMCALLY REPLACE STATIC TEXTS
 export function applyUiLanguage() {
   const lang = getUiLanguage();
   const dict =
@@ -298,7 +494,10 @@ export function applyUiLanguage() {
   // FOR TEXT
   // Replace every element value with: data-i18n
   document.querySelectorAll("[data-i18n]").forEach((el) => {
-    const key = el.dataset.i18n; // e.g. "nav.calendar"
+    // Element property (dataset name -> data-i18n)
+    const key = el.dataset.i18n;
+    // Text search for a key and give back the value
+    // e.g. "nav.calendar"
     const text = resolveKey(dict, key);
 
     if (text != null) el.textContent = text;
@@ -312,6 +511,11 @@ export function applyUiLanguage() {
 
     if (text != null) el.setAttribute("placeholder", text);
   });
+
+  // If demo -> from and to (Me, you) should be change with language change
+  if (appState.calendar.source === "demo") {
+    setProperFromTo();
+  }
 }
 
 export function getUiLanguage() {
@@ -336,8 +540,17 @@ export function getLangAndDictThanResolveKey(key) {
   return value;
 }
 
-export function formatPlaceholder(key, params = {}) {
-  let text = getLangAndDictThanResolveKey(key);
+// Get a text or fallback
+export function formatText(key, fallback = "") {
+  return getLangAndDictThanResolveKey(key) || fallback;
+}
+
+// Get a text formatted or fallback
+export function formatPlaceholder(key, params = {}, fallback = "") {
+  const base = getLangAndDictThanResolveKey(key) || fallback;
+
+  let text = base;
+
   for (const [k, v] of Object.entries(params)) {
     text = text.replaceAll(`{${k}}`, String(v));
   }

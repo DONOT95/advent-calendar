@@ -1,6 +1,6 @@
 import { buildCalendarUrl } from "../services/urlDataService.js";
 import { LIMITS } from "../config/constants.js";
-import { appState, DEFAULTS, resetAppState } from "../state/appState.js";
+import { appState, DEFAULTS, resetWizardDraft } from "../state/appState.js";
 import {
   applyWizardConfig,
   getMessagesForUrl,
@@ -14,6 +14,7 @@ import {
   flashCopyButtonText,
   copyUrlFromWizard,
   selectInputText,
+  selectInputTextSafe,
   bindWizardDom,
   isWizardDomReady,
   setWizardStep,
@@ -22,10 +23,6 @@ import { getDefaultMessages } from "../services/defaultMessagesService.js";
 
 // LAZY DOM
 // UI ELEMENTS (placeholders)
-
-let fromNameEl, toNameEl, themeEl;
-let langEl;
-let fromPrevEl, toPrevEl;
 
 let dom = null;
 // ============================================
@@ -51,8 +48,6 @@ export function initGenerator() {
 
   // Character counter for Input fields
   setCountersAndProgressToZero();
-
-  // At start set Day: 1
 
   // ========================= ON BUTTONS EVENT LISTENERS ============================
   // Step 1. CUSTOM btn click -> Navigate to Step 2. (Create custom messages)
@@ -85,7 +80,7 @@ export function initGenerator() {
   // Copy generated URL
   dom.btnCopyUrl?.addEventListener("click", onCopyUrl);
 
-  // Character counter events
+  // Character counter events for: From, To, message
   dom.fromInput?.addEventListener("input", () =>
     updateCounter(dom.fromInput, dom.fromInputCharactersCounter, LIMITS.from),
   );
@@ -104,10 +99,6 @@ export function initGenerator() {
 function updateCounter(inputEl, counterEl, limit) {
   const length = inputEl.value.length;
   counterEl.textContent = `${length}/${limit}`;
-}
-
-function resetmessageCharacterCounter(counterEl, limit) {
-  counterEl.textContent = `0/${limit}`;
 }
 
 function setCountersAndProgressToZero() {
@@ -147,7 +138,7 @@ function showNextMessage() {
   // After the 24. Message -> navigate to PREVIEW
   if (
     appState.generator.currentMessageIndex ===
-    appState.calendar.messages.length - 1
+    appState.wizardDraft.messages.length - 1
   ) {
     dom.stepProgress.value = 100;
     displayMessages();
@@ -160,14 +151,19 @@ function showNextMessage() {
 
   // Load next message (or empty)
   dom.messageEditor.value =
-    appState.calendar.messages[appState.generator.currentMessageIndex] ??
+    appState.wizardDraft.messages[appState.generator.currentMessageIndex] ??
     DEFAULTS.calendar.emptyMessage;
 
+  // Select the text in textfeld (UX: easy to edit)
+  selectInputText(dom.messageEditor);
+
+  // For message editor always "reset" counter at new Day (new message, reset limit)
   updateCounter(
     dom.messageEditor,
     dom.messageEditorCharactersCounter,
     LIMITS.message,
   );
+
   // Increase Day
   dom.dailyNumber.textContent = String(
     appState.generator.currentMessageIndex + 1,
@@ -185,16 +181,22 @@ function showPreviousMessage() {
     // reset progressbar
     dom.stepProgress.value = 0;
     goToStep(0);
+
+    // Select the 1. Input field (From person name) (UX: easy to edit)
+    selectInputText(dom.fromInput);
     return;
   }
 
   // Decrease Index
   appState.generator.currentMessageIndex--;
 
-  // Load message
+  // Load message for ui or empty
   dom.messageEditor.value =
-    appState.calendar.messages[appState.generator.currentMessageIndex] ??
+    appState.wizardDraft.messages[appState.generator.currentMessageIndex] ??
     DEFAULTS.calendar.emptyMessage;
+
+  // Select the text in textfeld (UX: easy to edit)
+  selectInputText(dom.messageEditor);
 
   updateCounter(
     dom.messageEditor,
@@ -220,10 +222,10 @@ function saveCurrentMessage() {
 // Display either custom or default messages
 function displayMessages() {
   // Get messages
-  const list = getMessagesForUrl(appState.calendar.messages);
+  const list = getMessagesForUrl(appState.wizardDraft.messages);
 
   // Updata state (messages)
-  appState.calendar.messages = [...list];
+  appState.wizardDraft.messages = [...list];
 
   // Render neu elemente
   renderPreviewList(dom.previewMessages, list);
@@ -237,8 +239,8 @@ function readBasicConfig() {
     to: dom.toInput.value,
   });
 
-  dom.previewFrom.textContent = appState.calendarConfig.from;
-  dom.previewTo.textContent = appState.calendarConfig.to;
+  dom.previewFrom.textContent = appState.wizardDraft.from;
+  dom.previewTo.textContent = appState.wizardDraft.to;
 }
 
 // Function to navigate step 1-3
@@ -257,20 +259,22 @@ export function resetGenerator() {
   if (!dom) {
     dom = bindWizardDom();
   }
-  resetAppState({ keepTime: true });
+  resetWizardDraft();
 
   if (!dom?.createTrack || !dom?.createSteps?.length) return;
   resetUIValuesToDefault();
   setCountersAndProgressToZero();
   // Function to navigate step 1-3
   goToStep(0);
+  // Select the 1. Input field (From person name) (UX: easy to edit)
+  selectInputText(dom.fromInput);
 }
 
 // Clear HTML element values in WIZARD
 function resetUIValuesToDefault() {
   // Clear Form Inputs
-  dom.fromInput.value = "";
-  dom.toInput.value = "";
+  dom.fromInput.value = appState.wizardDraft.from;
+  dom.toInput.value = appState.wizardDraft.to;
   // Set default Theme
   dom.themeSelect.value = DEFAULTS.calendarConfig.theme;
 
@@ -283,6 +287,8 @@ function applyTextLengths() {
   dom.fromInput.maxLength = LIMITS.from;
   dom.toInput.maxLength = LIMITS.to;
   dom.messageEditor.maxLength = LIMITS.message;
+
+  dom.messageEditor;
 }
 
 // =============================== ON CLICK FUNCTONS ===============================
@@ -294,7 +300,10 @@ function onCreateCustom() {
   goToStep(1);
 
   // Set UI element content (1. value of messages)
-  dom.messageEditor.value = appState.calendar.messages[0];
+  dom.messageEditor.value = appState.wizardDraft.messages[0];
+  // Select the text in textfeld (UX: easy to edit)
+  //dom.messageEditor.focus();
+  selectInputTextSafe(dom.messageEditor, { preventScroll: true });
 
   // Increase progress bar loading
   dom.stepProgress.value = 28;
@@ -304,23 +313,20 @@ function onCreateDefault() {
   // From, to lang, theme
   readBasicConfig();
 
-  // Default messges...(lang,theme)
+  // Default messges...(lang,theme) wizardDraft.messages = default.messages[appstate.lang, wizzDraft.theme]
   setWizardMessages(
     getDefaultMessages(
       appState.calendarConfig.lang,
-      appState.calendarConfig.theme,
+      appState.wizardDraft.theme,
     ),
   );
+
   // Display messges for preview
   displayMessages();
 
-  appState.generator.currentMessageIndex =
-    appState.calendar.messages.length - 1;
-
-  // Navigate to preview section
-
   // Increase progressbar
   dom.stepProgress.value = 100;
+  // Navigate to preview section
   goToStep(2);
 }
 
@@ -328,13 +334,13 @@ function onGenerateUrl() {
   // Get lang, theme, from, to from USER
   readBasicConfig();
 
-  const messages = getMessagesForUrl(appState.calendar.messages);
+  const messages = getMessagesForUrl(appState.wizardDraft.messages);
 
   const url = buildCalendarUrl({
     lang: appState.calendarConfig.lang,
-    theme: appState.calendarConfig.theme,
-    from: appState.calendarConfig.from,
-    to: appState.calendarConfig.to,
+    theme: appState.wizardDraft.theme,
+    from: appState.wizardDraft.from,
+    to: appState.wizardDraft.to,
     messages,
   });
 
@@ -342,10 +348,28 @@ function onGenerateUrl() {
 }
 
 function onBackToEdit() {
-  dom.dailyNumber.textContent = appState.generator.currentMessageIndex + 1;
+  // Set messages index correct to last message (if default messages did not used it)
+  appState.generator.currentMessageIndex =
+    appState.wizardDraft.messages.length - 1;
+
+  // Set Day
+  dom.dailyNumber.textContent = String(
+    appState.generator.currentMessageIndex + 1,
+  );
+
+  // Display message (or empty)
   dom.messageEditor.value =
-    appState.calendar.messages[appState.generator.currentMessageIndex];
-  decreaseProgress();
+    appState.wizardDraft.messages[appState.generator.currentMessageIndex];
+
+  // Select the text in textfeld (UX: easy to edit)
+  selectInputText(dom.messageEditor);
+  // For message editor always "reset" counter at new Day (new message, reset limit)
+  updateCounter(
+    dom.messageEditor,
+    dom.messageEditorCharactersCounter,
+    LIMITS.message,
+  );
+
   goToStep(1);
 }
 

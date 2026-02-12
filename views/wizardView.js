@@ -1,4 +1,5 @@
 import { getLangAndDictThanResolveKey } from "../i18n/i18n.js";
+import { getPreviewItemPrefix } from "../services/calendarDayServices.js";
 /* Zuständig für: Section „Create / Generate“
 Step 1–3 Rendering
 Progressbar
@@ -69,10 +70,19 @@ export function isWizardDomReady(dom) {
 // Display Preview messages
 export function renderPreviewList(listEl, messages) {
   if (!listEl) return;
+
   listEl.replaceChildren(
-    ...messages.map((text) => {
+    ...messages.map((text, i) => {
       const li = document.createElement("li");
-      li.textContent = text;
+
+      const prefix = getPreviewItemPrefix(i + 1);
+
+      // If text longer than 100 char cut it (only for preview)
+      if (text.length > 100) {
+        text = text.slice(0, 100);
+        text = text + "...";
+      }
+      li.textContent = `${prefix} ${text}`;
       return li;
     }),
   );
@@ -108,6 +118,23 @@ export function selectInputText(inputEl) {
   inputEl.select();
 
   inputEl.setSelectionRange(0, inputEl.value.length);
+}
+
+export function selectInputTextSafe(inputEl, { preventScroll = false } = {}) {
+  if (!inputEl) return;
+
+  // preventScroll: avoids "jumping" the slider
+  if (preventScroll && typeof inputEl.focus === "function") {
+    try {
+      inputEl.focus({ preventScroll: true });
+    } catch {
+      inputEl.focus();
+    }
+  } else {
+    inputEl.focus();
+  }
+
+  if (typeof inputEl.select === "function") inputEl.select();
 }
 
 export async function copyUrlFromWizard(inputEl) {

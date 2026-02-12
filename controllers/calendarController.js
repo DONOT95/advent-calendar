@@ -31,6 +31,9 @@ export function initCalendar({
 }) {
   // Guard clause to prevent double function call
   if (!container || !template) return;
+  // Once binden
+  calendarEl = container;
+  tpl = template;
 
   messages = Array.isArray(msgs) ? msgs : [];
   onDoorOpen = callB;
@@ -39,27 +42,55 @@ export function initCalendar({
   if (!initialized) {
     initialized = true;
 
-    // Once binden
-    calendarEl = container;
-    tpl = template;
-
     // Buttons + listener (Doors)
     buildCalendar();
-    // Set today, locked
-    updateDoorClassesControll();
-    // Set next refresh (midnight)
-    scheduleMidnightRefresh();
+    // Set today, locked schedules midnight refresh
+    refreshCalendar();
   } else {
-    updateDoorClassesControll();
+    refreshCalendar();
   }
 }
+// Replace messages array. Used by click handlers (calendar day buttons). (replace if demo messages and lang change)
+export function setCalendarMessages(newMessages) {
+  if (!Array.isArray(newMessages)) return;
 
+  // Only set new Array if it is not the same
+  if (messages.length === newMessages.length) {
+    let same = true;
+    for (let i = 0; i < messages.length; i++) {
+      if (messages[i] !== newMessages[i]) {
+        same = false;
+        break;
+      }
+    }
+    // nothing changed
+    if (same) return;
+  }
+
+  messages = newMessages;
+}
+
+// Update offset if needed NOT IN USE!!!!!!!!!!!!!!!!!
+export function setCalendarOffsetMs(newOffsetMs) {
+  offsetMs = Number.isFinite(newOffsetMs) ? newOffsetMs : 0;
+}
+
+// Refresh view state (locked/today) and midnight timer
+export function refreshCalendar() {
+  if (!initialized) return;
+  const allowedDay = getAllowedDay(offsetMs, DAYS);
+
+  updateDoorClassesView(buttons, { allowedDay });
+
+  scheduleMidnightRefresh();
+}
+
+// Actual DOM manipulation (create), bind listener
 function buildCalendar() {
-  // Doors
-
+  // Doors in DOM
   buttons = renderDoors(calendarEl, tpl, DAYS);
 
-  // All door
+  // Bind click handlers
   for (let i = 1; i <= DAYS; i++) {
     const btn = buttons[i];
 
@@ -83,15 +114,6 @@ function buildCalendar() {
   }
 }
 
-function updateDoorClassesControll() {
-  // Check Date, set openable/locked/today state for doors
-  const now = new Date(Date.now() + offsetMs);
-
-  const allowedDay = getAllowedDay(now, DAYS);
-
-  updateDoorClassesView(buttons, { allowedDay });
-}
-
 function scheduleMidnightRefresh() {
   // Clear old timer
   if (midnightTimeoutId) clearTimeout(midnightTimeoutId);
@@ -101,31 +123,25 @@ function scheduleMidnightRefresh() {
   // Next Midnight in "Servertime"
   const nextMidnight = new Date(now);
   nextMidnight.setHours(24, 0, 0, 150);
+
   const msUntil = nextMidnight.getTime() - now.getTime();
 
   midnightTimeoutId = setTimeout(() => {
-    updateDoorClassesControll();
-    scheduleMidnightRefresh();
+    refreshCalendar();
   }, msUntil);
-
-  // TEST REFRESH IN CONSOLE
-  /* midnightTimeoutId = setTimeout(() => {
-    console.log("MIDNIGHT REFRESH FIRED", new Date(Date.now() + offsetMs));
-    updateDoorClassesC();
-    scheduleMidnightRefresh();
-  }, msUntil); */
 }
 
-function getAllowedDay(now, daysCount) {
+function getAllowedDay(offsetMs, days) {
+  const now = new Date(Date.now() + offsetMs);
   const month = now.getMonth() + 1; // 1–12
   const day = now.getDate();
 
   // Not December → no doors available
-  if (month !== 2) return 0;
+  if (month !== 2) return null;
 
-  // December 1–24
-  if (day >= 1 && day <= daysCount) return day;
+  // No today. Current date > 24
+  if (day > days) return null;
 
-  // After Advent (25+): all doors available, but no "today"
-  return null;
+  // Return the current days to mark as today
+  return Math.min(day, days);
 }

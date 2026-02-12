@@ -12,6 +12,8 @@ export function bindUiDom() {
   return {
     app: document.getElementById("app"),
 
+    body: document.body,
+
     calendarPage: document.getElementById("page-calendar"),
 
     // Menu
@@ -40,11 +42,10 @@ export function bindUiDom() {
     // Popup (calendar day dialog)
     popup: document.getElementById("popup"),
     popupTitle: document.getElementById("popup-title"),
+    popupDate: document.getElementById("dayPrefix"),
     popupText: document.getElementById("popup-text"),
+    // TODO: ONE CLOSEDIALOG EVENT FOR ALL CLOSE BTN
     popupCloseBtn: document.getElementById("popup-close-btn"),
-
-    // Dialogs (optional helper for outside-click close)
-    dialogs: Array.from(document.querySelectorAll("dialog")),
 
     // Theme select exists on create page
     themeSelect: document.getElementById("themeSelect"),
@@ -55,6 +56,18 @@ export function bindUiDom() {
     openLinkError: document.getElementById("openLinkError"),
     btnOpenLinkCancel: document.getElementById("btnOpenLinkCancel"),
     btnOpenLinkGo: document.getElementById("btnOpenLinkGo"),
+
+    // TODO: ONE CLOSEDIALOG EVENT FOR ALL CLOSE BTN
+    // Dialog for URL data error (cant read, damaged)
+    urlStatusDialog: document.getElementById("showUrlStatusDialog"),
+    statusTitle: document.getElementById("urlStatusTitle"),
+    statusText: document.getElementById("urlStatusText"),
+    /* closeDialogBtns: Array.from(document.querySelectorAll("close-dialog")), */
+
+    // Dialogs (optional helper for outside-click close)
+    // Last to be able to get all the dialogs inside the array
+    closeUrlErrorBtn: document.getElementById("closeUrlErrorBtn"),
+    dialogs: Array.from(document.querySelectorAll("dialog")),
   };
 }
 
@@ -123,22 +136,9 @@ export function applyTheme(htmlEl, themeRegistry, themeKey) {
   if (!htmlEl || !themeRegistry) return;
 
   // Remove all type of theme classes
-  htmlEl.classList.remove(
-    ...Object.keys(themeRegistry).map((t) => `background-${t}`),
-  );
 
   if (!themeRegistry[themeKey]) themeKey = Object.keys(themeRegistry[0]);
 
   // Add selected theme class
-  htmlEl.classList.add(`background-${themeKey}`);
-}
-
-//========== SET DIALOG TITLE/TEXT ==========
-export function showPopup(popupEl, titleEl, textEl, titleText, messageText) {
-  if (!popupEl || !titleEl || !textEl) return;
-
-  titleEl.textContent = titleText;
-  textEl.textContent = messageText;
-
-  if (!popupEl.open) popupEl.showModal();
+  htmlEl.dataset.theme = themeKey;
 }

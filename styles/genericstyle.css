@@ -1,0 +1,319 @@
+/* =========================
+   0) Reset
+   ========================= */
+*,
+*::before,
+*::after {
+  /* Making elements size include: content, padding and border */
+  box-sizing: border-box;
+}
+
+/* 2. Margins entfernen */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* 4. Medien */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 5. Form-Elemente */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* 6. Listen */
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+}
+
+/* 7. Links */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* =========================
+   1) Tokens (Design System)
+   ========================= */
+:root {
+  font-size: 62.5%;
+  /* ---- Spacing scale ---- */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.25rem;
+  --sp-6: 1.5rem;
+  --sp-8: 2rem;
+  --sp-10: 2.5rem;
+
+  /* ---- Layout widths ---- */
+  --content-max: 130rem;
+  --side-min: 1rem;
+  --calendar-max: 80rem;
+
+  /* ---- Radius ---- */
+  --r-1: 0.5rem;
+  --r-2: 0.75rem;
+  --r-3: 1rem;
+  --r-8: 8px;
+
+  /* ---- Borders ---- */
+  --bw-1: 1px;
+  --bw-2: 2px;
+  --bw-3: 3px;
+
+  /* ---- Shadows ---- */
+  --shadow-1: 0 4px 20px rgba(0, 0, 0, 0.25);
+  --shadow-2: 0 12px 30px rgba(0, 0, 0, 0.45);
+
+  /* ---- Typography (responsive) ---- */
+  /*   --fs-0: clamp(0.9rem, 0.2vw + 0.85rem, 1rem);
+  --fs-1: clamp(1rem, 0.25vw + 0.95rem, 1.1rem);
+  --fs-2: clamp(1.1rem, 0.4vw + 1rem, 1.25rem);
+  --fs-3: clamp(1.35rem, 1vw + 1.05rem, 2rem);
+  --fs-4: clamp(1.6rem, 2.2vw + 1rem, 3.2rem); */
+
+  --fw-4: 400;
+  --fw-5: 500;
+  --fw-6: 600;
+  --fw-7: 700;
+  --fw-8: 800;
+
+  /* ---- Colors (base) ---- */
+  --bg-img: url("/data/bilds/christmas_background_family.png");
+  --bg-color: #0b1020;
+  --bg-tint-light: #dadbde;
+
+  --header-bg: rgb(120, 0, 12);
+  --header-border: #f0c107;
+  --br: rgb(240, 193, 7);
+
+  --text: rgb(241, 238, 226);
+  --text-tint-light: #f9f8f3;
+  --text-soft: rgba(240, 193, 7, 0.78);
+
+  --surface: rgba(54, 54, 54, 0.23); /* main overlay */
+  --panel: rgba(0, 0, 0, 0.18); /* cards/containers */
+  --panel-strong: rgba(17, 24, 39, 0.95); /* dialogs */
+
+  --border: rgba(240, 193, 7, 0.18);
+  --border-strong: rgba(101, 196, 255, 0.35);
+
+  --accent: #22d3ee;
+  --accent-2: rgba(34, 197, 94, 0.3);
+
+  --door-bg: rgba(31, 41, 55, 0.6);
+  --door-text: #d6fcff;
+  --door-locked: rgba(11, 18, 32, 0.63);
+
+  /* ---- Breakpoints ---- */
+  --bp-sm: 640px;
+}
+
+/* =========================
+   2) Base page layout
+   ========================= */
+body {
+  font-family:
+    "Rubik",
+    system-ui,
+    -apple-system,
+    sans-serif;
+
+  margin: 0;
+  min-height: 100vh;
+  line-height: 1.4;
+  font-size: var(--fs-1);
+  color: var(--text);
+
+  background: var(--bg-color, none);
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* ============== HELP CLASSES ==============*/
+/* ============== reusable components ==============*/
+/* Theme background helpers*/
+
+body.calendar-scope {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+body.calendar-scope[data-theme="classic"] {
+  background-image: url("/data/bilds/christmas_background_classic.png");
+}
+
+body.calendar-scope[data-theme="neon"] {
+  background-image: url("/data/bilds/christmas_background_neon.png");
+}
+
+body.calendar-scope[data-theme="family"] {
+  background-image: url("/data/bilds/christmas_background_family.png");
+}
+
+body.calendar-scope[data-theme="horror"] {
+  background-image: url("/data/bilds/christmas_background_horror.png");
+}
+
+/* CONTAINER */
+.container {
+  max-width: 120rem;
+  padding: 0 3rem;
+  margin: 0 auto;
+}
+
+/* GRID TEMPLATE */
+.grid {
+  display: grid;
+  gap: 9rem 4rem;
+}
+
+.grid--2cols {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid--center-v {
+  align-items: center;
+}
+
+.grid--6cols {
+  gap: 1rem !important;
+  grid-template-columns: repeat(6, minmax(11rem, 1fr));
+  margin-bottom: 9rem;
+}
+
+/* ============== HTML ELEMENTS START ==============*/
+.app {
+  min-height: 100vh;
+  display: grid;
+
+  grid-template-columns:
+    minmax(var(--side-min), 1fr)
+    minmax(0, var(--content-max))
+    minmax(var(--side-min), 1fr);
+
+  grid-template-rows: auto 1fr auto;
+}
+
+main {
+  /* Position */
+  grid-column: 1 / -1;
+  grid-row: 2;
+
+  display: flex;
+  justify-content: center; /* horizontal center */
+  align-items: center;
+}
+
+/* Pages hide/show */
+.page {
+  display: none;
+  width: 100%;
+  height: 100%;
+  /* margin-inline: auto; */
+  margin: 0 auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.page.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14rem;
+}
+
+/* Span all the way throug grid columns */
+.topbar,
+footer {
+  grid-column: 1 / -1;
+}
+
+/* Header, Footer, Calendar -> NO SELECT allowed */
+.topbar,
+footer,
+.grid,
+.grid .door {
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+/* ============== CONTENT ==============*/
+
+section {
+  margin-inline: auto;
+}
+/* Buttons (generic) */
+.btn {
+  border-radius: 8px;
+  padding: 0.8rem 1.6rem;
+  font-size: 1.5rem;
+  font-weight: var(--fw-5);
+
+  border: var(--bw-1) solid rgba(240, 193, 7, 0.22);
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    background-color 0.2s ease;
+}
+
+.btn:active {
+  transform: translateY(0.5px);
+}
+
+/* .btn-primary {
+  background: rgba(5, 88, 35, 0.6);
+  border-color: rgba(34, 197, 94, 0.6);
+  color: #d1ffe7;
+} */
+
+.btn-primary {
+  background: rgba(22, 32, 63, 0.635);
+  border-color: rgba(63, 180, 253, 0.863);
+  color: rgb(114, 199, 252);
+}
+
+.btn-primary:hover {
+  background: rgba(83, 92, 118, 0.292);
+  box-shadow: -2px 2px 15px rgba(101, 196, 255, 0.1);
+}
+
+.btn-secondary {
+  background: transparent;
+  border-color: rgba(220, 215, 195, 0.2);
+  color: var(--text);
+}
+
+.btn-secondary:hover {
+  background: rgba(89, 139, 170, 0.1);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: rgb(12, 55, 82);
+  color: rgb(114, 199, 252);
+}
+
+.btn-ghost:hover {
+  background: rgba(89, 139, 170, 0.1);
+}

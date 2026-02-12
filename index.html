@@ -13,7 +13,15 @@
     />
 
     <!-- Bind CSS Style -->
-    <link rel="stylesheet" href="stylesnew.css" />
+    <link rel="stylesheet" href="styles/calendar.css" />
+    <link rel="stylesheet" href="styles/dialogsstyle.css" />
+    <link rel="stylesheet" href="styles/footerstyle.css" />
+    <link rel="stylesheet" href="styles/genericstyle.css" />
+    <link rel="stylesheet" href="styles/headerstyle.css" />
+    <link rel="stylesheet" href="styles/responsive.css" />
+    <link rel="stylesheet" href="styles/startsite.css" />
+    <link rel="stylesheet" href="styles/wizard.css" />
+    <link rel="stylesheet" href="styles/herostyle.css" />
   </head>
 
   <body>
@@ -69,9 +77,22 @@
       <main>
         <!-- PAGE: CALENDAR -->
         <section id="page-calendar" class="page">
-          <!-- Titel TO PERSON -->
-          <h2 id="name-to"></h2>
-          <div class="grid" id="calendar"></div>
+          <div class="calendar-wrap">
+            <!-- Titel TO PERSON -->
+            <div>
+              <span data-i18n="labels.to"></span>
+              <h2 id="name-to"></h2>
+            </div>
+            <div class="grid grid--6cols" id="calendar"></div>
+
+            <div>
+              <!-- Titel FROM PERSON -->
+              <div>
+                <span data-i18n="labels.from"></span>
+                <p id="name-from"></p>
+              </div>
+            </div>
+          </div>
 
           <!-- Windows-->
           <template id="door-tpl">
@@ -82,16 +103,20 @@
 
           <!-- Opened Window-content -->
           <dialog id="popup" class="dialog">
-            <!-- NUMBER/titel of window-->
-            <h2 id="popup-title" data-i18n="labels.popupdaytitle"></h2>
-            <!-- TEXT/Content of window -->
-            <p id="popup-text"></p>
+            <!-- titel of window-->
+            <h2 id="popup-title"></h2>
+            <div class="text-box">
+              <span id="dayPrefix"></span>
+              <!-- TEXT/Content of window -->
+              <p id="popup-text"></p>
+            </div>
             <div class="actions">
               <!-- Close BTN-->
               <button
                 id="popup-close-btn"
                 type="button"
-                data-i18n="buttons.closecalendar"
+                data-i18n="buttons.close"
+                class="close-dialog"
               ></button>
             </div>
           </dialog>
@@ -145,62 +170,179 @@
 
           <!-- 2 CARDS -->
           <section class="cards">
-            <article class="card">
-              <h3 class="card-title" data-i18n="cardnegative.title"></h3>
-              <ul class="card-list-negative">
-                <li data-i18n="cardnegative.li1"></li>
-                <li data-i18n="cardnegative.li2"></li>
-                <li data-i18n="cardnegative.li3"></li>
-                <li data-i18n="cardnegative.li4"></li>
-                <li data-i18n="cardnegative.li5"></li>
-                <li data-i18n="cardnegative.li6"></li>
-              </ul>
-            </article>
+            <!-- How heading -->
+            <div class="cards-head container">
+              <span class="label" data-i18n="cards.label"></span>
+              <h2 class="subtitle" data-i18n="cards.subtitle"></h2>
+            </div>
 
-            <article class="card card-accent">
-              <h3 class="card-title" data-i18n="cardpositive.title"></h3>
-              <ul class="card-list-positive">
-                <li data-i18n="cardpositive.li1"></li>
-                <li data-i18n="cardpositive.li2"></li>
-                <li data-i18n="cardpositive.li3"></li>
-                <li data-i18n="cardpositive.li4"></li>
-                <li data-i18n="cardpositive.li5"></li>
-                <li data-i18n="cardpositive.li6"></li>
-              </ul>
-            </article>
+            <div class="container grid grid--2cols">
+              <article class="card">
+                <h3 class="card-title" data-i18n="cardnegative.title"></h3>
+                <ul class="card-list card-list--negative">
+                  <li class="card-li">
+                    <ion-icon
+                      class="li-icon li-icon--negative"
+                      name="eye-off-outline"
+                    ></ion-icon>
+                    <div class="li-text-box">
+                      <span class="li-no" data-i18n="cardnegative.no1"></span>
+                      <span class="li-text" data-i18n="cardnegative.li1"></span>
+                    </div>
+                  </li>
+                  <li class="card-li">
+                    <ion-icon
+                      class="li-icon li-icon--negative"
+                      name="notifications-off-outline"
+                    ></ion-icon>
+                    <div class="li-text-box">
+                      <span class="li-no" data-i18n="cardnegative.no2"></span>
+                      <span class="li-text" data-i18n="cardnegative.li2"></span>
+                    </div>
+                  </li>
+                  <li class="card-li">
+                    <ion-icon
+                      class="li-icon li-icon--negative"
+                      name="cash-outline"
+                    ></ion-icon>
+                    <div class="li-text-box">
+                      <span class="li-no" data-i18n="cardnegative.no3"></span>
+                      <span class="li-text" data-i18n="cardnegative.li3"></span>
+                    </div>
+                  </li>
+                  <li class="card-li">
+                    <ion-icon
+                      class="li-icon li-icon--negative"
+                      name="person-outline"
+                    ></ion-icon>
+                    <div class="li-text-box">
+                      <span class="li-no" data-i18n="cardnegative.no4"></span>
+                      <span class="li-text" data-i18n="cardnegative.li4"></span>
+                    </div>
+                  </li>
+                  <li class="card-li">
+                    <ion-icon
+                      class="li-icon li-icon--negative"
+                      name="cloud-download-outline"
+                    ></ion-icon>
+                    <div class="li-text-box">
+                      <span class="li-no" data-i18n="cardnegative.no5"></span>
+                      <span class="li-text" data-i18n="cardnegative.li5"></span>
+                    </div>
+                  </li>
+                </ul>
+              </article>
+
+              <article class="card card-accent">
+                <h3 class="card-title" data-i18n="cardpositive.title"></h3>
+                <ul class="card-list card-list--positive">
+                  <li class="card-li">
+                    <ion-icon
+                      class="li-icon li-icon--positive"
+                      name="hand-left-outline"
+                    ></ion-icon>
+                    <span class="li-text" data-i18n="cardpositive.li1"></span>
+                  </li>
+                  <li class="card-li">
+                    <ion-icon
+                      class="li-icon li-icon--positive"
+                      name="flash-outline"
+                    ></ion-icon>
+                    <span class="li-text" data-i18n="cardpositive.li2"></span>
+                  </li>
+                  <li class="card-li">
+                    <ion-icon
+                      class="li-icon li-icon--positive"
+                      name="repeat-outline"
+                    ></ion-icon>
+                    <span class="li-text" data-i18n="cardpositive.li3"></span>
+                  </li>
+                  <li class="card-li">
+                    <ion-icon
+                      class="li-icon li-icon--positive"
+                      name="link-outline"
+                    ></ion-icon>
+                    <span class="li-text" data-i18n="cardpositive.li4"></span>
+                  </li>
+                  <li class="card-li">
+                    <ion-icon
+                      class="li-icon li-icon--positive"
+                      name="copy-outline"
+                    ></ion-icon>
+                    <span class="li-text" data-i18n="cardpositive.li5"></span>
+                  </li>
+                </ul>
+              </article>
+            </div>
           </section>
 
           <!-- HOW IT WORKS -->
           <section class="how">
-            <div class="how-head">
-              <h3 class="how-title" data-i18n="how.title"></h3>
-              <p class="how-subtitle" data-i18n="how.subtitle"></p>
+            <!-- How heading -->
+            <div class="how-head container">
+              <span class="label" data-i18n="how.label"></span>
+              <h2 class="subtitle" data-i18n="how.subtitle"></h2>
             </div>
 
-            <div class="how-grid">
-              <article class="how-step">
-                <span class="step-num">1</span>
-                <h4 data-i18n="how.step1.instruction"></h4>
-                <p data-i18n="how.step1.hint"></p>
-              </article>
+            <!-- How Grid -->
+            <div class="container grid grid--2cols grid--center-v">
+              <!-- Step 1 -->
+              <div class="step-text-box">
+                <span class="step-numb">01</span>
+                <h4 class="text-4" data-i18n="how.step1.instruction"></h4>
+                <p class="text-base" data-i18n="how.step1.hint"></p>
+              </div>
+              <div class="step-img-box">
+                <img
+                  src="data/bilds/adventLogo.png"
+                  class="step-img"
+                  alt="Screen bild from the app form 1. step with sender and reciever empty textbox and theme options"
+                />
+              </div>
+              <!-- Step 2 -->
+              <div class="step-img-box">
+                <img
+                  src="data/bilds/how-to_2.png"
+                  class="step-img"
+                  alt="Screen bild from the app form 2. step with input field for daily messages"
+                />
+              </div>
 
-              <article class="how-step">
-                <span class="step-num">2</span>
-                <h4 data-i18n="how.step2.instruction"></h4>
-                <p data-i18n="how.step2.hint"></p>
-              </article>
+              <div class="step-text-box">
+                <span class="step-numb">02</span>
+                <h4 class="text-4" data-i18n="how.step2.instruction"></h4>
+                <p class="text-base" data-i18n="how.step2.hint"></p>
+              </div>
 
-              <article class="how-step">
-                <span class="step-num">3</span>
-                <h4 data-i18n="how.step3.instruction"></h4>
-                <p data-i18n="how.step3.hint"></p>
-              </article>
+              <!-- Step 3 -->
+              <div class="step-text-box">
+                <span class="step-numb">03</span>
+                <h4 class="text-4" data-i18n="how.step3.instruction"></h4>
+                <p class="text-base" data-i18n="how.step3.hint"></p>
+              </div>
 
-              <article class="how-step">
-                <span class="step-num">4</span>
-                <h4 data-i18n="how.step4.instruction"></h4>
-                <p data-i18n="how.step4.hint"></p>
-              </article>
+              <div class="step-img-box">
+                <img
+                  src="data/bilds/how-to_3.png"
+                  class="step-img"
+                  alt="Screen bild from the app 3. step with preview and url generate option"
+                />
+              </div>
+
+              <!-- Step 4 -->
+              <div class="step-img-box">
+                <img
+                  src="data/bilds/how-to_4.png"
+                  class="step-img"
+                  alt="Screen bild from the Advents salendar with an opened day"
+                />
+              </div>
+
+              <div class="step-text-box">
+                <span class="step-numb">04</span>
+                <h4 class="text-4" data-i18n="how.step4.instruction"></h4>
+                <p class="text-base" data-i18n="how.step4.hint"></p>
+              </div>
             </div>
           </section>
         </section>
@@ -310,7 +452,7 @@
                 </div>
                 <span
                   for="previewMessages"
-                  data-i18n="labels.previewmessageslist"
+                  data-i18n="labels.previewMessageLabel"
                 ></span>
                 <!-- Preview of the 24 message in a list -->
                 <ul id="previewMessages"></ul>
@@ -375,14 +517,33 @@
           ></button>
         </div>
       </dialog>
+
+      <!-- POPUP FOR FAILED URL STATUS MESSAGE -->
+      <dialog id="showUrlStatusDialog" class="dialog">
+        <h2 data-i18n="titles.errorTitle" id="urlStatusTitle"></h2>
+        <p id="urlStatusText"></p>
+
+        <div class="actions">
+          <button
+            id="closeUrlErrorBtn"
+            data-i18n="buttons.close"
+            class="close-dialog"
+          ></button>
+        </div>
+      </dialog>
     </div>
-    <footer>
-      <div>
-        <!-- Titel FROM PERSON -->
-        <p id="name-from"></p>
-      </div>
-    </footer>
+    <!-- FOOTER -->
+    <footer></footer>
   </body>
   <!-- Bind JS file -->
   <script type="module" src="main.js" defer></script>
+  <!-- IONICON package -->
+  <script
+    type="module"
+    src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+  ></script>
+  <script
+    nomodule
+    src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+  ></script>
 </html>

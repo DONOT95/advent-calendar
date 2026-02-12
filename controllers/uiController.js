@@ -3,7 +3,7 @@ import {
   SUPPORTED_LANGUAGES,
   applyUiLanguage,
   getUiLanguage,
-  formatPlaceholder,
+  getLangAndDictThanResolveKey,
 } from "../i18n/i18n.js";
 import { startClock, refreshClock } from "../services/clockService.js";
 import { resetGenerator } from "./wizardController.js";
@@ -19,16 +19,31 @@ import {
   fillThemeOptions,
   fillLanguageOptions,
   applyTheme,
-  showPopup,
 } from "../views/uiView.js";
-import { DEFAULTS, appState } from "../state/appState.js";
+import {
+  DEFAULTS,
+  appState,
+  ensureDemoCalendarMessages,
+} from "../state/appState.js";
+import { refreshCalendar, setCalendarMessages } from "./calendarController.js";
+
+import {
+  displayCalendarMessage,
+  setFromAndToDefaultMultiLang,
+} from "../views/calendarView.js";
+import {
+  getCalendarDialogTitle,
+  getPreviewItemPrefix,
+  getFrom,
+  getTo,
+} from "../services/calendarDayServices.js";
 
 // Boolean variable to check if initUI has been already fully executed.
 let uiInitialized = false;
 
 let dom = null;
 // FUNCTION: initialisation
-export function initUI(config, offsetMs) {
+export function initUI(config, offsetMs, initialPage = "home") {
   //HTML + JS bind
   dom = bindUiDom();
 
@@ -41,8 +56,15 @@ export function initUI(config, offsetMs) {
 
   // Apply Data from url or defaults to UI elements
   applyConfig(config);
-  // Set the
+
+  // Implement language on dom element
   dom.pageLanguage.value = getUiLanguage();
+
+  // Determine Opened website section (home | calendar)
+  switchPage(initialPage);
+
+  // enable background only for calendar
+  dom.main?.classList.toggle("calendar-scope", pageName === "calendar");
 
   // Guard clause to avoid double initialization
   if (uiInitialized) return;
@@ -54,6 +76,10 @@ export function initUI(config, offsetMs) {
   initMenuEvents();
   initLanguageEvents();
   initCTAButtonEvents();
+
+  dom.closeUrlErrorBtn.addEventListener("click", () => {
+    dom.urlStatusDialog?.close();
+  });
   // Start Time
   startClock(dom.currentHour, dom.currentDate, offsetMs);
 }
@@ -64,7 +90,7 @@ function applyConfig(config) {
 
   dom.pageLanguage.value = config.lang;
   applyUiLanguage();
-  applyTheme(dom.calendarPage, THEME_REGISTRY, config.theme);
+  applyTheme(dom.body, THEME_REGISTRY, config.theme);
 }
 
 // Fill HTML-SELECT elements with OPTIONS
@@ -119,7 +145,7 @@ function initMenuEvents() {
   });
 
   dom.homeBtn?.addEventListener("click", () => {
-    setActivePage(dom.pages, "home");
+    switchPage("home");
   });
 }
 
@@ -130,23 +156,56 @@ function switchPage(pageName) {
     openLinkDialog();
     return;
   }
+  // Active/inactive bg image for Body (Calendar image for the whole website)
+  dom.body?.classList.toggle("calendar-scope", pageName === "calendar");
+
+  setActivePage(dom.pages, pageName);
 
   // At every create custom menu option, reset the slider.
   if (pageName === "create") {
     resetGenerator();
   }
 
-  setActivePage(dom.pages, pageName);
+  // Check for messages before load data.
+  if (pageName === "calendar") {
+    // if demo, load default messages for current lang + def theme
+    ensureDemoCalendarMessages();
+
+    // give calendar controller the new messages
+    setCalendarMessages(appState.calendar.messages);
+
+    // refresh locked/today classes + midnight schedule
+    refreshCalendar();
+  }
 }
 
+// Only at demo -> from/ to should change with language select
+export function setProperFromTo() {
+  const fromText = getFrom();
+  const toText = getTo();
+
+  setFromAndToDefaultMultiLang(dom, dom.nameFrom, dom.nameTo, fromText, toText);
+}
 // ================   OPEN POPUP, CALENDAR DAY   ================
-export function openCalendarWithProperDayTitleDialog(day, message) {
-  const titleText = formatPlaceholder("labels.popupdaytitle", { day });
+export function openCalendarDayAndSetContent(day, message) {
+  const dialogTitle = getCalendarDialogTitle();
+  const datum = getPreviewItemPrefix(day);
+
   // SET title, message for popup
-  showPopup(dom.popup, dom.popupTitle, dom.popupText, titleText, message);
+  displayCalendarMessage(
+    dom.popup,
+    dom.popupTitle,
+    dom.popupDate,
+    dom.popupText,
+
+    dialogTitle,
+    datum,
+    message,
+  );
 }
 
 // ================   CLOSE POPUP, CALENDAR DAY   ================
+// Close for all dialogs, if click outside of window
 function initPopupCloseEvents() {
   if (!dom?.dialogs?.length) return;
   // Bind HTML elements
@@ -168,7 +227,7 @@ function initPopupCloseEvents() {
     });
   });
 
-  //Close-btn on popup (opened day)
+  // only for popup close btn
   dom.popupCloseBtn?.addEventListener("click", () => dom.popup?.close());
 }
 
@@ -189,8 +248,9 @@ function initOpenLinkEvents() {
       return;
     }
 
+    // TODO OPEN LINK IN NEW WINDOW
     // Reload app with new url
-    window.location.href = url;
+    window.open(url, "_blank");
   });
 
   dom.openLinkInput?.addEventListener("keydown", (e) => {
@@ -221,9 +281,17 @@ function initLanguageEvents() {
     applyUiLanguage();
     // Change lang -> immediately update date-time
     refreshClock();
+
+    // (default) messages if language changes, ONLY BY DEMO
+    if (appState.calendar.source === "demo") {
+      ensureDemoCalendarMessages();
+      setCalendarMessages(appState.calendar.messages);
+      refreshCalendar();
+    }
   });
 }
 
+// TODO: CHECK THESE FUNCTION
 function openLinkDialog() {
   if (!dom?.openLinkDialog || !dom?.openLinkInput) return;
 
@@ -261,4 +329,40 @@ function showOpenLinkError(msg) {
   if (!dom?.openLinkError) return;
   dom.openLinkError.textContent = msg;
   dom.openLinkError.hidden = false;
+}
+
+// TODO: CHECK THESE FUNCTION
+export function showUrlStatusDialog(status, issues = []) {
+  if (!dom?.urlStatusDialog) return;
+  // Optional: status === "repaired" | "invalid"
+  // Use i18n keys if you add them, otherwise fallback text:
+  const title =
+    getLangAndDictThanResolveKey("titles.errorTitle") || "Link problem";
+
+  dom.statusTitle.textContent = title;
+
+  const body =
+    status === "invalid"
+      ? getLangAndDictThanResolveKey("labels.invalidErrorDemo") ||
+        "This link is invalid or damaged. Showing demo content."
+      : getLangAndDictThanResolveKey("labels.invalidErrorRepaired") ||
+        "This link was incomplete. Missing values were replaced with defaults.";
+
+  dom.statusText.textContent = body;
+
+  // If you want show issues (dev only):
+  const details = issues.length ? `\n(${issues.join(", ")})` : "";
+
+  // Debug help
+  if (details) {
+    console.log("Error at url data read:" + details);
+  }
+
+  dom.urlStatusDialog.showModal();
+
+  // showModal set die 1. element selected (Btn).
+  // We set manual focus to the whole dialog.
+  setTimeout(() => {
+    dom.urlStatusDialog?.focus();
+  }, 0);
 }

@@ -1,0 +1,64 @@
+dialog:not([open]) {
+  display: none;
+}
+
+dialog[open] {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+
+  background: var(--panel-strong);
+  color: #e2e8f0;
+
+  border: var(--bw-2) solid var(--border-strong);
+  border-radius: var(--r-3);
+  padding: var(--sp-5);
+  width: min(92vw, 520px);
+
+  box-shadow: 0 10px 30px rgba(101, 196, 255, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+dialog h2 {
+  margin: 0;
+  color: rgb(101, 196, 255);
+  font-size: var(--fs-3);
+  text-align: center;
+}
+dialog p {
+  margin: 0;
+  font-size: var(--fs-1);
+  line-height: 1.5;
+  text-align: center;
+}
+
+dialog .actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+}
+
+dialog .actions button {
+  background: rgba(21, 124, 59, 0.22);
+  color: #d6ffea;
+  border: var(--bw-1) solid rgba(31, 173, 83, 0.35);
+  border-radius: var(--r-2);
+  padding: 0.65rem 1.1rem;
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+dialog .actions button:hover {
+  background: var(--accent-2);
+}
+
+/* To prevent default outline */
+#showUrlStatusDialog:focus {
+  outline: none !important;
+}

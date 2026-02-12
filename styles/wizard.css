@@ -1,0 +1,113 @@
+.field {
+  display: grid;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-4);
+}
+
+label {
+  font-weight: var(--fw-bold);
+  opacity: 0.95;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border-radius: var(--r-2);
+  border: var(--bw-1) solid rgba(240, 193, 7, 0.22);
+  background: rgba(0, 0, 0, 0.22);
+  color: #e2e8f0;
+}
+
+/* Preview Messages list */
+#previewMessages {
+  max-height: min(55vh, 500px);
+  overflow-y: auto;
+  overflow-x: auto;
+}
+ul {
+  padding-inline-start: 0;
+}
+
+li {
+  list-style-type: none;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 3px solid rgba(34, 211, 238, 0.35);
+  border-color: rgba(34, 211, 238, 0.6);
+}
+
+.btn-row {
+  display: flex;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+.btn-row button {
+  border: var(--bw-1) solid rgba(240, 193, 7, 0.22);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--header-border);
+  padding: 0.7rem 1rem;
+  border-radius: var(--r-2);
+  cursor: pointer;
+}
+.btn-row button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* =========================
+   7) Create calendar step slider (your structure)
+   ========================= */
+
+#create-container {
+  width: min(100%, var(--content-max));
+  overflow: hidden;
+  border-radius: var(--r-3);
+  border: var(--bw-1) solid var(--border);
+  background: var(--panel);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 20px rgba(101, 196, 255, 0.1);
+
+  height: auto;
+  transition: height 220ms ease;
+}
+
+#create-track {
+  display: flex;
+  width: 100%;
+  will-change: transform;
+  transition: transform 350ms ease;
+  align-items: flex-start;
+}
+
+.create-step {
+  flex: 0 0 100%;
+  padding: var(--sp-4);
+  border-right: var(--bw-1) solid rgba(240, 193, 7, 0.12);
+}
+
+/* day holder nicer wrap */
+#dayHolder {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+}
+.prew {
+  display: flex;
+  gap: var(--sp-2);
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+/* Option select */
+select {
+  width: fit-content;
+}
+
+/* Form container */
+section#create-container {
+  width: min(100%, 520px);
+}

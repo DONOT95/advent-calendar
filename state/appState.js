@@ -40,6 +40,8 @@ export function createInitialState() {
     calendar: {
       source: "demo", // demo || url
 
+      // Either url data, fixed, replaced, or demo (selected lang + def theme)
+      // if source "demo" these list is dynamically
       messages: Array(LIMITS.messagesCount).fill(
         DEFAULTS.calendar.emptyMessage,
       ),
@@ -48,11 +50,11 @@ export function createInitialState() {
       lastUrlIssues: [],
     },
 
-    // Wizard, generator for user Custom calendar values
+    // Wizard, for user input calendar values
     wizardDraft: {
       from: "",
       to: "",
-      theme: null,
+      theme: DEFAULTS.calendarConfig.theme,
 
       messages: Array(LIMITS.messagesCount).fill(""),
     },
@@ -69,13 +71,15 @@ export const appState = createInitialState();
 export function resetWizardDraft() {
   appState.wizardDraft.from = "";
   appState.wizardDraft.to = "";
-  appState.wizardDraft.theme = null;
+  appState.wizardDraft.theme = DEFAULTS.calendarConfig.theme;
   appState.wizardDraft.messages = Array(LIMITS.messagesCount).fill("");
   Object.assign(appState.generator, DEFAULTS.generator);
+  // language automatically taken from appState
 }
 
+// TODO: NOT IN USE
 // State Helpers
-export function resetAppState({ keepTime = true } = {}) {
+/* export function resetAppState({ keepTime = true } = {}) {
   // Time value unchanged
   const oldOffset = appState.time.offsetMs;
 
@@ -97,7 +101,7 @@ export function resetAppState({ keepTime = true } = {}) {
 
   appState.time.offsetMs = keepTime ? oldOffset : 0;
 }
-
+ */
 /*
  * Apply URL config  (ALWAYS valid data from readConfigFromUrl).
  * - If config is null => calendar stays in "demo" mode; messages are NOT forced here
@@ -111,6 +115,7 @@ export function applyConfigToState(config) {
     Object.assign(appState.calendarConfig, DEFAULTS.calendarConfig);
 
     appState.calendar.source = "demo";
+    // ONLY TEMPORARY EMPTY LIST, it is set by -> view calendar/ language change
     appState.calendar.messages = Array(LIMITS.messagesCount).fill(
       DEFAULTS.calendar.emptyMessage,
     );
@@ -128,9 +133,10 @@ export function applyConfigToState(config) {
   );
   const to = sanitizeString(config.to, DEFAULTS.calendarConfig.to, LIMITS.to);
 
+  // Set calendarConfig -> UI values from URL DATA (config)
   Object.assign(appState.calendarConfig, { lang, theme, from, to });
 
-  // config.messages already sanitized in urlDataService, but safe to sanitize again if you want
+  // config.messages already sanitized in urlDataService
   const msgs = sanitizeMessagesArray(config.messages, {
     maxLenEach: LIMITS.message,
     emptyFallback: DEFAULTS.calendar.emptyMessage,
