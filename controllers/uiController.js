@@ -313,7 +313,7 @@ function normalizeCalendarUrl(input) {
 
   if (/^https?:\/\//i.test(raw)) return raw;
 
-  const cleaned = raw.sartsWith("?") ? raw.slice(1) : raw;
+  const cleaned = raw.startsWith("?") ? raw.slice(1) : raw;
   const hasData = cleaned.startsWith("data=") || cleaned.includes("&data=");
 
   if (!hasData) {

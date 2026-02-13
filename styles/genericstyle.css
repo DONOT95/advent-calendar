@@ -159,7 +159,7 @@ body.calendar-scope {
 }
 
 body.calendar-scope[data-theme="classic"] {
-  background-image: url("/data/bilds/christmas_background_classic.png");
+  background-image: url("/data/bilds/christmas-background_classic.png");
 }
 
 body.calendar-scope[data-theme="neon"] {
@@ -167,7 +167,9 @@ body.calendar-scope[data-theme="neon"] {
 }
 
 body.calendar-scope[data-theme="family"] {
-  background-image: url("/data/bilds/christmas_background_family.png");
+  background-image:
+    linear-gradient(to right, rgba(22, 22, 22, 0.2), rgba(22, 22, 22, 0.2)),
+    url(/data/bilds/christmas_background_family.png);
 }
 
 body.calendar-scope[data-theme="horror"] {
@@ -181,7 +183,7 @@ body.calendar-scope[data-theme="horror"] {
   margin: 0 auto;
 }
 
-/* GRID TEMPLATE */
+/* GRID TEMPLATES */
 .grid {
   display: grid;
   gap: 9rem 4rem;
@@ -198,7 +200,6 @@ body.calendar-scope[data-theme="horror"] {
 .grid--6cols {
   gap: 1rem !important;
   grid-template-columns: repeat(6, minmax(11rem, 1fr));
-  margin-bottom: 9rem;
 }
 
 /* ============== HTML ELEMENTS START ==============*/
@@ -281,15 +282,9 @@ section {
   transform: translateY(0.5px);
 }
 
-/* .btn-primary {
-  background: rgba(5, 88, 35, 0.6);
-  border-color: rgba(34, 197, 94, 0.6);
-  color: #d1ffe7;
-} */
-
 .btn-primary {
-  background: rgba(22, 32, 63, 0.635);
-  border-color: rgba(63, 180, 253, 0.863);
+  background: rgba(22, 32, 63, 0.6);
+  border-color: rgba(63, 180, 253, 0.8);
   color: rgb(114, 199, 252);
 }
 
@@ -301,6 +296,7 @@ section {
 .btn-secondary {
   background: transparent;
   border-color: rgba(220, 215, 195, 0.2);
+
   color: var(--text);
 }
 

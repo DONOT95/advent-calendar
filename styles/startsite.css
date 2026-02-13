@@ -1,4 +1,5 @@
 /* ============== STANDARD ELEMENTS ==============*/
+/* SECTION LBL -> TITLE */
 .label {
   display: block;
   font-size: 1.5rem;
@@ -14,35 +15,46 @@
   line-height: 1.2;
   margin-bottom: 9rem;
 }
-/* ============== CARDS ==============*/
 
+/* ============== CARDS ==============*/
 .card {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  gap: 3.5rem;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 4rem;
+  padding: 4rem 2rem;
+
+  justify-content: center;
 
   border-radius: var(--r-3);
-  border: var(--bw-1) solid rgba(224, 44, 44, 0.2);
-  box-shadow: 0 0.4rem 1.8rem rgba(224, 122, 122, 0.1);
+  border: var(--bw-2) solid rgba(224, 44, 44, 0.2);
+  box-shadow: 0 1rem 4rem rgba(238, 139, 139, 0.08);
   background: rgba(0, 0, 0, 0.16);
-  padding: 2rem;
-}
 
-.container.grid.grid--2cols {
-  gap: 12rem;
-  max-width: fit-content;
+  /* Effects animation time */
+  transition: all 0.3s;
 }
 
 .card-accent {
-  border-color: rgba(34, 197, 94, 0.3);
-  box-shadow: 0 0.6rem 1.8rem rgba(209, 255, 231, 0.1);
+  border-color: rgba(240, 193, 7, 0.35);
+  box-shadow: 0 1rem 4rem rgba(247, 221, 119, 0.08);
+}
+
+/* MOVE UP EFFECT, shadow grow, lighten */
+.card:hover {
+  transform: translateY(-1.2rem);
+  box-shadow: 0 2rem 7rem rgba(238, 139, 139, 0.06);
+}
+
+.card-accent:hover {
+  box-shadow: 0 2rem 6rem rgba(247, 221, 119, 0.06);
+}
+
+.container.grid.grid--2cols {
+  max-width: 110rem;
 }
 
 .card-title {
-  align-self: center;
-  min-height: 3.6rem;
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   font-weight: 700;
 }
 
@@ -50,34 +62,31 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  position: bottom;
 }
 
 .li-icon {
   height: 2.4rem;
   width: 2.4rem;
+  display: grid;
+  place-items: center;
 }
 .li-icon--negative {
   color: rgba(224, 44, 44, 0.6);
 }
 .li-icon--positive {
-  color: rgba(34, 197, 94, 0.6);
+  color: rgba(240, 193, 7, 0.6);
 }
 .card-li {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 2.4rem 1fr;
   gap: 2.3rem;
+  align-items: start;
 }
 
 .li-text {
-  font-size: 1.8rem;
-  max-width: 25ch;
-}
-
-.li-no {
-  color: #c8b06f3e;
-  font-size: 1.8rem;
-  font-weight: 600;
+  font-size: 2rem;
+  line-height: 1.25;
+  max-width: 24ch;
 }
 
 /* ============== HOW IT WORKS ==============*/
@@ -95,8 +104,8 @@
   margin-bottom: 1.5rem;
 }
 
-.text-4 {
-  font-size: 3rem;
+.text-3 {
+  font-size: 3.5rem;
   margin-bottom: 2rem;
 }
 
@@ -114,4 +123,9 @@
 
 .step-img {
   height: 70%;
+  transition: transform 0.3s ease;
+}
+/* IMG UPSCALE */
+.step-img:hover {
+  transform: scale(1.03);
 }

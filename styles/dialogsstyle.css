@@ -7,22 +7,25 @@ dialog[open] {
   inset: 0;
   margin: auto;
 
-  background: var(--panel-strong);
+  background: rgba(23, 28, 43, 0.6);
   color: #e2e8f0;
 
   border: var(--bw-2) solid var(--border-strong);
+  border: var(--bw-2) solid rgba(240, 193, 7, 0.35);
   border-radius: var(--r-3);
-  padding: var(--sp-5);
-  width: min(92vw, 520px);
+  padding: 2.4rem 2.8rem;
 
-  box-shadow: 0 10px 30px rgba(101, 196, 255, 0.35);
+  box-shadow: 0px 18px 3rem rgba(240, 193, 7, 0.05);
   display: flex;
   flex-direction: column;
-  gap: var(--sp-4);
+  gap: 1.8rem;
+  min-width: min(50rem, 92vw);
+  max-width: fit-content;
+  backdrop-filter: blur(10px);
 }
 
 dialog::backdrop {
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(40, 40, 40, 0.4);
 }
 
 dialog h2 {
@@ -35,30 +38,159 @@ dialog p {
   margin: 0;
   font-size: var(--fs-1);
   line-height: 1.5;
-  text-align: center;
 }
 
 dialog .actions {
   display: flex;
   justify-content: flex-end;
   gap: var(--sp-3);
-}
-
-dialog .actions button {
-  background: rgba(21, 124, 59, 0.22);
-  color: #d6ffea;
-  border: var(--bw-1) solid rgba(31, 173, 83, 0.35);
-  border-radius: var(--r-2);
-  padding: 0.65rem 1.1rem;
-  font-weight: var(--fw-bold);
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-dialog .actions button:hover {
-  background: var(--accent-2);
+  margin-bottom: 0 !important;
 }
 
 /* To prevent default outline */
 #showUrlStatusDialog:focus {
   outline: none !important;
+}
+
+/* CALENDAR -> DAILY MESSAGE */
+.text-box {
+  display: grid;
+  grid-template-columns: auto 1fr; /* Prefix fix, Text flexibel */
+  align-items: start; /* Prefix bleibt oben, Text kann wachsen */
+  justify-content: start; /* Block mittig im Dialog */
+  column-gap: 0.6rem;
+  text-align: left;
+  font-size: 1.8rem;
+  line-height: 1.5;
+}
+.text-box {
+  width: 100%;
+  margin: 0 0 2.2rem;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 1rem;
+  justify-content: center;
+}
+
+#popup-title {
+  color: #9ad7ff;
+  margin: 0 0 1.6rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+#dayPrefix {
+  white-space: nowrap;
+  opacity: 0.8;
+}
+#popup-text {
+  margin: 0;
+  line-height: 1.5;
+  max-width: 35ch;
+}
+
+.close-dialog {
+  font-size: 1.5rem;
+}
+
+.dialog-error {
+  font-size: 1.5rem;
+  color: rgba(224, 44, 44, 0.6);
+}
+
+.text-box .icon,
+#popup-text .emoji {
+  filter: saturate(1.1);
+}
+
+.close-dialog {
+  padding: 0.9rem 1.4rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+}
+.close-dialog:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* TEST */
+
+/* ============ DIALOG BASE ============ */
+.dialog {
+  border-radius: var(--r-2);
+  border: var(--bw-2) solid rgba(240, 193, 7, 0.35); /* same as .door */
+  background: var(--door-bg); /* same as doors */
+  color: var(--text-tint-light);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 3rem rgba(240, 193, 7, 0.18);
+
+  padding: 2.6rem 2.8rem;
+}
+
+/* Backdrop (overlay) */
+.dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+/* ============ TITLE / CONTENT ============ */
+#popup-title {
+  margin: 0 0 1.6rem;
+  font-size: 2.2rem;
+  font-weight: var(--fw-6);
+  letter-spacing: 0.2px;
+  opacity: 0.95;
+}
+
+/* Prefix + Message aligned like your list pattern */
+.text-box {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 1rem;
+  align-items: start;
+
+  width: min(56ch, 100%);
+  margin: 0 0 2.2rem;
+  text-align: left;
+}
+
+#dayPrefix {
+  white-space: nowrap;
+  opacity: 0.8;
+  font-variant-numeric: tabular-nums;
+}
+
+#popup-text {
+  margin: 0;
+  line-height: 1.5;
+  opacity: 0.95;
+}
+
+/* ============ ACTIONS ============ */
+.actions {
+  display: flex;
+  justify-content: flex-end; /* button right */
+  gap: 1rem;
+}
+
+/* Button styled like your door hover/accents */
+.close-dialog {
+  padding: 0.95rem 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(240, 193, 7, 0.2);
+  background: rgba(240, 193, 7, 0.1);
+  color: var(--text-tint-light);
+  cursor: pointer;
+  transition:
+    box-shadow 0.25s ease,
+    background 0.2s ease;
+}
+
+.close-dialog:hover {
+  background: rgba(240, 193, 7, 0.15);
+  box-shadow: 0 0 2.2rem rgba(240, 193, 7, 0.25);
 }

@@ -7,7 +7,7 @@ Navigation / Menu
 How-To Section -> Static
  */
 
-// ========== DOM BINDING ==========
+// ========== DOM BINDING FOR EVERY ELEMENT WHAT NOT IN CALENDAR/WIZARD ==========
 export function bindUiDom() {
   return {
     app: document.getElementById("app"),
@@ -89,7 +89,7 @@ export function fillThemeOptions(themeSelectEl, themeRegistry) {
   });
 }
 
-// TODO: Values can instead of "EN" -> "English"  als i18n usw
+// TODO: Values can instead of "EN" -> "English" or Flag icons
 export function fillLanguageOptions(languageSelectEl, supportedLangs) {
   if (!languageSelectEl || languageSelectEl.options.length > 0) return;
 

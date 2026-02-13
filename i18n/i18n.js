@@ -11,8 +11,8 @@ export const uiTexts = {
     },
     buttons: {
       // Generate Calendar: Step 1
-      generatedefaulturl: "Create URL(default messages)",
-      generatecustomurl: "Generate URL",
+      generatedefault: "Create default",
+      generateurl: "Generate URL",
       addmessages: "Add custom messages",
 
       // Generate Calendar: Step 2
@@ -117,12 +117,12 @@ export const uiTexts = {
     },
 
     cardnegative: {
-      title: "No disadvantages. Just joy.",
-      li1: " cookies or tracking",
-      li2: " ads or distractions",
-      li3: " hidden costs",
-      li4: " account required",
-      li5: " upload / download",
+      title: "No disadvantages.",
+      li1: "No cookies or tracking",
+      li2: "No ads or distractions",
+      li3: "No hidden costs",
+      li4: "No account required",
+      li5: "No upload / download",
     },
 
     cardpositive: {
@@ -171,9 +171,10 @@ export const uiTexts = {
     },
     buttons: {
       // Generate Calendar: Step 1
-      generatedefaulturl: "URL erstellen (Standardnachrichten)",
-      generatecustomurl: "URL erstellen",
-      addmessages: "Benutzerdefinierte Nachrichten hinzufügen",
+      generatedefault: "Default erstellen",
+      generateurl: "URL erstellen",
+
+      addmessages: "Benutzerdefiniert erstellen",
 
       // Generate Calendar: Step 2
       nextmessage: "Weiter",
@@ -273,7 +274,7 @@ export const uiTexts = {
     },
 
     cardnegative: {
-      title: "Keine Nachteile. Nur Freude.",
+      title: "Keine Nachteile.",
       li1: "Keine Cookies oder Tracking",
       li2: "Keine Werbung oder Ablenkungen",
       li3: "Keine versteckten Kosten",
@@ -326,8 +327,9 @@ export const uiTexts = {
     },
     buttons: {
       // Generate Calendar: Step 1
-      generatedefaulturl: "URL létrehozása (alapértelmezett üzenetek)",
-      generatecustomurl: "URL létrehozása",
+
+      generatedefault: "Alapértelmezett üzenetek",
+      generateurl: "URL létrehozása",
       addmessages: "Egyéni üzenetek hozzáadása",
 
       // Generate Calendar: Step 2
@@ -427,7 +429,7 @@ export const uiTexts = {
     },
 
     cardnegative: {
-      title: "Semmi hátrány. Csak öröm.",
+      title: "Semmi hátrány!",
       li1: "Nincsenek sütik vagy követés",
       li2: "Nincsenek hirdetések vagy zavaró elemek",
       li3: "Nincsenek rejtett költségek",
@@ -436,7 +438,7 @@ export const uiTexts = {
     },
 
     cardpositive: {
-      title: "Minden, amire szükséged van.",
+      title: "Csak ami szükséges!",
       li1: "Egyszerű és könnyen használható",
       li2: "Pár perc alatt elkészíthető",
       li3: "Korlátlan számú naptár",

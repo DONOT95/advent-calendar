@@ -17,11 +17,6 @@
   box-shadow: 0 4px 20px rgba(101, 196, 255, 0.12);
 }
 
-/* Border bottom */
-/* .topbar {
-  position: relative;
-} */
-
 .topbar::after {
   content: "";
   position: absolute;
@@ -155,6 +150,13 @@
   cursor: pointer;
 }
 #pageLanguage:focus {
-  outline: 2px solid #f0c10781;
-  border-color: var(--bg-color);
+  outline: 1px solid #f0c10781;
+}
+
+select {
+  border: var(--bw-1) solid rgba(240, 193, 7, 0.35);
+}
+
+select:focus {
+  outline: 1px solid #f0c10781;
 }

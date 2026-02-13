@@ -37,8 +37,14 @@ li {
 input:focus,
 textarea:focus,
 select:focus {
-  outline: 3px solid rgba(34, 211, 238, 0.35);
-  border-color: rgba(34, 211, 238, 0.6);
+  /* outline: 2px solid rgba(34, 211, 238, 0.35);
+  border-color: rgba(34, 211, 238, 0.6); */
+
+  outline: 1px solid #f0c10781;
+}
+
+textarea {
+  resize: none;
 }
 
 .btn-row {
@@ -46,20 +52,9 @@ select:focus {
   gap: var(--sp-3);
   flex-wrap: wrap;
 }
-.btn-row button {
-  border: var(--bw-1) solid rgba(240, 193, 7, 0.22);
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--header-border);
-  padding: 0.7rem 1rem;
-  border-radius: var(--r-2);
-  cursor: pointer;
-}
-.btn-row button:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
 
 /* =========================
-   7) Create calendar step slider (your structure)
+   7) Create calendar step slider
    ========================= */
 
 #create-container {
@@ -110,4 +105,8 @@ select {
 /* Form container */
 section#create-container {
   width: min(100%, 520px);
+}
+
+#stepProgress {
+  min-width: 40rem;
 }
