@@ -361,6 +361,9 @@ function onBackToEdit() {
   dom.messageEditor.value =
     appState.wizardDraft.messages[appState.generator.currentMessageIndex];
 
+  // Decrease Progressbar value
+  decreaseProgress();
+
   // Select the text in textfeld (UX: easy to edit)
   selectInputText(dom.messageEditor);
   // For message editor always "reset" counter at new Day (new message, reset limit)

@@ -116,7 +116,7 @@
                 id="popup-close-btn"
                 type="button"
                 data-i18n="buttons.close"
-                class="close-dialog"
+                class="btn btn--gold"
               ></button>
             </div>
           </dialog>
@@ -338,18 +338,38 @@
         </section>
 
         <!-- PAGE: CREATE CUSTOM -->
-        <section id="page-create" class="page">
+        <section id="page-create" class="page page--create">
           <!-- page titel -->
-          <h2 data-i18n="titles.create"></h2>
-          <progress id="stepProgress" max="100"></progress>
+          <div class="create-head">
+            <span class="label" data-i18n="create.labels.go"></span>
+            <h2
+              class="subtitle subtitle--create"
+              data-i18n="titles.create"
+            ></h2>
+            <progress id="stepProgress" max="100"></progress>
+          </div>
+
           <section id="create-container">
             <div id="create-track">
               <!-- Step 1: Basic config -->
               <div class="create-step">
-                <h3 data-i18n="titles.createstep1"></h3>
+                <span
+                  class="field-lbl field--step"
+                  data-i18n="titles.createstep1"
+                ></span>
+                <h3
+                  class="create-step-title"
+                  data-i18n="titles.createstep1Text"
+                ></h3>
+
                 <!-- From Field -->
                 <div class="field">
-                  <label data-i18n="labels.from" for="fromInput"> </label>
+                  <label
+                    class="field-lbl"
+                    data-i18n="labels.from"
+                    for="fromInput"
+                  >
+                  </label>
                   <input
                     type="text"
                     id="fromInput"
@@ -363,7 +383,8 @@
                 </div>
                 <!-- To Field -->
                 <div class="field">
-                  <label data-i18n="labels.to" for="toInput"> </label>
+                  <label class="field-lbl" data-i18n="labels.to" for="toInput">
+                  </label>
                   <input
                     type="text"
                     id="toInput"
@@ -377,9 +398,13 @@
                 </div>
 
                 <!-- Theme option -->
-                <div>
+                <div class="field field--theme">
                   <!-- Lbl Theme -->
-                  <label data-i18n="labels.theme" for="themeSelect"></label>
+                  <label
+                    class="field-lbl"
+                    data-i18n="labels.theme"
+                    for="themeSelect"
+                  ></label>
 
                   <!-- Options Theme -->
                   <select id="themeSelect"></select>
@@ -390,66 +415,88 @@
                   <button
                     id="btnCreateDefault"
                     data-i18n="buttons.generatedefault"
-                    class="btn btn-ghost"
+                    class="btn btn-secondary"
                   ></button>
                   <button
                     id="btnAddCustom"
                     data-i18n="buttons.addmessages"
-                    class="btn btn-primary"
+                    class="btn btn--gold"
                   ></button>
                 </div>
               </div>
 
               <!-- Step 2: Edit messages -->
               <div class="create-step">
-                <h3 data-i18n="titles.createstep2"></h3>
+                <span
+                  class="field-lbl field--step"
+                  data-i18n="titles.createstep2"
+                ></span>
+                <h3
+                  class="create-step-title"
+                  data-i18n="titles.createstep2Text"
+                ></h3>
+
                 <div id="dayHolder">
-                  <p id="dailyLabel" data-i18n="labels.day"></p>
+                  <p
+                    class="field-lbl field--no-margin"
+                    id="dailyLabel"
+                    data-i18n="labels.day"
+                  ></p>
                   <p id="dailyNumber"></p>
                 </div>
                 <textarea
                   id="messageEditor"
+                  class="textarea"
                   rows="5"
                   maxlength="250"
                 ></textarea>
                 <label
                   for="messageEditor"
-                  class="charactercounter"
+                  class="charactercounter charactercounter--withmargin"
                   id="charactersMessageEditor"
                 ></label>
+
                 <div class="btn-row">
                   <button
                     id="btnPrevDay"
                     data-i18n="buttons.prevmessage"
-                    class="btn btn-ghost"
+                    class="btn btn-secondary"
                   ></button>
                   <button
                     id="btnNextDay"
                     data-i18n="buttons.nextmessage"
-                    class="btn btn-ghost"
+                    class="btn btn--gold"
                   ></button>
                 </div>
               </div>
 
               <!-- Step 3: Preview -->
               <div class="create-step">
-                <h3 data-i18n="titles.createstep3"></h3>
+                <span
+                  class="field-lbl field--step"
+                  data-i18n="titles.createstep3"
+                ></span>
+                <h3
+                  class="create-step-title"
+                  data-i18n="titles.createstep3Text"
+                ></h3>
                 <!-- Preview of the sender name -->
                 <div class="prew">
-                  <span data-i18n="labels.from"></span>
-                  <span id="previewFrom"></span>
+                  <span class="field-lbl" data-i18n="labels.from"></span>
+                  <span class="name-prev" id="previewFrom"></span>
                 </div>
                 <!-- Preview of the reciever name -->
                 <div class="prew">
-                  <span data-i18n="labels.to"></span>
-                  <span id="previewTo"></span>
+                  <span class="field-lbl" data-i18n="labels.to"></span>
+                  <span class="name-prev" id="previewTo"></span>
                 </div>
                 <span
+                  class="field-lbl"
                   for="previewMessages"
                   data-i18n="labels.previewMessageLabel"
                 ></span>
                 <!-- Preview of the 24 message in a list -->
-                <ul id="previewMessages"></ul>
+                <ul class="preview-list" id="previewMessages"></ul>
 
                 <div class="btn-row">
                   <button
@@ -460,7 +507,7 @@
                   <button
                     id="btnGenerateUrl"
                     data-i18n="buttons.generateurl"
-                    class="btn btn-primary"
+                    class="btn btn--gold"
                   ></button>
                   <button
                     id="btnShowGenerated"
@@ -481,8 +528,16 @@
 
         <input type="text" id="generatedUrl" readonly />
         <div class="actions">
-          <button id="btnCopyUrl" data-i18n="buttons.copy"></button>
-          <button id="btnOpenUrl" data-i18n="buttons.open"></button>
+          <button
+            id="btnCopyUrl"
+            class="btn btn-secondary"
+            data-i18n="buttons.copy"
+          ></button>
+          <button
+            id="btnOpenUrl"
+            class="btn btn--gold"
+            data-i18n="buttons.open"
+          ></button>
         </div>
       </dialog>
 
@@ -512,7 +567,7 @@
             id="btnOpenLinkGo"
             type="button"
             data-i18n="buttons.open"
-            class="btn btn-primary"
+            class="btn btn--gold"
           ></button>
         </div>
       </dialog>

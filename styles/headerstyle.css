@@ -141,22 +141,13 @@
 }
 
 /* ============== LANGUAGE SELECT ==============*/
-#pageLanguage {
+select {
   padding: 0.6rem 1.2rem;
   border-radius: 8px;
   border: var(--bw-1) solid rgba(240, 193, 7, 0.35);
-
-  color: inherit;
+  font-size: 1.5rem;
   cursor: pointer;
 }
-#pageLanguage:focus {
-  outline: 1px solid #f0c10781;
-}
-
-select {
-  border: var(--bw-1) solid rgba(240, 193, 7, 0.35);
-}
-
 select:focus {
   outline: 1px solid #f0c10781;
 }

@@ -78,8 +78,8 @@ export function renderPreviewList(listEl, messages) {
       const prefix = getPreviewItemPrefix(i + 1);
 
       // If text longer than 100 char cut it (only for preview)
-      if (text.length > 100) {
-        text = text.slice(0, 100);
+      if (text.length > 60) {
+        text = text.slice(0, 60);
         text = text + "...";
       }
       li.textContent = `${prefix} ${text}`;

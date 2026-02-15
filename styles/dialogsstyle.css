@@ -1,49 +1,76 @@
+/* Default -> hide */
 dialog:not([open]) {
   display: none;
 }
-
+/*==================   GENERIC   ==================*/
+/* DIALOG STYLE */
 dialog[open] {
   position: fixed;
   inset: 0;
   margin: auto;
 
   background: rgba(23, 28, 43, 0.6);
-  color: #e2e8f0;
+  /*  color: #e2e8f0; */
 
-  border: var(--bw-2) solid var(--border-strong);
   border: var(--bw-2) solid rgba(240, 193, 7, 0.35);
-  border-radius: var(--r-3);
+  border-radius: var(--r-8);
   padding: 2.4rem 2.8rem;
 
-  box-shadow: 0px 18px 3rem rgba(240, 193, 7, 0.05);
   display: flex;
   flex-direction: column;
-  gap: 1.8rem;
+
   min-width: min(50rem, 92vw);
   max-width: fit-content;
   backdrop-filter: blur(10px);
+
+  border-radius: var(--r-2);
+
+  background: var(--door-bg); /* same as doors */
+  color: var(--text);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 3rem rgba(240, 193, 7, 0.18);
 }
 
+/* Opened dilaog background shade */
 dialog::backdrop {
   background: rgba(40, 40, 40, 0.4);
 }
 
+/* DIALOG TITLE */
 dialog h2 {
   margin: 0;
-  color: rgb(101, 196, 255);
-  font-size: var(--fs-3);
+
   text-align: center;
-}
-dialog p {
-  margin: 0;
-  font-size: var(--fs-1);
-  line-height: 1.5;
+  color: var(--text);
+  font-size: 3rem;
+  font-weight: 700 !important;
+  line-height: 1.15;
+  margin-bottom: 1.5rem;
+  align-self: center;
 }
 
+/* DIALOG TEXT */
+dialog p {
+  margin: 0;
+  height: 100%;
+  max-width: 35ch;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: rgba(234, 226, 196, 0.7);
+}
+
+/* DIALOG INPUT: 3TYPE OPENURL-GENERATE-OPENGENERATED */
+input {
+  font-size: 1.5rem !important;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+
+/* BTN BOX */
 dialog .actions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--sp-3);
+  gap: var(--sp-4);
   margin-bottom: 0 !important;
 }
 
@@ -53,50 +80,59 @@ dialog .actions {
 }
 
 /* CALENDAR -> DAILY MESSAGE */
-.text-box {
-  display: grid;
-  grid-template-columns: auto 1fr; /* Prefix fix, Text flexibel */
-  align-items: start; /* Prefix bleibt oben, Text kann wachsen */
-  justify-content: start; /* Block mittig im Dialog */
-  column-gap: 0.6rem;
-  text-align: left;
-  font-size: 1.8rem;
-  line-height: 1.5;
-}
-.text-box {
-  width: 100%;
-  margin: 0 0 2.2rem;
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  column-gap: 1rem;
-  justify-content: center;
-}
-
+/*  DIALOG TITLE */
 #popup-title {
-  color: #9ad7ff;
-  margin: 0 0 1.6rem;
-  font-size: 2.5rem;
-  font-weight: 700;
-  letter-spacing: 0.2px;
+  color: rgba(240, 193, 7, 0.8);
+  font-size: 3.5rem;
+  font-weight: 700 !important;
+  line-height: 1.15;
+  margin-bottom: 1.5rem;
 }
 
+/* MESSAGE BOX */
+.text-box {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.8rem;
+
+  text-align: center;
+  margin-inline: auto;
+
+  font-size: 2rem;
+  line-height: 1.6;
+  max-width: 45ch;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+
+/* DAY, DATUM */
 #dayPrefix {
   white-space: nowrap;
-  opacity: 0.8;
+
+  font-weight: var(--fw-6);
+  color: rgba(234, 226, 196, 0.6);
 }
+
+/* MESSAGE */
 #popup-text {
   margin: 0;
-  line-height: 1.5;
+  align-self: stretch;
+  height: 100%;
   max-width: 35ch;
+  font-size: 1.8rem;
+  color: var(--text);
 }
 
 .close-dialog {
   font-size: 1.5rem;
 }
 
+/* BAD URL LINK DIALOG TEXT */
 .dialog-error {
   font-size: 1.5rem;
   color: rgba(224, 44, 44, 0.6);
+  max-width: fit-content !important;
 }
 
 .text-box .icon,
@@ -104,32 +140,12 @@ dialog .actions {
   filter: saturate(1.1);
 }
 
-.close-dialog {
-  padding: 0.9rem 1.4rem;
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: transparent;
-  color: rgba(255, 255, 255, 0.9);
-  cursor: pointer;
+#openLinkInput {
+  margin-bottom: 1.5rem;
 }
-.close-dialog:hover {
-  border-color: rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.06);
-}
-
 /* TEST */
 
 /* ============ DIALOG BASE ============ */
-.dialog {
-  border-radius: var(--r-2);
-  border: var(--bw-2) solid rgba(240, 193, 7, 0.35); /* same as .door */
-  background: var(--door-bg); /* same as doors */
-  color: var(--text-tint-light);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 0 3rem rgba(240, 193, 7, 0.18);
-
-  padding: 2.6rem 2.8rem;
-}
 
 /* Backdrop (overlay) */
 .dialog::backdrop {
@@ -139,46 +155,28 @@ dialog .actions {
 
 /* ============ TITLE / CONTENT ============ */
 #popup-title {
-  margin: 0 0 1.6rem;
-  font-size: 2.2rem;
+  font-size: 3rem;
   font-weight: var(--fw-6);
   letter-spacing: 0.2px;
   opacity: 0.95;
 }
 
-/* Prefix + Message aligned like your list pattern */
-.text-box {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  column-gap: 1rem;
-  align-items: start;
-
-  width: min(56ch, 100%);
-  margin: 0 0 2.2rem;
-  text-align: left;
-}
-
 #dayPrefix {
   white-space: nowrap;
+  align-self: center;
   opacity: 0.8;
-  font-variant-numeric: tabular-nums;
-}
-
-#popup-text {
   margin: 0;
-  line-height: 1.5;
-  opacity: 0.95;
+  /* font-variant-numeric: tabular-nums; */
 }
 
-/* ============ ACTIONS ============ */
+/* ============ ACTIONS, btn box ============ */
 .actions {
   display: flex;
   justify-content: flex-end; /* button right */
-  gap: 1rem;
 }
 
 /* Button styled like your door hover/accents */
-.close-dialog {
+.btn--gold {
   padding: 0.95rem 1.5rem;
   border-radius: 1rem;
   border: 1px solid rgba(240, 193, 7, 0.2);
@@ -190,7 +188,7 @@ dialog .actions {
     background 0.2s ease;
 }
 
-.close-dialog:hover {
+.btn--gold:hover {
   background: rgba(240, 193, 7, 0.15);
-  box-shadow: 0 0 2.2rem rgba(240, 193, 7, 0.25);
+  box-shadow: 0 0 2.2rem rgba(240, 193, 7, 0.1);
 }

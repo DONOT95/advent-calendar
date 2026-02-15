@@ -13,7 +13,7 @@ export const uiTexts = {
       // Generate Calendar: Step 1
       generatedefault: "Create default",
       generateurl: "Generate URL",
-      addmessages: "Add custom messages",
+      addmessages: "Custom messages",
 
       // Generate Calendar: Step 2
       nextmessage: "Next",
@@ -54,7 +54,7 @@ export const uiTexts = {
       copyinstruction: "Copy and share this link:",
 
       // Preview messages list:
-      previewMessageLabel: "Messages",
+      previewMessageLabel: "Daily messages:",
 
       openlinktitle: "Open a calendar",
       openlinkhint: "Paste a calendar link to open it.",
@@ -85,9 +85,12 @@ export const uiTexts = {
     titles: {
       howto: "How to use",
       create: "Create your own calendar",
-      createstep1: "Step 1 - Names & Theme",
-      createstep2: "Step 2 - Edit Daily Messages",
-      createstep3: "Step 3 - Check Preview",
+      createstep1: "Step 1",
+      createstep1Text: "Names & Theme",
+      createstep2: "Step 2",
+      createstep2Text: "Edit Daily Messages",
+      createstep3: "Step 3",
+      createstep3Text: "Check Preview",
 
       // Url Error dialog title
       errorTitle: "Link problem",
@@ -159,6 +162,12 @@ export const uiTexts = {
         hint: "From December 1st on, one door opens each day. Take your time, enjoy the moment, and let the anticipation grow until Christmas.",
       },
     },
+
+    create: {
+      labels: {
+        go: "Let's go!",
+      },
+    },
   },
 
   de: {
@@ -177,7 +186,7 @@ export const uiTexts = {
       addmessages: "Benutzerdefiniert erstellen",
 
       // Generate Calendar: Step 2
-      nextmessage: "Weiter",
+      nextmessage: "Nächste",
       prevmessage: "Vorherige",
 
       // Generate Calendar: Step 3
@@ -190,7 +199,7 @@ export const uiTexts = {
       // dialog URL
       copy: "Kopie",
       copied: "Kopiert!",
-      open: "Offen",
+      open: "Öffnen",
 
       cancel: "Abbrechen",
     },
@@ -213,7 +222,7 @@ export const uiTexts = {
       sharecalendartitle: "Teile deinen Kalender",
       copyinstruction: "Kopiere diesen Link und teile ihn:",
 
-      previewMessageLabel: "Nachrichten",
+      previewMessageLabel: "Tägliche Nachrichten:",
 
       openlinktitle: "Kalender öffnen",
       openlinkhint: "Füge einen Kalender-Link ein.",
@@ -241,9 +250,12 @@ export const uiTexts = {
     titles: {
       howto: "So funktioniert's",
       create: "Eigenen Kalender Erstellen",
-      createstep1: "Schritt 1 - Namen & Thema",
-      createstep2: "Schritt 2 - Tägliche Nachrichten Bearbeiten",
-      createstep3: "Schritt 3 - Vorschau Überprüfen",
+      createstep1: "Schritt 1",
+      createstep2: "Schritt 2",
+      createstep3: "Schritt 3",
+      createstep1Text: "Namen & Thema",
+      createstep2Text: "Nachrichten Bearbeiten",
+      createstep3Text: "Vorschau Überprüfen",
 
       // Url error dialog title
       errorTitle: "Link-Problem",
@@ -315,6 +327,11 @@ export const uiTexts = {
         hint: "Ab dem 1. Dezember öffnet sich jeden Tag eine neue Tür. Lass dir Zeit und genieße dieses besondere Gefühl des Wartens bis Weihnachten.",
       },
     },
+    create: {
+      labels: {
+        go: "Los geht's!",
+      },
+    },
   },
 
   hu: {
@@ -330,7 +347,7 @@ export const uiTexts = {
 
       generatedefault: "Alapértelmezett üzenetek",
       generateurl: "URL létrehozása",
-      addmessages: "Egyéni üzenetek hozzáadása",
+      addmessages: "Egyéni üzenetek",
 
       // Generate Calendar: Step 2
       nextmessage: "Következő",
@@ -369,7 +386,7 @@ export const uiTexts = {
       sharecalendartitle: "Oszd meg a naptárad",
       copyinstruction: "Másold ki és oszd meg a linket:",
 
-      previewMessageLabel: "Üzenetek",
+      previewMessageLabel: "Napi üzenetek:",
 
       openlinktitle: "Naptár megnyitása",
       openlinkhint: "Illeszd be a naptár linkjét.",
@@ -396,9 +413,12 @@ export const uiTexts = {
     titles: {
       howto: "Hogyan működik",
       create: "Készíts saját naptárat",
-      createstep1: "1. Lépés - Nevek és Téma",
-      createstep2: "2. Lépés - Napi Üzenetek Szerkesztése",
-      createstep3: "3. Lépés - Előnézet Ellenőrzése",
+      createstep1: "1. Lépés",
+      createstep2: "2. Lépés",
+      createstep3: "3. Lépés",
+      createstep1Text: "Nevek és Téma",
+      createstep2Text: "Üzenetek Szerkesztése",
+      createstep3Text: "Előnézet Ellenőrzése",
 
       // Url Error dialog title
       errorTitle: "Link probléma",
@@ -469,6 +489,12 @@ export const uiTexts = {
       step4: {
         instruction: "Ajtók megnyitása nap mint nap",
         hint: "December 1-től minden nap egy új ajtó nyílik meg. Szánj rá időt, és élvezd a karácsonyig tartó várakozás különleges érzését.",
+      },
+    },
+
+    create: {
+      labels: {
+        go: "Hajrá!",
       },
     },
   },

@@ -4,7 +4,7 @@
   display: block;
   font-size: 1.5rem;
   font-weight: var(--fw-5);
-  letter-spacing: 0.8px;
+  letter-spacing: 1px;
   color: #f0c107;
   text-transform: uppercase;
   margin-bottom: 1rem;
@@ -50,12 +50,14 @@
 }
 
 .container.grid.grid--2cols {
-  max-width: 110rem;
+  max-width: 100rem;
+  padding: 0;
 }
 
 .card-title {
   font-size: 3.5rem;
   font-weight: 700;
+  justify-self: center;
 }
 
 .card-list {
@@ -96,6 +98,7 @@
 .container.grid.grid--2cols.grid--center-v {
   max-width: 120rem !important;
   gap: 8rem 4rem !important;
+  padding: 0 3rem;
 }
 .step-numb {
   font-size: 5rem;
