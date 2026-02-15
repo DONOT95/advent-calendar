@@ -94,7 +94,7 @@ a {
   --fw-8: 800;
 
   /* ---- Colors (base) ---- */
-  --bg-img: url("/data/bilds/christmas_background_family.png");
+  --bg-img: url("./data/bilds/christmas_background_family.png");
   --bg-color: #0b1020;
   --bg-tint-light: #dadbde;
 
@@ -159,21 +159,21 @@ body.calendar-scope {
 }
 
 body.calendar-scope[data-theme="classic"] {
-  background-image: url("/data/bilds/christmas-background_classic.png");
+  background-image: url("./data/bilds/christmas-background_classic.png");
 }
 
 body.calendar-scope[data-theme="neon"] {
-  background-image: url("/data/bilds/christmas_background_neon.png");
+  background-image: url("./data/bilds/christmas_background_neon.png");
 }
 
 body.calendar-scope[data-theme="family"] {
   background-image:
     linear-gradient(to right, rgba(22, 22, 22, 0.2), rgba(22, 22, 22, 0.2)),
-    url(/data/bilds/christmas_background_family.png);
+    url(./data/bilds/christmas_background_family.png);
 }
 
 body.calendar-scope[data-theme="horror"] {
-  background-image: url("/data/bilds/christmas_background_horror.png");
+  background-image: url("./data/bilds/christmas_background_horror.png");
 }
 
 /* CONTAINER */
