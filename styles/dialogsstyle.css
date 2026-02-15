@@ -190,5 +190,5 @@ dialog .actions {
 
 .btn--gold:hover {
   background: rgba(240, 193, 7, 0.15);
-  box-shadow: 0 0 2.2rem rgba(240, 193, 7, 0.1);
+  box-shadow: 0 0 2rem rgba(240, 193, 7, 0.1);
 }

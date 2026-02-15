@@ -18,6 +18,9 @@ import {
   bindWizardDom,
   isWizardDomReady,
   setWizardStep,
+  activateCreateRO,
+  deactivateCreateRO,
+  ensureCreateRO,
 } from "../views/wizardView.js";
 import { getDefaultMessages } from "../services/defaultMessagesService.js";
 
@@ -39,6 +42,8 @@ export function initGenerator() {
   // if (!bindDom()) return;
   dom = bindWizardDom();
   if (!isWizardDomReady(dom)) return;
+
+  ensureCreateRO(dom, () => appState.generator.step ?? 0);
 
   // prevent duplicate event listener bindings
   generatorInitialized = true;
@@ -68,9 +73,9 @@ export function initGenerator() {
   dom.btnBackToEdit.addEventListener("click", onBackToEdit);
 
   // Make possible to re-open the dialog(popup)
-  dom.btnShowGenerated.addEventListener("click", () => {
+  /* dom.btnShowGenerated.addEventListener("click", () => {
     if (!dom.urlDialog.open) dom.urlDialog.showModal();
-  });
+  }); */
 
   // Open created Calendar in new Window
   dom.btnOpenUrl.addEventListener("click", () => {
@@ -251,6 +256,8 @@ function goToStep(index) {
 
   if (typeof safe === "number") {
     appState.generator.step = safe;
+    // NEW RESIZE STEP
+    activateCreateRO(dom, safe);
   }
 }
 
@@ -268,6 +275,18 @@ export function resetGenerator() {
   goToStep(0);
   // Select the 1. Input field (From person name) (UX: easy to edit)
   selectInputText(dom.fromInput);
+}
+
+export function activateWizardResize() {
+  if (!dom) {
+    dom = bindWizardDom();
+  }
+  ensureCreateRO(dom, () => appState.generator.step ?? 0);
+  activateCreateRO(dom, appState.generator.step ?? 0);
+}
+
+export function deactivateWizardResize() {
+  deactivateCreateRO();
 }
 
 // Clear HTML element values in WIZARD

@@ -68,6 +68,8 @@ export function bindUiDom() {
     // Last to be able to get all the dialogs inside the array
     closeUrlErrorBtn: document.getElementById("closeUrlErrorBtn"),
     dialogs: Array.from(document.querySelectorAll("dialog")),
+
+    footerYear: document.getElementById("currentYear"),
   };
 }
 

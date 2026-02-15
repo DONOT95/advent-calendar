@@ -218,7 +218,6 @@ body.calendar-scope[data-theme="horror"] {
 main {
   /* Position */
   grid-column: 1 / -1;
-  grid-row: 2;
 
   display: flex;
   justify-content: center; /* horizontal center */
@@ -306,8 +305,8 @@ section {
 
 .btn-ghost {
   background: transparent;
-  border-color: rgb(12, 55, 82);
-  color: rgb(114, 199, 252);
+  color: rgba(63, 180, 253, 0.8);
+  border-color: rgba(22, 32, 63, 0.6);
 }
 
 .btn-ghost:hover {

@@ -68,6 +68,9 @@ export const uiTexts = {
         "This link is invalid or damaged. Showing demo content.",
       invalidErrorRepaired:
         "This link was incomplete. Missing values were replaced with defaults.",
+      invalidLink: "Warning! Invalid url. Please paste a valid calendar link.",
+
+      allrights: "all rights reserved.",
     },
     // Set Attribute ( Event listener on placeholder)
     placeholders: {
@@ -235,6 +238,10 @@ export const uiTexts = {
         "Dieser Link ist ungültig oder beschädigt. Demo-Kalender Inhalt wird angezeigt.",
       invalidErrorRepaired:
         "Dieser Link war unvollständig. Fehlende Werte wurden durch Standardwerte ersetzt.",
+      invalidLink:
+        "Achtung! Ungültige URL. Bitte fügen Sie einen gültigen Kalenderlink ein.",
+
+      allrights: "Alle Rechte vorbehalten.",
     },
     // Set Attribute ( Event listener on placeholder)
     placeholders: {
@@ -397,7 +404,11 @@ export const uiTexts = {
       invalidErrorDemo:
         "Ez a link érvénytelen vagy sérült. Demo Kalendár nézet aktiválva.",
       invalidErrorRepaired:
-        "Ez a link hiányos volt. A hiányzó értékeket alapértelmezett értékekkel helyettesítettük.",
+        "Ez a link hiányos volt. A hiányzó értékeket helyettesítettük.",
+      invalidLink:
+        "Figyelem! Érvénytelen URL-cím. Kérjük, illesszen be egy érvényes naptár linket.",
+
+      allrights: "minden jog fenntartva.",
     },
     // Set Attribute
     placeholders: {

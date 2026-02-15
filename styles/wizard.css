@@ -73,17 +73,10 @@ textarea {
 #create-track {
   display: flex;
   width: 100%;
+  /* SLIDE effect */
   will-change: transform;
   transition: transform 350ms ease;
   align-items: flex-start;
-}
-
-.create-step {
-  display: flex;
-  flex-direction: column;
-  flex: 0 0 100%;
-  padding: var(--sp-4);
-  border-right: var(--bw-1) solid rgba(240, 193, 7, 0.12);
 }
 
 .create-step {
@@ -95,12 +88,19 @@ textarea {
   flex-direction: column;
   flex: 0 0 100%;
 
-  border-radius: var(--r-2);
-
   background: var(--door-bg); /* same as doors */
   color: var(--text);
   backdrop-filter: blur(10px);
   box-shadow: 0 0 3rem rgba(240, 193, 7, 0.18);
+}
+
+/* Animation for step appearance (during slide from ghost-> visible) */
+.create-step {
+  opacity: 0.35;
+  transition: opacity 300ms ease;
+}
+.create-step.is-active {
+  opacity: 1;
 }
 
 .create-step-title {
@@ -155,6 +155,10 @@ section#create-container {
   flex-direction: column;
 }
 
+.label.label--margin-top {
+  margin-top: 3rem;
+}
+
 .subtitle.subtitle--create {
   margin-bottom: 4rem !important;
 }
@@ -200,9 +204,6 @@ section#create-container {
 .textarea {
   font-size: 1.5rem;
   margin-bottom: 0.25rem;
-}
-.charactercounter.charactercounter--withmargin {
-  margin-bottom: 1.5rem;
 }
 
 /* PROGRESS */
@@ -257,6 +258,11 @@ section#create-container {
   box-shadow: 0 0 18px rgba(240, 193, 7, 0.22);
 }
 
+/* LABELS FOR PREVIEW */
+.field-lbl.field-lbl--preview {
+  margin-bottom: 1rem;
+}
+
 /* FROM-TO NAMES */
 .name-prev {
   font-size: 1.5rem;
@@ -266,6 +272,16 @@ section#create-container {
 /* PREVIEW LIST */
 .preview-list {
   font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.preview-prefixdate-lbl {
+  font-size: 1.5rem;
+  color: rgba(234, 226, 196, 0.7);
+}
+
+.preview-message {
+  /* Optional style for class */
+  font-size: 1.5rem;
   color: var(-text);
-  margin-bottom: 1.5rem;
 }

@@ -34,7 +34,7 @@ export function bindWizardDom() {
     previewMessages: document.getElementById("previewMessages"),
     btnBackToEdit: document.getElementById("btnBackToEdit"),
     btnGenerateUrl: document.getElementById("btnGenerateUrl"),
-    btnShowGenerated: document.getElementById("btnShowGenerated"),
+    /* btnShowGenerated: document.getElementById("btnShowGenerated"), */
 
     // Track/Container (für Steps)
     pageCreate: document.getElementById("page-create"),
@@ -53,6 +53,7 @@ export function bindWizardDom() {
   };
 }
 
+// DOM guard
 export function isWizardDomReady(dom) {
   return Boolean(
     dom?.pageCreate &&
@@ -73,26 +74,44 @@ export function renderPreviewList(listEl, messages) {
 
   listEl.replaceChildren(
     ...messages.map((text, i) => {
+      // Flexible li for HTML
       const li = document.createElement("li");
+
+      // message LBL, own class
+      const spanPrefix = document.createElement("span");
+      spanPrefix.classList = "preview-prefixdate-lbl";
+
+      // messge TEXT, own class
+      const spanMessage = document.createElement("span");
+      spanMessage.className = "preview-message";
 
       const prefix = getPreviewItemPrefix(i + 1);
 
-      // If text longer than 100 char cut it (only for preview)
+      // If TEXT longer than 60 char cut it (only for preview)
       if (text.length > 60) {
         text = text.slice(0, 60);
         text = text + "...";
       }
-      li.textContent = `${prefix} ${text}`;
+
+      spanPrefix.textContent = prefix + " ";
+      spanMessage.textContent = text;
+
+      // Add up the LBL + TEXT
+      li.append(spanPrefix, spanMessage);
+
       return li;
     }),
   );
 }
 
-// Open generated Url dialog popup
+// Open generated Url dialog
 export function openUrlDialog(dialogEl, inputEl, url) {
   if (!dialogEl || !inputEl) return;
   inputEl.value = url;
   if (!dialogEl.open) dialogEl.showModal();
+
+  // Select content in textfield
+  selectInputText(inputEl);
 }
 
 // COPY URL
@@ -112,6 +131,7 @@ export function flashCopyButtonText(btnEl, durationMs = 900) {
   }, durationMs);
 }
 
+// Select input field content
 export function selectInputText(inputEl) {
   if (!inputEl) return;
   inputEl.focus();
@@ -137,6 +157,7 @@ export function selectInputTextSafe(inputEl, { preventScroll = false } = {}) {
   if (typeof inputEl.select === "function") inputEl.select();
 }
 
+// Copy BTN, copy HTML inhalt to clipboard
 export async function copyUrlFromWizard(inputEl) {
   const url = inputEl?.value?.trim?.() ?? "";
   if (!url) return false;
@@ -169,6 +190,11 @@ export function setWizardStep(dom, stepIndex) {
   const maxIndex = dom.createSteps.length - 1;
   const safeIndex = Math.max(0, Math.min(stepIndex, maxIndex));
 
+  // For "ghost to visible" effect, class list
+  dom.createSteps.forEach((el, index) => {
+    el.classList.toggle("is-active", index === safeIndex);
+  });
+
   // Animation 0%, -100%, -200%...
   dom.createTrack.style.transform = `translateX(-${safeIndex * 100}%)`;
 
@@ -187,9 +213,47 @@ export function syncCreateContainerHeight(dom, stepIndex) {
   const container = dom.createContainer;
   if (!activeStep || !container) return;
 
-  // Erst nach Layout-Update messen (wichtig bei Transition/Fonts)
   requestAnimationFrame(() => {
-    const h = activeStep.getBoundingClientRect().height;
-    if (h > 0) container.style.height = `${Math.ceil(h)}px`;
+    // Use the larger value so wrapped text / dynamic overflow never gets clipped.
+    const h = Math.max(activeStep.offsetHeight, activeStep.scrollHeight);
+    if (h > 0) container.style.height = `${Math.ceil(h) + 2}px`;
   });
+}
+
+// NEW RESIZE FOR STEPS IN WIZARD
+let ro = null;
+let observed = null;
+
+export function ensureCreateRO(dom, getStepIndex) {
+  if (ro) return;
+
+  ro = new ResizeObserver(() => {
+    const idx = getStepIndex();
+    syncCreateContainerHeight(dom, idx);
+  });
+
+  window.addEventListener("resize", () => {
+    const idx = getStepIndex();
+    syncCreateContainerHeight(dom, idx);
+  });
+}
+
+export function activateCreateRO(dom, stepIndex) {
+  if (!ro || !dom?.createSteps?.length) return;
+
+  const el = dom.createSteps[stepIndex];
+  if (!el) return;
+
+  if (observed) ro.unobserve(observed);
+  observed = el;
+  ro.observe(observed);
+
+  // sofort korrekt setzen (wichtig!)
+  syncCreateContainerHeight(dom, stepIndex);
+}
+
+export function deactivateCreateRO() {
+  if (!ro || !observed) return;
+  ro.unobserve(observed);
+  observed = null;
 }

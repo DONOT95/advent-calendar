@@ -6,7 +6,11 @@ import {
   getLangAndDictThanResolveKey,
 } from "../i18n/i18n.js";
 import { startClock, refreshClock } from "../services/clockService.js";
-import { resetGenerator } from "./wizardController.js";
+import {
+  resetGenerator,
+  activateWizardResize,
+  deactivateWizardResize,
+} from "./wizardController.js";
 import { THEME_REGISTRY } from "../config/constants.js";
 
 import {
@@ -36,6 +40,7 @@ import {
   getPreviewItemPrefix,
   getFrom,
   getTo,
+  getUrlErrorMessage,
 } from "../services/calendarDayServices.js";
 
 // Boolean variable to check if initUI has been already fully executed.
@@ -43,7 +48,7 @@ let uiInitialized = false;
 
 let dom = null;
 // FUNCTION: initialisation
-export function initUI(config, offsetMs, initialPage = "home") {
+export function initUI(config, offsetMs, initialPage = "home", serverDate) {
   //HTML + JS bind
   dom = bindUiDom();
 
@@ -76,6 +81,7 @@ export function initUI(config, offsetMs, initialPage = "home") {
   initMenuEvents();
   initLanguageEvents();
   initCTAButtonEvents();
+  setCurrentYear(dom.footerYear, serverDate);
 
   dom.closeUrlErrorBtn.addEventListener("click", () => {
     dom.urlStatusDialog?.close();
@@ -177,6 +183,12 @@ function switchPage(pageName) {
     // refresh locked/today classes + midnight schedule
     refreshCalendar();
   }
+
+  if (pageName === "create") {
+    activateWizardResize();
+  } else {
+    deactivateWizardResize();
+  }
 }
 
 // Only at demo -> from/ to should change with language select
@@ -241,9 +253,10 @@ function initOpenLinkEvents() {
     const url = normalizeCalendarUrl(dom.openLinkInput?.value);
 
     if (!url) {
-      showOpenLinkError(
-        "Warning! Invalid url. Please paste a valid calendar link.",
-      );
+      const errorMsg = getUrlErrorMessage();
+
+      showOpenLinkError(errorMsg);
+
       dom.openLinkInput?.focus();
       return;
     }
@@ -267,6 +280,13 @@ function initNameFromTo(fromNameEl, toNameEl, config) {
   toNameEl.textContent = config.to ?? DEFAULTS.calendarConfig.to;
 }
 
+// SET CURRENT YEAR IN FOOTER
+function setCurrentYear(yearEl, currentYear) {
+  if (!yearEl) return;
+
+  const cleanYear = currentYear.getFullYear();
+  yearEl.textContent = cleanYear || 2025;
+}
 // ================   READ THEME or set Default   ================
 
 //================   LANGUAGE SWITCH   ================
@@ -327,6 +347,7 @@ function normalizeCalendarUrl(input) {
 
 function showOpenLinkError(msg) {
   if (!dom?.openLinkError) return;
+
   dom.openLinkError.textContent = msg;
   dom.openLinkError.hidden = false;
 }

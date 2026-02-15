@@ -31,7 +31,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const initialPage = hasValidUrl ? "calendar" : "home";
 
   // Assign HTML with JS values, already correct
-  initUI(appState.calendarConfig, appState.time.offsetMs, initialPage);
+  initUI(
+    appState.calendarConfig,
+    appState.time.offsetMs,
+    initialPage,
+    serverDateNow,
+  );
 
   // SECTION: CALENDAR -> Bild Default or Custom Calendar
   initCalendar({

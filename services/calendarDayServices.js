@@ -21,3 +21,10 @@ export function getFrom() {
 export function getTo() {
   return formatText("labels.toPerson", "You");
 }
+
+export function getUrlErrorMessage() {
+  return formatText(
+    "labels.invalidLink",
+    "Warning! Invalid url. Please paste a valid calendar link.",
+  );
+}

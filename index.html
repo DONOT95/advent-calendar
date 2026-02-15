@@ -136,7 +136,7 @@
                 <!-- action buttons -->
                 <div id="heroActions" class="actions hero-actions">
                   <button
-                    class="btn btn-primary"
+                    class="btn btn--gold"
                     data-page="create"
                     type="button"
                     id="heroCreateBtn"
@@ -341,7 +341,10 @@
         <section id="page-create" class="page page--create">
           <!-- page titel -->
           <div class="create-head">
-            <span class="label" data-i18n="create.labels.go"></span>
+            <span
+              class="label label--margin-top"
+              data-i18n="create.labels.go"
+            ></span>
             <h2
               class="subtitle subtitle--create"
               data-i18n="titles.create"
@@ -452,7 +455,7 @@
                 ></textarea>
                 <label
                   for="messageEditor"
-                  class="charactercounter charactercounter--withmargin"
+                  class="charactercounter"
                   id="charactersMessageEditor"
                 ></label>
 
@@ -482,16 +485,22 @@
                 ></h3>
                 <!-- Preview of the sender name -->
                 <div class="prew">
-                  <span class="field-lbl" data-i18n="labels.from"></span>
+                  <span
+                    class="field-lbl field-lbl--preview"
+                    data-i18n="labels.from"
+                  ></span>
                   <span class="name-prev" id="previewFrom"></span>
                 </div>
                 <!-- Preview of the reciever name -->
                 <div class="prew">
-                  <span class="field-lbl" data-i18n="labels.to"></span>
+                  <span
+                    class="field-lbl field-lbl--preview"
+                    data-i18n="labels.to"
+                  ></span>
                   <span class="name-prev" id="previewTo"></span>
                 </div>
                 <span
-                  class="field-lbl"
+                  class="field-lbl field-lbl--preview"
                   for="previewMessages"
                   data-i18n="labels.previewMessageLabel"
                 ></span>
@@ -509,11 +518,11 @@
                     data-i18n="buttons.generateurl"
                     class="btn btn--gold"
                   ></button>
-                  <button
+                  <!-- <button
                     id="btnShowGenerated"
                     data-i18n="buttons.showurl"
                     class="btn btn-ghost"
-                  ></button>
+                  ></button> -->
                 </div>
               </div>
             </div>
@@ -587,7 +596,14 @@
       </dialog>
     </div>
     <!-- FOOTER -->
-    <footer></footer>
+    <footer>
+      <span id="currentYear" class="current-year field-lbl"></span>
+      <span class="copyright field-lbl">&copy;</span>
+      <span
+        class="rights-reserved field-lbl"
+        data-i18n="labels.allrights"
+      ></span>
+    </footer>
   </body>
   <!-- Bind JS file -->
   <script type="module" src="main.js" defer></script>
