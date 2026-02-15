@@ -9,7 +9,7 @@
   /*BG image cover with gray */
   background-image:
     linear-gradient(to right, rgba(40, 40, 40, 0.1), rgba(20, 20, 20, 0.2)),
-    url(/data/bilds/hero_bg_left.png);
+    url(./data/bilds/hero_bg_left.png);
 
   background-size: cover;
   background-position: center;
