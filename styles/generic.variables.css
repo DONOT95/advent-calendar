@@ -4,17 +4,14 @@
 *,
 *::before,
 *::after {
-  /* Making elements size include: content, padding and border */
   box-sizing: border-box;
 }
 
-/* 2. Margins entfernen */
 * {
   margin: 0;
   padding: 0;
 }
 
-/* 4. Medien */
 img,
 picture,
 video,
@@ -24,7 +21,6 @@ svg {
   max-width: 100%;
 }
 
-/* 5. Form-Elemente */
 input,
 button,
 textarea,
@@ -32,25 +28,29 @@ select {
   font: inherit;
 }
 
-/* 6. Listen */
+#themeSelect,
+#pageLanguage {
+  width: fit-content !important;
+}
+
 ul,
 ol {
   list-style: none;
   padding: 0;
 }
 
-/* 7. Links */
 a {
   text-decoration: none;
   color: inherit;
 }
 
 /* =========================
-   1) Tokens (Design System)
+   1) Tokens
    ========================= */
 :root {
   font-size: 62.5%;
-  /* ---- Spacing scale ---- */
+
+  /* Spacing */
   --sp-1: 0.25rem;
   --sp-2: 0.5rem;
   --sp-3: 0.75rem;
@@ -60,58 +60,56 @@ a {
   --sp-8: 2rem;
   --sp-10: 2.5rem;
 
-  /* ---- Layout widths ---- */
+  /* Layout */
   --content-max: 130rem;
   --side-min: 1rem;
   --calendar-max: 80rem;
+  --bp-sm: 640px;
 
-  /* ---- Radius ---- */
+  /* Radius */
   --r-1: 0.5rem;
   --r-2: 0.75rem;
   --r-3: 1rem;
-  --r-8: 8px;
 
-  /* ---- Borders ---- */
+  /* Borders */
   --bw-1: 1px;
   --bw-2: 2px;
   --bw-3: 3px;
 
-  /* ---- Shadows ---- */
-  --shadow-1: 0 4px 20px rgba(0, 0, 0, 0.25);
-  --shadow-2: 0 12px 30px rgba(0, 0, 0, 0.45);
+  /* Font sizes */
+  --fs-0: 1rem;
+  --fs-1: 1.5rem;
+  --fs-2: 1.8rem;
+  --fs-3: 2rem;
+  --fs-4: 3rem;
+  --fs-5: 3.5rem;
+  --fs-6: 3.8rem;
 
-  /* ---- Typography (responsive) ---- */
-  /*   --fs-0: clamp(0.9rem, 0.2vw + 0.85rem, 1rem);
-  --fs-1: clamp(1rem, 0.25vw + 0.95rem, 1.1rem);
-  --fs-2: clamp(1.1rem, 0.4vw + 1rem, 1.25rem);
-  --fs-3: clamp(1.35rem, 1vw + 1.05rem, 2rem);
-  --fs-4: clamp(1.6rem, 2.2vw + 1rem, 3.2rem); */
-
+  /* Font weights */
   --fw-4: 400;
   --fw-5: 500;
   --fw-6: 600;
   --fw-7: 700;
   --fw-8: 800;
 
-  /* ---- Colors (base) ---- */
-  --bg-img: url("../data/bilds/christmas_background_family.png");
-  --bg-color: #0b1020;
-  --bg-tint-light: #dadbde;
-
-  --header-bg: rgb(120, 0, 12);
-  --header-border: #f0c107;
-  --br: rgb(240, 193, 7);
-
+  /* Colors */
+  --main-blue: #0b1020;
+  --yellow: #f0c107;
   --text: rgb(241, 238, 226);
   --text-tint-light: #f9f8f3;
-  --text-soft: rgba(240, 193, 7, 0.78);
+  --text-soft: rgba(240, 193, 7, 0.7);
+  --text-muted: rgba(234, 226, 196, 0.7);
+  --text-muted-2: rgba(234, 226, 196, 0.6);
+  --text-faint: #eae2c442;
 
-  --surface: rgba(54, 54, 54, 0.23); /* main overlay */
-  --panel: rgba(0, 0, 0, 0.18); /* cards/containers */
-  --panel-strong: rgba(17, 24, 39, 0.95); /* dialogs */
+  --panel: rgba(0, 0, 0, 0.18);
+  --panel-strong: rgba(17, 24, 39, 0.95);
 
   --border: rgba(240, 193, 7, 0.18);
   --border-strong: rgba(101, 196, 255, 0.35);
+  --border-gold-soft: rgba(240, 193, 7, 0.2);
+  --border-gold-mid: rgba(240, 193, 7, 0.22);
+  --border-gold-strong: rgba(240, 193, 7, 0.35);
 
   --accent: #22d3ee;
   --accent-2: rgba(34, 197, 94, 0.3);
@@ -120,12 +118,16 @@ a {
   --door-text: #d6fcff;
   --door-locked: rgba(11, 18, 32, 0.63);
 
-  /* ---- Breakpoints ---- */
-  --bp-sm: 640px;
+  /* Reused effects */
+  --shadow-1: 0 4px 20px rgba(0, 0, 0, 0.25);
+  --shadow-2: 0 12px 30px rgba(0, 0, 0, 0.45);
+  --shadow-gold-soft: 0 1rem 4rem rgba(247, 221, 119, 0.08);
+  --surface-pad: 2.4rem 2.8rem;
+  --focus-ring: rgba(240, 193, 7, 0.506);
 }
 
 /* =========================
-   2) Base page layout
+   2) Generic Base
    ========================= */
 body {
   font-family:
@@ -133,24 +135,17 @@ body {
     system-ui,
     -apple-system,
     sans-serif;
-
   margin: 0;
   min-height: 100vh;
   line-height: 1.4;
   font-size: var(--fs-1);
   color: var(--text);
-
-  background: var(--bg-color, none);
-
+  background: var(--main-blue);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
-
-/* ============== HELP CLASSES ==============*/
-/* ============== reusable components ==============*/
-/* Theme background helpers*/
 
 body.calendar-scope {
   background-repeat: no-repeat;
@@ -169,21 +164,19 @@ body.calendar-scope[data-theme="neon"] {
 body.calendar-scope[data-theme="family"] {
   background-image:
     linear-gradient(to right, rgba(22, 22, 22, 0.2), rgba(22, 22, 22, 0.2)),
-    url(../data/bilds/christmas_background_family.png);
+    url("../data/bilds/christmas_background_family.png");
 }
 
 body.calendar-scope[data-theme="horror"] {
   background-image: url("../data/bilds/christmas_background_horror.png");
 }
 
-/* CONTAINER */
 .container {
   max-width: 120rem;
   padding: 0 3rem;
   margin: 0 auto;
 }
 
-/* GRID TEMPLATES */
 .grid {
   display: grid;
   gap: 9rem 4rem;
@@ -202,34 +195,27 @@ body.calendar-scope[data-theme="horror"] {
   grid-template-columns: repeat(6, minmax(11rem, 1fr));
 }
 
-/* ============== HTML ELEMENTS START ==============*/
 .app {
   min-height: 100vh;
   display: grid;
-
   grid-template-columns:
     minmax(var(--side-min), 1fr)
     minmax(0, var(--content-max))
     minmax(var(--side-min), 1fr);
-
   grid-template-rows: auto 1fr auto;
 }
 
 main {
-  /* Position */
   grid-column: 1 / -1;
-
   display: flex;
-  justify-content: center; /* horizontal center */
+  justify-content: center;
   align-items: center;
 }
 
-/* Pages hide/show */
 .page {
   display: none;
   width: 100%;
   height: 100%;
-  /* margin-inline: auto; */
   margin: 0 auto;
   align-items: center;
   justify-content: center;
@@ -242,13 +228,11 @@ main {
   gap: 14rem;
 }
 
-/* Span all the way throug grid columns */
 .topbar,
 footer {
   grid-column: 1 / -1;
 }
 
-/* Header, Footer, Calendar -> NO SELECT allowed */
 .topbar,
 footer,
 .grid,
@@ -258,19 +242,16 @@ footer,
   -ms-user-select: none;
 }
 
-/* ============== CONTENT ==============*/
-
 section {
   margin-inline: auto;
 }
-/* Buttons (generic) */
-.btn {
-  border-radius: 8px;
-  padding: 0.8rem 1.6rem;
-  font-size: 1.5rem;
-  font-weight: var(--fw-5);
 
-  border: var(--bw-1) solid rgba(240, 193, 7, 0.22);
+.btn {
+  border-radius: var(--r-2);
+  padding: 0.95rem var(--sp-6);
+  font-size: var(--fs-1);
+  font-weight: var(--fw-5);
+  border: var(--bw-1) solid var(--border-gold-soft);
   cursor: pointer;
   transition:
     transform 0.12s ease,
@@ -282,20 +263,23 @@ section {
 }
 
 .btn-primary {
-  background: rgba(22, 32, 63, 0.6);
-  border-color: rgba(63, 180, 253, 0.8);
-  color: rgb(114, 199, 252);
+  border: var(--bw-1) solid var(--border-gold-soft);
+  background: rgba(240, 193, 7, 0.1);
+  color: var(--text-tint-light);
+  cursor: pointer;
+  transition:
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .btn-primary:hover {
-  background: rgba(83, 92, 118, 0.292);
-  box-shadow: -2px 2px 15px rgba(101, 196, 255, 0.1);
+  background: rgba(240, 193, 7, 0.15);
+  box-shadow: 0 0 2rem rgba(240, 193, 7, 0.1);
 }
 
 .btn-secondary {
   background: transparent;
   border-color: rgba(220, 215, 195, 0.2);
-
   color: var(--text);
 }
 

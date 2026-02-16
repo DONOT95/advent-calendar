@@ -12,24 +12,18 @@
       rel="stylesheet"
     />
 
-    <!-- Bind CSS Style -->
-    <link rel="stylesheet" href="styles/calendar.css" />
-    <link rel="stylesheet" href="styles/dialogsstyle.css" />
-    <link rel="stylesheet" href="styles/footerstyle.css" />
-    <link rel="stylesheet" href="styles/genericstyle.css" />
-    <link rel="stylesheet" href="styles/headerstyle.css" />
-    <link rel="stylesheet" href="styles/responsive.css" />
-    <link rel="stylesheet" href="styles/startsite.css" />
-    <link rel="stylesheet" href="styles/wizard.css" />
-    <link rel="stylesheet" href="styles/herostyle.css" />
+    <!-- STYLE: CSS -->
+    <link rel="stylesheet" href="styles/generic.variables.css" />
+    <link rel="stylesheet" href="styles/app.sections.css" />
   </head>
 
   <body>
     <div id="app" class="app">
       <!-- Header -->
       <header class="topbar">
-        <!-- Menu icon -->
+        <!-- Header-left: Home, Menu -->
         <div class="header-side left">
+          <!-- HOMEBTN / LOGO -->
           <button id="homeBtn" class="btn">
             <img
               id="btn-img"
@@ -38,6 +32,7 @@
             />
           </button>
 
+          <!-- Menu -->
           <div class="hamburger-container">
             <button
               id="menuBtn"
@@ -63,7 +58,8 @@
             </div>
           </div>
         </div>
-        <!-- Current day -->
+
+        <!-- Header-right: Date,time lang select -->
         <div class="header-side right">
           <!-- Current date-time -->
           <span id="currentDate"></span>
@@ -79,18 +75,16 @@
         <section id="page-calendar" class="page">
           <div class="calendar-wrap">
             <!-- Titel TO PERSON -->
-            <div class="person-box person--to-box">
+            <div class="person-box">
               <span data-i18n="labels.to"></span>
               <h2 id="name-to" class="calendar-name"></h2>
             </div>
             <div class="grid grid--6cols" id="calendar"></div>
 
-            <div>
-              <!-- Titel FROM PERSON -->
-              <div class="person-box person--from-box">
-                <span data-i18n="labels.from"></span>
-                <p id="name-from" class="calendar-name"></p>
-              </div>
+            <!-- Titel FROM PERSON -->
+            <div class="person-box">
+              <span data-i18n="labels.from"></span>
+              <p id="name-from" class="calendar-name"></p>
             </div>
           </div>
 
@@ -116,7 +110,7 @@
                 id="popup-close-btn"
                 type="button"
                 data-i18n="buttons.close"
-                class="btn btn--gold"
+                class="btn btn-primary"
               ></button>
             </div>
           </dialog>
@@ -136,7 +130,7 @@
                 <!-- action buttons -->
                 <div id="heroActions" class="actions hero-actions">
                   <button
-                    class="btn btn--gold"
+                    class="btn btn-primary"
                     data-page="create"
                     type="button"
                     id="heroCreateBtn"
@@ -169,14 +163,14 @@
           </section>
 
           <!-- 2 CARDS -->
-          <section class="cards">
+          <section class="cards container">
             <!-- How heading -->
-            <div class="cards-head container">
+            <div class="cards-head">
               <span class="label" data-i18n="cards.label"></span>
               <h2 class="subtitle" data-i18n="cards.subtitle"></h2>
             </div>
 
-            <div class="container grid grid--2cols">
+            <div class="grid grid--2cols">
               <article class="card">
                 <h3 class="card-title" data-i18n="cardnegative.title"></h3>
                 <ul class="card-list card-list--negative">
@@ -267,15 +261,15 @@
           </section>
 
           <!-- HOW IT WORKS -->
-          <section class="how">
+          <section class="how container">
             <!-- How heading -->
-            <div class="how-head container">
+            <div class="how-head">
               <span class="label" data-i18n="how.label"></span>
               <h2 class="subtitle" data-i18n="how.subtitle"></h2>
             </div>
 
             <!-- How Grid -->
-            <div class="container grid grid--2cols grid--center-v">
+            <div class="grid grid--2cols grid--center-v">
               <!-- Step 1 -->
               <div class="step-text-box">
                 <span class="step-numb">01</span>
@@ -423,7 +417,7 @@
                   <button
                     id="btnAddCustom"
                     data-i18n="buttons.addmessages"
-                    class="btn btn--gold"
+                    class="btn btn-primary"
                   ></button>
                 </div>
               </div>
@@ -468,7 +462,7 @@
                   <button
                     id="btnNextDay"
                     data-i18n="buttons.nextmessage"
-                    class="btn btn--gold"
+                    class="btn btn-primary"
                   ></button>
                 </div>
               </div>
@@ -516,7 +510,7 @@
                   <button
                     id="btnGenerateUrl"
                     data-i18n="buttons.generateurl"
-                    class="btn btn--gold"
+                    class="btn btn-primary"
                   ></button>
                   <!-- <button
                     id="btnShowGenerated"
@@ -544,7 +538,7 @@
           ></button>
           <button
             id="btnOpenUrl"
-            class="btn btn--gold"
+            class="btn btn-primary"
             data-i18n="buttons.open"
           ></button>
         </div>
@@ -576,7 +570,7 @@
             id="btnOpenLinkGo"
             type="button"
             data-i18n="buttons.open"
-            class="btn btn--gold"
+            class="btn btn-primary"
           ></button>
         </div>
       </dialog>

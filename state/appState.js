@@ -77,37 +77,6 @@ export function resetWizardDraft() {
   // language automatically taken from appState
 }
 
-// TODO: NOT IN USE
-// State Helpers
-/* export function resetAppState({ keepTime = true } = {}) {
-  // Time value unchanged
-  const oldOffset = appState.time.offsetMs;
-
-  // New default object
-  const fresh = createInitialState();
-
-  // FOR WIZARD VALUES:
-
-  // Clear messages array
-  setWizardMessages(
-    Array(LIMITS.messagesCount).fill(DEFAULTS.calendar.emptyMessage),
-  );
-
-  // Reset generator state
-  Object.assign(appState.generator, fresh.generator);
-
-  // Reset selected theme to default
-  appState.calendarConfig.theme = DEFAULTS.calendarConfig.theme;
-
-  appState.time.offsetMs = keepTime ? oldOffset : 0;
-}
- */
-/*
- * Apply URL config  (ALWAYS valid data from readConfigFromUrl).
- * - If config is null => calendar stays in "demo" mode; messages are NOT forced here
- *   (demo messages are computed when Calendar section opens).
- * - If config has valid messages => calendar becomes "url" with sanitized messages.
- */
 export function applyConfigToState(config) {
   // First load
   // Demo mode, dynamic messages later
