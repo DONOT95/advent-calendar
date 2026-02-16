@@ -276,7 +276,7 @@
 
 .grid.grid--2cols {
   justify-self: center;
-  padding: 0;
+  gap: 14rem;
 }
 
 .card-title {
@@ -323,9 +323,25 @@
   margin-bottom: 9rem;
 }
 
-.grid.grid--2cols.grid--center-v {
+.how-steps {
   max-width: 120rem !important;
-  gap: 8rem 4rem !important;
+  display: grid;
+  gap: 8rem;
+}
+
+.how-step {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+  gap: 8rem 4rem;
+}
+
+.how-step:nth-child(even) .step-text-box {
+  order: 2;
+}
+
+.how-step:nth-child(even) .step-img-box {
+  order: 1;
 }
 
 .step-numb {
@@ -347,7 +363,7 @@
 }
 
 .step-img {
-  width: 60%;
+  max-width: 60%;
   transition: transform 0.3s ease;
   justify-self: center;
 }
@@ -755,6 +771,29 @@ dialog .actions {
   outline: none !important;
 }
 
+/* DIALOG LBL*/
+/* Only for unread daily calendar message, new label*/
+#popup {
+  position: relative;
+  overflow: hidden;
+}
+#popup::after {
+  position: absolute;
+  top: 9%;
+  right: -6%;
+  transform: rotate(45deg);
+
+  content: "new";
+  text-transform: uppercase;
+  font-size: 2rem;
+  letter-spacing: 0.04em;
+  color: #0e0e0e;
+  font-weight: var(--fw-8);
+
+  background-color: var(--yellow);
+  padding: 0 4rem;
+}
+
 #popup-title {
   color: rgba(240, 193, 7, 0.8);
   font-size: var(--fs-4);
@@ -851,3 +890,8 @@ footer span {
    RESPONSIVE
    Source: responsive.css
    ========================================= */
+@media (max-width: 1200px) {
+}
+
+@media (max-width: 600px) {
+}
