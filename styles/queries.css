@@ -145,6 +145,12 @@
   dialog[open] {
     min-width: min(44rem, 92vw);
   }
+
+  #popup::after {
+    top: 9%;
+    right: -7%;
+    padding: 0 4rem;
+  }
 }
 
 /* <= 576px */
@@ -182,12 +188,6 @@
 
   .create-step {
     padding: 1.6rem;
-  }
-
-  #popup::after {
-    right: -6%;
-    font-size: 1.6rem;
-    padding: 0 4rem;
   }
 
   footer {
