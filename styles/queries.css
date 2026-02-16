@@ -184,12 +184,6 @@
     padding: 1.6rem;
   }
 
-  #popup::after {
-    right: -10%;
-    font-size: 1.6rem;
-    padding: 0 3rem;
-  }
-
   footer {
     flex-wrap: wrap;
     gap: 0.5rem 1rem;
