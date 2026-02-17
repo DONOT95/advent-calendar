@@ -39,7 +39,6 @@ export function initGenerator() {
   if (generatorInitialized) return;
 
   // bind HTML elements with JS variables
-  // if (!bindDom()) return;
   dom = bindWizardDom();
   if (!isWizardDomReady(dom)) return;
 

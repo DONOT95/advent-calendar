@@ -3,7 +3,7 @@ import { formatText, formatPlaceholder } from "../i18n/i18n.js";
 // Preview list before every message datum + day
 // CALENDAR Dialog -> daily message before message datum + day
 export function getPreviewItemPrefix(day) {
-  return formatPlaceholder("labels.dayPrefix", { day }, "December {day}: ");
+  return formatPlaceholder("labels.dayPrefix", { day }, "Dec {day}:");
 }
 
 // CALENDAR Dialog -> Title

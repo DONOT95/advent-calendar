@@ -47,7 +47,7 @@ export const uiTexts = {
       popupdaytitle: "Day {day}",
 
       popupTitle: "Today's message",
-      dayPrefix: "{day}. December:",
+      dayPrefix: "{day}. Dec:",
 
       // Wizard generated dialog:
       sharecalendartitle: "Share your calendar",
@@ -219,7 +219,7 @@ export const uiTexts = {
       popupdaytitle: "Tag {day}",
 
       popupTitle: "Heutige Nachricht",
-      dayPrefix: "{day}. Dezember:",
+      dayPrefix: "{day}. Dez:",
 
       // Wizard generated dialog:
       sharecalendartitle: "Teile deinen Kalender",
@@ -387,7 +387,7 @@ export const uiTexts = {
       popupdaytitle: "{day}. nap",
 
       popupTitle: "Mai üzenet",
-      dayPrefix: "{day}. december:",
+      dayPrefix: "{day}. dec:",
 
       // Wizard generated dialog:
       sharecalendartitle: "Oszd meg a naptárad",

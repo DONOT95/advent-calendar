@@ -87,11 +87,12 @@ export function renderPreviewList(listEl, messages) {
 
       const prefix = getPreviewItemPrefix(i + 1);
 
-      // If TEXT longer than 60 char cut it (only for preview)
-      if (text.length > 60) {
-        text = text.slice(0, 60);
+      /* // If TEXT longer than 60 char cut it (only for preview)
+      // Not used ->  it breaks the css format
+      if (text.length > 50) {
+        text = text.slice(0, 50);
         text = text + "...";
-      }
+      } */
 
       spanPrefix.textContent = prefix + " ";
       spanMessage.textContent = text;
@@ -206,7 +207,7 @@ export function setWizardStep(dom, stepIndex) {
 // For different STEP (generate 1-3)
 // Make border fit content
 export function syncCreateContainerHeight(dom, stepIndex) {
-  // Wenn die Page nicht sichtbar ist: NICHT messen und NICHT überschreiben
+  // Not visible -> no measure
   if (!dom?.pageCreate?.classList.contains("active")) return;
 
   const activeStep = dom.createSteps?.[stepIndex];

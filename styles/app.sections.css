@@ -567,7 +567,8 @@ textarea {
   display: flex;
   gap: var(--sp-2);
   align-items: baseline;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  margin-bottom: var(--sp-4);
 }
 
 section#create-container {
@@ -680,12 +681,28 @@ section#create-container {
 }
 
 .field-lbl.field-lbl--preview {
-  margin-bottom: var(--sp-4);
+  white-space: nowrap;
 }
 
 .name-prev {
   font-size: var(--fs-1);
   color: var(--text);
+  white-space: pre-wrap;
+  display: block;
+  overflow-wrap: anywhere;
+
+  font-size: var(--fs-1);
+  color: var(--text);
+  max-width: 40ch;
+}
+.preview-message {
+  white-space: pre-wrap;
+  display: block;
+  overflow-wrap: anywhere;
+
+  font-size: var(--fs-1);
+  color: var(--text);
+  max-width: 40ch;
 }
 
 .preview-list {
@@ -694,13 +711,17 @@ section#create-container {
 }
 
 .preview-prefixdate-lbl {
+  white-space: nowrap;
   font-size: var(--fs-1);
   color: var(--text-muted);
+  justify-self: baseline;
 }
 
-.preview-message {
-  font-size: var(--fs-1);
-  color: var(--text);
+/* Preview list li elements: for day lbl to be able to vertically top oriented (multi line message align bug fix) */
+li {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 /* =========================================
@@ -746,16 +767,15 @@ dialog h2 {
 }
 
 dialog p {
-  margin: 0;
-  height: 100%;
+  margin: 0 0 var(--sp-6) 0;
   max-width: 35ch;
   font-size: var(--fs-2);
-  margin-bottom: var(--sp-4);
   color: var(--text-muted);
 }
 
 dialog input {
   font-size: var(--fs-1) !important;
+  line-height: 1.25;
   color: var(--text);
   margin-bottom: var(--sp-6);
 }
@@ -843,6 +863,7 @@ dialog .actions {
   font-size: var(--fs-1);
   color: rgba(224, 44, 44, 0.6);
   max-width: fit-content !important;
+  margin: 0 0 var(--sp-4) 0;
 }
 
 .text-box .icon,

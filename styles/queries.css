@@ -37,6 +37,7 @@
     justify-content: flex-start;
   }
 
+  /* No more push text to the left */
   #hero {
     grid-template-columns: 1fr;
     gap: 4rem;
@@ -71,7 +72,7 @@
 
   #create-container,
   section#create-container {
-    width: min(100%, 72rem);
+    width: min(100%, 50rem);
   }
 }
 
@@ -138,7 +139,6 @@
   }
 
   .btn-row {
-    flex-direction: column;
     align-items: stretch;
   }
 
@@ -150,6 +150,10 @@
     top: 9%;
     right: -7%;
     padding: 0 4rem;
+  }
+
+  .page.page--create {
+    width: min(100%, 40rem);
   }
 }
 
