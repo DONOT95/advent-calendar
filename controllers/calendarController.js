@@ -13,7 +13,7 @@ let midnightTimeoutId = null;
 let calendarEl = null;
 let tpl = null;
 
-// Saved state for later re-render (auto middnight update usw.)
+// Cached runtime state used for re-render and midnight refresh.
 let buttons = [];
 let messages = [];
 let onDoorOpen = null;
@@ -31,7 +31,7 @@ export function initCalendar({
 }) {
   // Guard clause to prevent double function call
   if (!container || !template) return;
-  // Once binden
+  // Bind once and keep references for refreshes.
   calendarEl = container;
   tpl = template;
 

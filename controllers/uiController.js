@@ -381,8 +381,8 @@ export function showUrlStatusDialog(status, issues = []) {
 
   dom.urlStatusDialog.showModal();
 
-  // showModal set die 1. element selected (Btn).
-  // We set manual focus to the whole dialog.
+  // showModal may move focus to the first focusable control (often a button).
+  // Re-focus the dialog element itself for predictable keyboard handling.
   setTimeout(() => {
     dom.urlStatusDialog?.focus();
   }, 0);

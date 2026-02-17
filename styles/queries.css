@@ -27,6 +27,22 @@
 
 /* <= 992px */
 @media (max-width: 62em) {
+  body.calendar-scope[data-theme="family"],
+  body.calendar-scope[data-theme="horror"] {
+    /* Show more of the artwork on narrow screens (less aggressive crop). */
+    background-size: contain;
+    background-position: center top;
+  }
+
+  .hero-container {
+    /* Mobile browsers render fixed backgrounds poorly and often crop aggressively. */
+    background-attachment: scroll;
+    background-image:
+      linear-gradient(to right, rgba(40, 40, 40, 0.06), rgba(20, 20, 20, 0.12)),
+      url("../data/bilds/hero_bg_left.png");
+    background-position: 28% center;
+  }
+
   .topbar {
     height: auto;
     padding: 2rem;
@@ -88,6 +104,7 @@
 
   .hero-container {
     padding: 6rem 0;
+    background-position: 24% center;
   }
 
   .hero-left {
@@ -159,6 +176,13 @@
 
 /* <= 576px */
 @media (max-width: 36em) {
+  body.calendar-scope[data-theme="family"],
+  body.calendar-scope[data-theme="horror"] {
+    /* Slightly increase fill on very small screens while keeping lower crop than cover. */
+    background-size: 115% auto;
+    background-position: center top;
+  }
+
   html {
     font-size: 50%;
   }
@@ -179,6 +203,10 @@
 
   .hero-title {
     font-size: 3.8rem;
+  }
+
+  .hero-container {
+    background-position: 20% center;
   }
 
   .grid--6cols {

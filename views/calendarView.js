@@ -1,8 +1,8 @@
-/* Section „Calendar“
-Türen rendern
-Klassen setzen (locked / today / opened)
-Popup-Content setzen (oder Popup anstoßen)
-Ein Kalender = eine View */
+/* Calendar view responsibilities:
+- Render door buttons
+- Update visual classes (locked / today / opened)
+- Set popup content and open the dialog
+One calendar = one view module. */
 export function renderDoors(containerEl, templateEl, daysCount) {
   if (!containerEl || !templateEl) return [];
 

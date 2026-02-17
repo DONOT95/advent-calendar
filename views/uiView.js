@@ -1,13 +1,12 @@
-// Zuständig für: App-übergreifende UI + statische Seiten
+// UI view for shared static/global interface elements.
+/* Responsibilities:
+- Header values (from/to, date/time)
+- Language select and body theme assignment
+- Navigation/menu state helpers
+- Shared dialogs and global UI bindings
+*/
 
-/* Header (From/To, Datum/Uhr)
-Language-Select
-Theme-Klassen am <body>
-Navigation / Menu
-How-To Section -> Static
- */
-
-// ========== DOM BINDING FOR EVERY ELEMENT WHAT NOT IN CALENDAR/WIZARD ==========
+// ========== DOM BINDING FOR ELEMENTS OUTSIDE CALENDAR/WIZARD ==========
 export function bindUiDom() {
   return {
     app: document.getElementById("app"),
@@ -44,7 +43,7 @@ export function bindUiDom() {
     popupTitle: document.getElementById("popup-title"),
     popupDate: document.getElementById("dayPrefix"),
     popupText: document.getElementById("popup-text"),
-    // TODO: ONE CLOSEDIALOG EVENT FOR ALL CLOSE BTN
+    // TODO: Consolidate all close buttons into one shared close-handler.
     popupCloseBtn: document.getElementById("popup-close-btn"),
 
     // Theme select exists on create page
@@ -57,15 +56,15 @@ export function bindUiDom() {
     btnOpenLinkCancel: document.getElementById("btnOpenLinkCancel"),
     btnOpenLinkGo: document.getElementById("btnOpenLinkGo"),
 
-    // TODO: ONE CLOSEDIALOG EVENT FOR ALL CLOSE BTN
-    // Dialog for URL data error (cant read, damaged)
+    // TODO: Consolidate all close buttons into one shared close-handler.
+    // Dialog for URL data errors (invalid or unreadable links).
     urlStatusDialog: document.getElementById("showUrlStatusDialog"),
     statusTitle: document.getElementById("urlStatusTitle"),
     statusText: document.getElementById("urlStatusText"),
     /* closeDialogBtns: Array.from(document.querySelectorAll("close-dialog")), */
 
     // Dialogs (optional helper for outside-click close)
-    // Last to be able to get all the dialogs inside the array
+    // Keep this last so all dialogs are already present in the DOM.
     closeUrlErrorBtn: document.getElementById("closeUrlErrorBtn"),
     dialogs: Array.from(document.querySelectorAll("dialog")),
 
@@ -91,7 +90,7 @@ export function fillThemeOptions(themeSelectEl, themeRegistry) {
   });
 }
 
-// TODO: Values can instead of "EN" -> "English" or Flag icons
+// TODO: Consider full language labels ("English") or icons instead of short codes.
 export function fillLanguageOptions(languageSelectEl, supportedLangs) {
   if (!languageSelectEl || languageSelectEl.options.length > 0) return;
 
@@ -137,10 +136,9 @@ export function shouldCloseMenuOnDocumentClick(e, menuBtnEl, menuDropdownEl) {
 export function applyTheme(htmlEl, themeRegistry, themeKey) {
   if (!htmlEl || !themeRegistry) return;
 
-  // Remove all type of theme classes
+  // Fallback to first registered theme when provided key is invalid.
+  if (!themeRegistry[themeKey]) themeKey = Object.keys(themeRegistry)[0];
 
-  if (!themeRegistry[themeKey]) themeKey = Object.keys(themeRegistry[0]);
-
-  // Add selected theme class
+  // Apply selected theme to <body> via data attribute.
   htmlEl.dataset.theme = themeKey;
 }

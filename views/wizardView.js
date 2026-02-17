@@ -1,12 +1,11 @@
 import { getLangAndDictThanResolveKey } from "../i18n/i18n.js";
 import { getPreviewItemPrefix } from "../services/calendarDayServices.js";
-/* Zuständig für: Section „Create / Generate“
-Step 1–3 Rendering
-Progressbar
-Tagesnummer / Textarea
-Preview-Liste
-Fehlermeldungen im Wizard
-Ein Wizard = eine View */
+/* Wizard view responsibilities:
+- Step 1-3 rendering
+- Progress bar and day index UI
+- Preview list output
+- URL dialog helper UI
+One wizard = one view module. */
 export function bindWizardDom() {
   return {
     // Step 1
@@ -36,7 +35,7 @@ export function bindWizardDom() {
     btnGenerateUrl: document.getElementById("btnGenerateUrl"),
     /* btnShowGenerated: document.getElementById("btnShowGenerated"), */
 
-    // Track/Container (für Steps)
+    // Step slider track and container
     pageCreate: document.getElementById("page-create"),
     createContainer: document.getElementById("create-container"),
     createTrack: document.getElementById("create-track"),
@@ -68,20 +67,20 @@ export function isWizardDomReady(dom) {
   );
 }
 
-// Display Preview messages
+// Render preview messages for Step 3.
 export function renderPreviewList(listEl, messages) {
   if (!listEl) return;
 
   listEl.replaceChildren(
     ...messages.map((text, i) => {
-      // Flexible li for HTML
+      // Build one row per day.
       const li = document.createElement("li");
 
-      // message LBL, own class
+      // Prefix for date/day label.
       const spanPrefix = document.createElement("span");
       spanPrefix.classList = "preview-prefixdate-lbl";
 
-      // messge TEXT, own class
+      // Message text container.
       const spanMessage = document.createElement("span");
       spanMessage.className = "preview-message";
 
@@ -97,7 +96,7 @@ export function renderPreviewList(listEl, messages) {
       spanPrefix.textContent = prefix + " ";
       spanMessage.textContent = text;
 
-      // Add up the LBL + TEXT
+      // Combine prefix and message.
       li.append(spanPrefix, spanMessage);
 
       return li;
@@ -105,7 +104,7 @@ export function renderPreviewList(listEl, messages) {
   );
 }
 
-// Open generated Url dialog
+// Open generated URL dialog and preselect URL text.
 export function openUrlDialog(dialogEl, inputEl, url) {
   if (!dialogEl || !inputEl) return;
   inputEl.value = url;
@@ -115,13 +114,11 @@ export function openUrlDialog(dialogEl, inputEl, url) {
   selectInputText(inputEl);
 }
 
-// COPY URL
-// Temp text change for button (copy -> copied!)
+// Temporarily swap "Copy" to "Copied!" on success.
 export function flashCopyButtonText(btnEl, durationMs = 900) {
   if (!btnEl) return;
 
-  // Get Lang, Dictionary[lang] select
-  // Set text from dictionary
+  // Resolve labels from i18n dictionary.
   const copyText = getLangAndDictThanResolveKey("buttons.copy");
   const copiedText = getLangAndDictThanResolveKey("buttons.copied");
 
@@ -132,7 +129,7 @@ export function flashCopyButtonText(btnEl, durationMs = 900) {
   }, durationMs);
 }
 
-// Select input field content
+// Focus input and select all text.
 export function selectInputText(inputEl) {
   if (!inputEl) return;
   inputEl.focus();
@@ -144,7 +141,7 @@ export function selectInputText(inputEl) {
 export function selectInputTextSafe(inputEl, { preventScroll = false } = {}) {
   if (!inputEl) return;
 
-  // preventScroll: avoids "jumping" the slider
+  // preventScroll avoids slider jump while focusing.
   if (preventScroll && typeof inputEl.focus === "function") {
     try {
       inputEl.focus({ preventScroll: true });
@@ -158,7 +155,7 @@ export function selectInputTextSafe(inputEl, { preventScroll = false } = {}) {
   if (typeof inputEl.select === "function") inputEl.select();
 }
 
-// Copy BTN, copy HTML inhalt to clipboard
+// Copy URL to clipboard with modern API and legacy fallback.
 export async function copyUrlFromWizard(inputEl) {
   const url = inputEl?.value?.trim?.() ?? "";
   if (!url) return false;
@@ -172,7 +169,7 @@ export async function copyUrlFromWizard(inputEl) {
     // nothing, go to 2. try
   }
 
-  // 2. exeCommand old but works
+  // Legacy fallback for older browsers.
   try {
     inputEl.focus();
     inputEl.select();
@@ -187,16 +184,16 @@ export async function copyUrlFromWizard(inputEl) {
 export function setWizardStep(dom, stepIndex) {
   if (!dom?.createTrack || !Array.isArray(dom.createSteps)) return;
 
-  // Safe min-max select (can't be lower than min, can't be over max)
+  // Clamp step index to valid range.
   const maxIndex = dom.createSteps.length - 1;
   const safeIndex = Math.max(0, Math.min(stepIndex, maxIndex));
 
-  // For "ghost to visible" effect, class list
+  // Set active step class for opacity transition.
   dom.createSteps.forEach((el, index) => {
     el.classList.toggle("is-active", index === safeIndex);
   });
 
-  // Animation 0%, -100%, -200%...
+  // Slide track by full step widths.
   dom.createTrack.style.transform = `translateX(-${safeIndex * 100}%)`;
 
   syncCreateContainerHeight(dom, safeIndex);
@@ -204,8 +201,7 @@ export function setWizardStep(dom, stepIndex) {
   return safeIndex;
 }
 
-// For different STEP (generate 1-3)
-// Make border fit content
+// Keep container height aligned with active step content.
 export function syncCreateContainerHeight(dom, stepIndex) {
   // Not visible -> no measure
   if (!dom?.pageCreate?.classList.contains("active")) return;
@@ -221,7 +217,7 @@ export function syncCreateContainerHeight(dom, stepIndex) {
   });
 }
 
-// NEW RESIZE FOR STEPS IN WIZARD
+// Resize observer references for active step.
 let ro = null;
 let observed = null;
 
@@ -249,7 +245,7 @@ export function activateCreateRO(dom, stepIndex) {
   observed = el;
   ro.observe(observed);
 
-  // sofort korrekt setzen (wichtig!)
+  // Apply height immediately after switching observer target.
   syncCreateContainerHeight(dom, stepIndex);
 }
 

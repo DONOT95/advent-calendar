@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   appState.calendar.lastUrlStatus = result.status;
   appState.calendar.lastUrlIssues = result.issues ?? [];
 
-  // Determin shown-page (Home || Calendar)
+  // Determine initial page from URL state.
   const hasValidUrl = appState.calendar.source === "url";
   const initialPage = hasValidUrl ? "calendar" : "home";
 
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     serverDateNow,
   );
 
-  // SECTION: CALENDAR -> Bild Default or Custom Calendar
+  // Initialize calendar section with current state values.
   initCalendar({
     container: document.getElementById("calendar"),
     template: document.getElementById("door-tpl"),

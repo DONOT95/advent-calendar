@@ -792,7 +792,6 @@ dialog .actions {
 }
 
 /* DIALOG LBL*/
-/* Only for unread daily calendar message, new label*/
 #popup {
   position: relative;
   overflow: hidden;
@@ -905,14 +904,4 @@ footer::before {
 
 footer span {
   margin-right: 2rem;
-}
-
-/* =========================================
-   RESPONSIVE
-   Source: responsive.css
-   ========================================= */
-@media (max-width: 1200px) {
-}
-
-@media (max-width: 600px) {
 }

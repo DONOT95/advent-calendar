@@ -158,7 +158,7 @@ function showNextMessage() {
     appState.wizardDraft.messages[appState.generator.currentMessageIndex] ??
     DEFAULTS.calendar.emptyMessage;
 
-  // Select the text in textfeld (UX: easy to edit)
+  // Select textarea content for quick overwrite/edit.
   selectInputText(dom.messageEditor);
 
   // For message editor always "reset" counter at new Day (new message, reset limit)
@@ -199,7 +199,7 @@ function showPreviousMessage() {
     appState.wizardDraft.messages[appState.generator.currentMessageIndex] ??
     DEFAULTS.calendar.emptyMessage;
 
-  // Select the text in textfeld (UX: easy to edit)
+  // Select textarea content for quick overwrite/edit.
   selectInputText(dom.messageEditor);
 
   updateCounter(
@@ -231,7 +231,7 @@ function displayMessages() {
   // Updata state (messages)
   appState.wizardDraft.messages = [...list];
 
-  // Render neu elemente
+  // Render updated preview list.
   renderPreviewList(dom.previewMessages, list);
 }
 
@@ -319,7 +319,7 @@ function onCreateCustom() {
 
   // Set UI element content (1. value of messages)
   dom.messageEditor.value = appState.wizardDraft.messages[0];
-  // Select the text in textfeld (UX: easy to edit)
+  // Select textarea content for quick overwrite/edit.
   //dom.messageEditor.focus();
   selectInputTextSafe(dom.messageEditor, { preventScroll: true });
 
@@ -331,7 +331,7 @@ function onCreateDefault() {
   // From, to lang, theme
   readBasicConfig();
 
-  // Default messges...(lang,theme) wizardDraft.messages = default.messages[appstate.lang, wizzDraft.theme]
+  // Fill wizard messages with language/theme defaults.
   setWizardMessages(
     getDefaultMessages(
       appState.calendarConfig.lang,
@@ -339,7 +339,7 @@ function onCreateDefault() {
     ),
   );
 
-  // Display messges for preview
+  // Render preview messages.
   displayMessages();
 
   // Increase progressbar
@@ -382,7 +382,7 @@ function onBackToEdit() {
   // Decrease Progressbar value
   decreaseProgress();
 
-  // Select the text in textfeld (UX: easy to edit)
+  // Select textarea content for quick overwrite/edit.
   selectInputText(dom.messageEditor);
   // For message editor always "reset" counter at new Day (new message, reset limit)
   updateCounter(
