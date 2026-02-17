@@ -27,13 +27,6 @@
 
 /* <= 992px */
 @media (max-width: 62em) {
-  body.calendar-scope[data-theme="family"],
-  body.calendar-scope[data-theme="horror"] {
-    /* Show more of the artwork on narrow screens (less aggressive crop). */
-    background-size: contain;
-    background-position: center top;
-  }
-
   .hero-container {
     /* Mobile browsers render fixed backgrounds poorly and often crop aggressively. */
     background-attachment: scroll;
@@ -176,13 +169,6 @@
 
 /* <= 576px */
 @media (max-width: 36em) {
-  body.calendar-scope[data-theme="family"],
-  body.calendar-scope[data-theme="horror"] {
-    /* Slightly increase fill on very small screens while keeping lower crop than cover. */
-    background-size: 115% auto;
-    background-position: center top;
-  }
-
   html {
     font-size: 50%;
   }
