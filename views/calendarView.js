@@ -28,6 +28,9 @@ export function renderDoors(containerEl, templateEl, daysCount) {
 export function updateDoorClassesView(buttons, { allowedDay }) {
   if (!buttons) return;
 
+  // Here, it could be restricted so that the doors can only be opened in December.
+  // Then you will need -> result from 'IsCurrentMonthDecember' function parameter in the function.
+
   for (let day = 1; day < buttons.length; day++) {
     const btn = buttons[day];
     if (!btn) continue;

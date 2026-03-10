@@ -131,17 +131,32 @@ function scheduleMidnightRefresh() {
   }, msUntil);
 }
 
+// Get current day in range 1-24 (Advent)
 function getAllowedDay(offsetMs, days) {
   const now = new Date(Date.now() + offsetMs);
   const month = now.getMonth() + 1; // 1–12
   const day = now.getDate();
 
-  // Not December → no doors available
-  if (month !== 2) return null;
+  // For 'Demo-purposes' allowing todayLabel in evry month
+  // Rule: Not December → no today available
+  //if (month !== 12) return null;
 
   // No today. Current date > 24
   if (day > days) return null;
 
-  // Return the current days to mark as today
+  // Return the current day to mark as today
   return Math.min(day, days);
+}
+
+// Check correct month (12: Advent)
+function IsCurrentMonthDecember(offsetMs) {
+  const now = new Date(Date.now() + offsetMs);
+  const currentMonth = now.getMonth() + 1;
+  const allowedMonth = 12;
+
+  if (currentMonth != allowedMonth) {
+    return false;
+  }
+
+  return true;
 }
